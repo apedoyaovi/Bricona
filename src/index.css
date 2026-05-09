@@ -147,6 +147,19 @@ img[loading="lazy"] {
     background: rgba(0, 0, 0, 0.3);
 }
 
+button:not(:disabled),
+a[href],
+select,
+input[type="checkbox"],
+input[type="radio"] {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
 /* Marquee */
 @keyframes marquee {
     0%   { transform: translateX(0%); }

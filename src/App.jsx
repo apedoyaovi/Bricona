@@ -39,6 +39,7 @@ const About = lazy(() => import('./pages/About'));
 const MentionsLegales = lazy(() => import('./pages/MentionsLegales'));
 const PolitiqueConfidentialite = lazy(() => import('./pages/PolitiqueConfidentialite'));
 const ConditionsUtilisation = lazy(() => import('./pages/ConditionsUtilisation'));
+const AdminEvenements = lazy(() => import('./pages/AdminEvenements'));
 const PageNonTrouvee = lazy(() => import('./pages/PageNonTrouvee.jsx'));
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
             <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
             <Route path="/conditions-utilisation" element={<ConditionsUtilisation />} />
             <Route path="/mentions-legales" element={<MentionsLegales />} />
+            <Route path="/admin-evenements" element={<AdminEvenements />} />
             <Route path="*" element={<PageNonTrouvee />} />
           </Routes>
         </Suspense>

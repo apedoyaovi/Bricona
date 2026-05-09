@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import contactHeroImg from '../assets/bricona contact.png';
+import { SITE_CONTENT_EVENT, getSiteSettings } from '../utils/siteContent';
 
 const faqItems = [
   {
@@ -23,6 +24,18 @@ const faqItems = [
 
 const Contact = () => {
   const [open, setOpen] = useState(null);
+  const [settings, setSettings] = useState(() => getSiteSettings());
+
+  useEffect(() => {
+    const syncSettings = () => setSettings(getSiteSettings());
+    window.addEventListener(SITE_CONTENT_EVENT, syncSettings);
+    window.addEventListener('storage', syncSettings);
+
+    return () => {
+      window.removeEventListener(SITE_CONTENT_EVENT, syncSettings);
+      window.removeEventListener('storage', syncSettings);
+    };
+  }, []);
 
   return (
     <main className="pt-20 pb-16">
@@ -117,10 +130,10 @@ const Contact = () => {
             <div className="bg-surface-container-low rounded-2xl p-6 space-y-5">
               <h2 className="font-headline text-xl font-bold mb-4">Informations Directes</h2>
               {[
-                { icon: 'call', label: 'Appels', value: '72483165' },
-                { icon: 'chat', label: 'WhatsApp', value: '79340002' },
-                { icon: 'mail', label: 'Email', value: 'contact@bricona.net' },
-                { icon: 'location_on', label: 'Siège Social', value: "Lomé, Togo" },
+                { icon: 'call', label: 'Appels', value: settings.phone },
+                { icon: 'chat', label: 'WhatsApp', value: settings.whatsapp },
+                { icon: 'mail', label: 'Email', value: settings.email },
+                { icon: 'location_on', label: 'Siège Social', value: settings.address },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-4 p-3 rounded-xl hover:bg-surface-container transition-colors">
                   <div className="bg-primary-container/10 p-2.5 rounded-lg">
