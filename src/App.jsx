@@ -41,6 +41,7 @@ const PolitiqueConfidentialite = lazy(() => import('./pages/PolitiqueConfidentia
 const ConditionsUtilisation = lazy(() => import('./pages/ConditionsUtilisation'));
 const AdminEvenements = lazy(() => import('./pages/AdminEvenements'));
 const AdminInscriptions = lazy(() => import('./pages/AdminInscriptions'));
+const AdminMessages = lazy(() => import('./pages/AdminMessages'));
 const PageNonTrouvee = lazy(() => import('./pages/PageNonTrouvee.jsx'));
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
             <Route path="/mentions-legales" element={<MentionsLegales />} />
             <Route path="/admin-evenements" element={<AdminEvenements />} />
             <Route path="/admin-inscriptions" element={<AdminInscriptions />} />
+            <Route path="/admin-messages" element={<AdminMessages />} />
             <Route path="*" element={<PageNonTrouvee />} />
           </Routes>
         </Suspense>

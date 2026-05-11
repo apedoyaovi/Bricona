@@ -367,7 +367,7 @@ const AdminEvenements = () => {
           </div>
         )}
 
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
           <button
             type="button"
             onClick={() => {
@@ -403,6 +403,15 @@ const AdminEvenements = () => {
             <span className="material-symbols-outlined text-3xl text-primary mb-4">how_to_reg</span>
             <span className="block font-headline text-lg font-bold text-primary mb-1">Voir les inscriptions recues</span>
             <span className="block text-sm text-on-surface-variant">Consulter les participants inscrits aux evenements.</span>
+          </Link>
+
+          <Link
+            to="/admin-messages"
+            className="rounded-2xl bg-white border border-outline-variant/20 p-5 text-left shadow-sm hover:bg-primary-fixed transition-colors"
+          >
+            <span className="material-symbols-outlined text-3xl text-primary mb-4">mark_email_unread</span>
+            <span className="block font-headline text-lg font-bold text-primary mb-1">Voir les messages recus</span>
+            <span className="block text-sm text-on-surface-variant">Consulter les demandes envoyees depuis la page contact.</span>
           </Link>
         </div>
 

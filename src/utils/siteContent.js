@@ -48,6 +48,7 @@ export const defaultEvents = [
 const eventsKey = 'bricona-events';
 const settingsKey = 'bricona-site-settings';
 const registrationsKey = 'bricona-event-registrations';
+const contactMessagesKey = 'bricona-contact-messages';
 
 const canUseStorage = () => typeof window !== 'undefined' && window.localStorage;
 
@@ -76,6 +77,16 @@ const mapSupabaseRegistration = (registration) => ({
   email: registration.email,
   profile: registration.profile,
   createdAt: registration.created_at,
+});
+
+const mapSupabaseContactMessage = (message) => ({
+  id: message.id,
+  fullName: message.full_name,
+  company: message.company,
+  email: message.email,
+  projectType: message.project_type,
+  message: message.message,
+  createdAt: message.created_at,
 });
 
 const mapSupabaseEvent = (event) => ({
@@ -228,6 +239,47 @@ export const getEventRegistrations = async () => {
   }
 
   return readJson(registrationsKey, []);
+};
+
+export const addContactMessage = async (message) => {
+  if (hasSupabaseConfig) {
+    const { error } = await supabase
+      .from('contact_messages')
+      .insert({
+        full_name: message.fullName,
+        company: message.company || null,
+        email: message.email,
+        project_type: message.projectType,
+        message: message.message,
+      });
+
+    if (error) throw error;
+    return;
+  }
+
+  const messages = readJson(contactMessagesKey, []);
+  writeJson(contactMessagesKey, [
+    {
+      id: `contact-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      ...message,
+    },
+    ...messages,
+  ]);
+};
+
+export const getContactMessages = async () => {
+  if (hasSupabaseConfig) {
+    const { data, error } = await supabase
+      .from('contact_messages')
+      .select('id,full_name,company,email,project_type,message,created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data.map(mapSupabaseContactMessage);
+  }
+
+  return readJson(contactMessagesKey, []);
 };
 
 export const formatEventDate = (date) => {

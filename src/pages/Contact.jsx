@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import contactHeroImg from '../assets/bricona contact.png';
-import { SITE_CONTENT_EVENT, getSiteSettings } from '../utils/siteContent';
+import { SITE_CONTENT_EVENT, addContactMessage, getSiteSettings } from '../utils/siteContent';
 
 const faqItems = [
   {
@@ -25,6 +25,9 @@ const faqItems = [
 const Contact = () => {
   const [open, setOpen] = useState(null);
   const [settings, setSettings] = useState(() => getSiteSettings());
+  const [isSending, setIsSending] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const syncSettings = () => setSettings(getSiteSettings());
@@ -36,6 +39,40 @@ const Contact = () => {
       window.removeEventListener('storage', syncSettings);
     };
   }, []);
+
+  const handleContactSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const messageValue = formData.get('message') || form.querySelector('textarea')?.value || '';
+
+    setIsSending(true);
+    setSuccessMessage('');
+    setErrorMessage('');
+
+    if (!messageValue.trim()) {
+      setErrorMessage('Veuillez decrire votre projet avant d envoyer la demande.');
+      setIsSending(false);
+      return;
+    }
+
+    try {
+      await addContactMessage({
+        fullName: formData.get('full-name').trim(),
+        company: formData.get('company').trim(),
+        email: formData.get('email').trim(),
+        projectType: formData.get('project-type'),
+        message: messageValue.trim(),
+      });
+
+      setSuccessMessage('Votre demande a bien ete envoyee. Notre equipe vous contactera rapidement.');
+      form.reset();
+    } catch {
+      setErrorMessage("Impossible d'envoyer votre demande pour le moment. Veuillez reessayer.");
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   return (
     <main className="pt-20 pb-16">
@@ -82,40 +119,50 @@ const Contact = () => {
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Contact Form */}
           <div className="lg:col-span-7 bg-surface-container-lowest rounded-2xl p-6 md:p-8 border border-outline-variant/20 shadow-[0_20px_40px_rgba(25,28,30,0.06)]">
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleContactSubmit}>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Nom complet</label>
-                  <input className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all placeholder:text-outline/50 outline-none" placeholder="Nom complet" type="text" />
+                  <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider" htmlFor="full-name">Nom complet</label>
+                  <input id="full-name" name="full-name" className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all placeholder:text-outline/50 outline-none" placeholder="Nom complet" type="text" required />
                 </div>
                 <div className="space-y-2">
-                  <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Entreprise (Optionnel)</label>
-                  <input className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all placeholder:text-outline/50 outline-none" placeholder="Nom de l'entreprise" type="text" />
+                  <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider" htmlFor="company">Entreprise (Optionnel)</label>
+                  <input id="company" name="company" className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all placeholder:text-outline/50 outline-none" placeholder="Nom de l'entreprise" type="text" />
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Email</label>
-                  <input className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all placeholder:text-outline/50 outline-none" placeholder="email@gmail.com / email professionnel" type="email" />
+                  <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider" htmlFor="email">Email</label>
+                  <input id="email" name="email" className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all placeholder:text-outline/50 outline-none" placeholder="email@gmail.com / email professionnel" type="email" required />
                 </div>
                 <div className="space-y-2">
-                  <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Type de projet</label>
-                  <select className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all text-on-surface-variant outline-none">
-                    <option>Digitalisation</option>
-                    <option>Automatisation</option>
-                    <option>Mise en relation artisant et client</option>
-                    <option>Developpement de logiciel sur mesure</option>
-                    <option>Maintenance</option>
+                  <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider" htmlFor="project-type">Type de projet</label>
+                  <select id="project-type" name="project-type" className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all text-on-surface-variant outline-none" required>
+                    <option value="Digitalisation">Digitalisation</option>
+                    <option value="Automatisation">Automatisation</option>
+                    <option value="Mise en relation artisan et client">Mise en relation artisan et client</option>
+                    <option value="Developpement de logiciel sur mesure">Developpement de logiciel sur mesure</option>
+                    <option value="Maintenance">Maintenance</option>
                   </select>
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Votre message</label>
+                <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider" htmlFor="message">Votre message</label>
                 <textarea className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all placeholder:text-outline/50 outline-none resize-none" placeholder="Décrivez votre vision, vos contraintes et vos délais..." rows={4}></textarea>
               </div>
+              {successMessage && (
+                <p className="rounded-xl bg-green-100 px-4 py-3 text-sm font-bold text-green-700" aria-live="polite">
+                  {successMessage}
+                </p>
+              )}
+              {errorMessage && (
+                <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600" aria-live="polite">
+                  {errorMessage}
+                </p>
+              )}
               <div className="pt-4">
                 <button className="w-full md:w-auto bg-secondary-container text-on-secondary-container font-headline font-bold py-3 px-8 rounded-xl text-base hover:brightness-105 transition-all flex items-center justify-center gap-3 cursor-pointer" type="submit">
-                  Envoyer la demande
+                  {isSending ? 'Envoi en cours...' : 'Envoyer la demande'}
                   <span className="material-symbols-outlined">send</span>
                 </button>
                 <p className="text-[10px] text-outline mt-4 text-center md:text-left">
