@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 import contactHeroImg from '../assets/bricona contact.png';
 import { SITE_CONTENT_EVENT, addContactMessage, getSiteSettings } from '../utils/siteContent';
 
@@ -23,11 +24,14 @@ const faqItems = [
 ];
 
 const Contact = () => {
+  const recaptchaSiteKey = import.meta.env.VITE_PUBLIC_RECAPTCHA_SITE_KEY || import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+  const recaptchaRef = useRef(null);
   const [open, setOpen] = useState(null);
   const [settings, setSettings] = useState(() => getSiteSettings());
   const [isSending, setIsSending] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState('');
 
   useEffect(() => {
     const syncSettings = () => setSettings(getSiteSettings());
@@ -56,6 +60,12 @@ const Contact = () => {
       return;
     }
 
+    if (recaptchaSiteKey && !recaptchaToken) {
+      setErrorMessage('Veuillez valider le reCAPTCHA avant d envoyer la demande.');
+      setIsSending(false);
+      return;
+    }
+
     try {
       await addContactMessage({
         fullName: formData.get('full-name').trim(),
@@ -67,8 +77,12 @@ const Contact = () => {
 
       setSuccessMessage('Votre demande a bien ete envoyee. Notre equipe vous contactera rapidement.');
       form.reset();
+      recaptchaRef.current?.reset();
+      setRecaptchaToken('');
     } catch {
       setErrorMessage("Impossible d'envoyer votre demande pour le moment. Veuillez reessayer.");
+      recaptchaRef.current?.reset();
+      setRecaptchaToken('');
     } finally {
       setIsSending(false);
     }
@@ -150,6 +164,17 @@ const Contact = () => {
                 <label className="font-label text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider" htmlFor="message">Votre message</label>
                 <textarea className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all placeholder:text-outline/50 outline-none resize-none" placeholder="Décrivez votre vision, vos contraintes et vos délais..." rows={4}></textarea>
               </div>
+              {recaptchaSiteKey && (
+                <div className="overflow-hidden rounded-xl">
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={recaptchaSiteKey}
+                    onChange={(token) => setRecaptchaToken(token || '')}
+                    onExpired={() => setRecaptchaToken('')}
+                    onErrored={() => setRecaptchaToken('')}
+                  />
+                </div>
+              )}
               {successMessage && (
                 <p className="rounded-xl bg-green-100 px-4 py-3 text-sm font-bold text-green-700" aria-live="polite">
                   {successMessage}
@@ -161,7 +186,7 @@ const Contact = () => {
                 </p>
               )}
               <div className="pt-4">
-                <button className="w-full md:w-auto bg-secondary-container text-on-secondary-container font-headline font-bold py-3 px-8 rounded-xl text-base hover:brightness-105 transition-all flex items-center justify-center gap-3 cursor-pointer" type="submit">
+                <button className="w-full md:w-auto bg-secondary-container text-on-secondary-container font-headline font-bold py-3 px-8 rounded-xl text-base hover:brightness-105 transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" type="submit" disabled={isSending || Boolean(recaptchaSiteKey && !recaptchaToken)}>
                   {isSending ? 'Envoi en cours...' : 'Envoyer la demande'}
                   <span className="material-symbols-outlined">send</span>
                 </button>
