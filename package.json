@@ -12,6 +12,7 @@
     "perf": "npm run build && npx serve dist -p 3000"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
     "@tailwindcss/vite": "^4.1.18",
     "@vercel/analytics": "^1.6.1",
     "lucide-react": "^0.562.0",

@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   formatEventDate,
   getEventGroups,
-  getEventRegistrations,
   getEventStatus,
   getSiteEvents,
   getSiteSettings,
@@ -50,7 +50,6 @@ const eventStatusMeta = {
 const AdminEvenements = () => {
   const [events, setEvents] = useState(() => getSiteEvents());
   const [settings, setSettings] = useState(() => getSiteSettings());
-  const [registrations, setRegistrations] = useState(() => getEventRegistrations());
   const [eventForm, setEventForm] = useState(emptyEvent);
   const [editingId, setEditingId] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
@@ -231,12 +230,6 @@ const AdminEvenements = () => {
     });
   };
 
-  const refreshRegistrations = () => {
-    setRegistrations(getEventRegistrations());
-    setNotice('Inscriptions actualisees.');
-  };
-
-  const eventTitleById = (id) => events.find((event) => event.id === id)?.title || 'Evenement supprime';
   const groupedEvents = getEventGroups(events);
 
   if (!isAuthenticated) {
@@ -325,7 +318,7 @@ const AdminEvenements = () => {
           </div>
         )}
 
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
             type="button"
             onClick={() => {
@@ -353,6 +346,15 @@ const AdminEvenements = () => {
             <span className="block font-headline text-lg font-bold text-primary mb-1">Voir tous les evenements</span>
             <span className="block text-sm text-on-surface-variant">Afficher les evenements passes, en cours et futurs.</span>
           </button>
+
+          <Link
+            to="/admin-inscriptions"
+            className="rounded-2xl bg-white border border-outline-variant/20 p-5 text-left shadow-sm hover:bg-primary-fixed transition-colors"
+          >
+            <span className="material-symbols-outlined text-3xl text-primary mb-4">how_to_reg</span>
+            <span className="block font-headline text-lg font-bold text-primary mb-1">Voir les inscriptions recues</span>
+            <span className="block text-sm text-on-surface-variant">Consulter les participants inscrits aux evenements.</span>
+          </Link>
         </div>
 
         <div className="mb-8 rounded-2xl bg-primary text-white p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5 shadow-xl shadow-primary/20">
@@ -554,38 +556,6 @@ const AdminEvenements = () => {
                 Enregistrer les contacts
               </button>
             </form>
-
-            <div className="rounded-[2rem] bg-white border border-outline-variant/20 p-6 md:p-7 shadow-sm">
-              <div className="flex items-center justify-between gap-4 mb-5">
-                <div>
-                  <h2 className="font-headline text-xl font-bold text-on-surface">Inscriptions recues</h2>
-                  <p className="text-on-surface-variant text-sm">{registrations.length} participant(s) enregistres.</p>
-                </div>
-                <button type="button" onClick={refreshRegistrations} className="h-10 w-10 rounded-xl bg-primary-fixed text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Actualiser">
-                  <span className="material-symbols-outlined text-lg">refresh</span>
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                {registrations.length > 0 ? (
-                  registrations.map((registration) => (
-                    <div key={registration.id} className="rounded-2xl bg-surface-container-low p-4">
-                      <p className="font-bold text-primary">{registration.fullName}</p>
-                      <p className="text-sm text-on-surface-variant">{eventTitleById(registration.eventId)}</p>
-                      <div className="mt-2 flex flex-wrap gap-3 text-xs font-bold text-on-surface-variant">
-                        <span>{registration.phone}</span>
-                        <span>{registration.email}</span>
-                        <span>{registration.profile}</span>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="rounded-2xl bg-surface-container-low p-5 text-sm text-on-surface-variant">
-                    Aucune inscription pour le moment.
-                  </p>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </section>

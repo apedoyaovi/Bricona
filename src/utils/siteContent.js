@@ -1,3 +1,5 @@
+import { hasSupabaseConfig, supabase } from './supabaseClient';
+
 export const SITE_CONTENT_EVENT = 'bricona-site-content-updated';
 
 export const defaultSiteSettings = {
@@ -66,6 +68,16 @@ const writeJson = (key, value) => {
   window.dispatchEvent(new CustomEvent(SITE_CONTENT_EVENT));
 };
 
+const mapSupabaseRegistration = (registration) => ({
+  id: registration.id,
+  eventId: registration.event_id,
+  fullName: registration.full_name,
+  phone: registration.phone,
+  email: registration.email,
+  profile: registration.profile,
+  createdAt: registration.created_at,
+});
+
 export const getSiteEvents = () => readJson(eventsKey, defaultEvents);
 
 export const saveSiteEvents = (events) => {
@@ -112,7 +124,22 @@ export const saveSiteSettings = (settings) => {
   writeJson(settingsKey, { ...getSiteSettings(), ...settings });
 };
 
-export const addEventRegistration = (registration) => {
+export const addEventRegistration = async (registration) => {
+  if (hasSupabaseConfig) {
+    const { error } = await supabase
+      .from('event_registrations')
+      .insert({
+        event_id: registration.eventId,
+        full_name: registration.fullName,
+        phone: registration.phone,
+        email: registration.email,
+        profile: registration.profile,
+      });
+
+    if (error) throw error;
+    return;
+  }
+
   const registrations = readJson(registrationsKey, []);
   writeJson(registrationsKey, [
     {
@@ -124,7 +151,19 @@ export const addEventRegistration = (registration) => {
   ]);
 };
 
-export const getEventRegistrations = () => readJson(registrationsKey, []);
+export const getEventRegistrations = async () => {
+  if (hasSupabaseConfig) {
+    const { data, error } = await supabase
+      .from('event_registrations')
+      .select('id,event_id,full_name,phone,email,profile,created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data.map(mapSupabaseRegistration);
+  }
+
+  return readJson(registrationsKey, []);
+};
 
 export const formatEventDate = (date) => {
   if (!date) return 'Date a definir';

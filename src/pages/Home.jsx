@@ -51,6 +51,8 @@ const Home = () => {
   const [upcomingEvents, setUpcomingEvents] = useState(() => getPublishedEvents());
   const [siteSettings, setSiteSettings] = useState(() => getSiteSettings());
   const [registrationSent, setRegistrationSent] = useState(false);
+  const [registrationError, setRegistrationError] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({
     open: false,
     registration: null,
@@ -129,11 +131,20 @@ const Home = () => {
         message="Votre inscription sera transmise a l equipe Bricona pour confirmer votre place a l evenement."
         confirmLabel="S'inscrire"
         onCancel={() => setConfirmDialog({ open: false, registration: null, formElement: null })}
-        onConfirm={() => {
+        onConfirm={async () => {
           if (confirmDialog.registration) {
-            addEventRegistration(confirmDialog.registration);
-            setRegistrationSent(true);
-            confirmDialog.formElement?.reset();
+            setIsRegistering(true);
+            setRegistrationError('');
+
+            try {
+              await addEventRegistration(confirmDialog.registration);
+              setRegistrationSent(true);
+              confirmDialog.formElement?.reset();
+            } catch {
+              setRegistrationError("Impossible d'enregistrer l'inscription pour le moment. Veuillez reessayer.");
+            } finally {
+              setIsRegistering(false);
+            }
           }
           setConfirmDialog({ open: false, registration: null, formElement: null });
         }}
@@ -581,12 +592,18 @@ const Home = () => {
                   </p>
                 )}
 
+                {registrationError && (
+                  <p className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600" aria-live="polite">
+                    {registrationError}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  disabled={eventGroups.future.length === 0}
+                  disabled={eventGroups.future.length === 0 || isRegistering}
                   className="mt-6 w-full bg-primary text-white px-6 py-4 rounded-xl font-bold text-sm hover:bg-primary-container transition-colors flex items-center justify-center gap-2"
                 >
-                  S'inscrire maintenant
+                  {isRegistering ? 'Enregistrement...' : "S'inscrire maintenant"}
                   <span className="material-symbols-outlined text-base">arrow_forward</span>
                 </button>
               </form>
