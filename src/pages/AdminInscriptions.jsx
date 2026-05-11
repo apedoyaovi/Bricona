@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   formatEventDate,
   getEventRegistrations,
+  getSiteEventsFromSupabase,
   getSiteEvents,
 } from '../utils/siteContent';
 
@@ -26,7 +27,7 @@ const formatRegistrationDate = (date) => {
 
 const AdminInscriptions = () => {
   const [registrations, setRegistrations] = useState([]);
-  const [events] = useState(() => getSiteEvents());
+  const [events, setEvents] = useState(() => getSiteEvents());
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +41,13 @@ const AdminInscriptions = () => {
     setError('');
 
     try {
-      setRegistrations(await getEventRegistrations());
+      const [nextRegistrations, nextEvents] = await Promise.all([
+        getEventRegistrations(),
+        getSiteEventsFromSupabase(),
+      ]);
+
+      setRegistrations(nextRegistrations);
+      setEvents(nextEvents);
       setNotice('Inscriptions actualisees.');
     } catch {
       setError("Impossible de charger les inscriptions. Verifiez les policies Supabase.");

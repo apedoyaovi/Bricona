@@ -78,14 +78,79 @@ const mapSupabaseRegistration = (registration) => ({
   createdAt: registration.created_at,
 });
 
+const mapSupabaseEvent = (event) => ({
+  id: event.id,
+  type: event.type,
+  title: event.title,
+  date: event.event_date,
+  time: event.event_time,
+  place: event.place,
+  seats: event.seats,
+  description: event.description,
+  published: event.published,
+});
+
+const mapEventForSupabase = (event) => ({
+  id: event.id,
+  type: event.type,
+  title: event.title,
+  event_date: event.date,
+  event_time: event.time,
+  place: event.place,
+  seats: String(event.seats || '0'),
+  description: event.description,
+  published: Boolean(event.published),
+});
+
 export const getSiteEvents = () => readJson(eventsKey, defaultEvents);
 
 export const saveSiteEvents = (events) => {
   writeJson(eventsKey, events);
 };
 
+export const getSiteEventsFromSupabase = async () => {
+  if (!hasSupabaseConfig) return getSiteEvents();
+
+  const { data, error } = await supabase
+    .from('site_events')
+    .select('id,type,title,event_date,event_time,place,seats,description,published')
+    .order('event_date', { ascending: true });
+
+  if (error) throw error;
+  const events = data.map(mapSupabaseEvent);
+  saveSiteEvents(events);
+  return events;
+};
+
+export const saveSiteEvent = async (event) => {
+  if (!hasSupabaseConfig) return;
+
+  const { error } = await supabase
+    .from('site_events')
+    .upsert(mapEventForSupabase(event), { onConflict: 'id' });
+
+  if (error) throw error;
+};
+
+export const deleteSiteEvent = async (id) => {
+  if (!hasSupabaseConfig) return;
+
+  const { error } = await supabase
+    .from('site_events')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+};
+
 export const getPublishedEvents = () => (
   getSiteEvents()
+    .filter((event) => event.published)
+    .sort((a, b) => `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`))
+);
+
+export const getPublishedEventsFromSupabase = async () => (
+  (await getSiteEventsFromSupabase())
     .filter((event) => event.published)
     .sort((a, b) => `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`))
 );

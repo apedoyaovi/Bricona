@@ -9,6 +9,7 @@ import {
   getEventGroups,
   formatEventDate,
   getPublishedEvents,
+  getPublishedEventsFromSupabase,
   getSiteSettings,
 } from '../utils/siteContent';
 
@@ -65,11 +66,17 @@ const Home = () => {
   const hasVisibleEvents = displayedPastEvents.length > 0 || displayedCurrentEvents.length > 0 || displayedFutureEvents.length > 0;
 
   useEffect(() => {
-    const syncSiteContent = () => {
-      setUpcomingEvents(getPublishedEvents());
+    const syncSiteContent = async () => {
       setSiteSettings(getSiteSettings());
+
+      try {
+        setUpcomingEvents(await getPublishedEventsFromSupabase());
+      } catch {
+        setUpcomingEvents(getPublishedEvents());
+      }
     };
 
+    syncSiteContent();
     window.addEventListener(SITE_CONTENT_EVENT, syncSiteContent);
     window.addEventListener('storage', syncSiteContent);
 

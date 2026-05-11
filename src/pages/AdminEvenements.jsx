@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
+  deleteSiteEvent,
   formatEventDate,
   getEventGroups,
   getEventStatus,
+  getSiteEventsFromSupabase,
   getSiteEvents,
   getSiteSettings,
+  saveSiteEvent,
   saveSiteEvents,
   saveSiteSettings,
 } from '../utils/siteContent';
@@ -55,6 +58,8 @@ const AdminEvenements = () => {
   const [showEventForm, setShowEventForm] = useState(false);
   const [showEventsList, setShowEventsList] = useState(true);
   const [notice, setNotice] = useState('');
+  const [eventError, setEventError] = useState('');
+  const [isEventsLoading, setIsEventsLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => (
     typeof window !== 'undefined' && window.sessionStorage.getItem(adminSessionKey) === 'active'
   ));
@@ -111,10 +116,38 @@ const AdminEvenements = () => {
     });
   };
 
-  const persistEvents = (nextEvents, message) => {
+  const loadEvents = async () => {
+    setIsEventsLoading(true);
+    setEventError('');
+
+    try {
+      setEvents(await getSiteEventsFromSupabase());
+    } catch {
+      setEventError('Impossible de charger les evenements depuis Supabase.');
+    } finally {
+      setIsEventsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadEvents();
+    }
+  }, [isAuthenticated]);
+
+  const persistEvents = async (nextEvents, message, syncSupabase) => {
     setEvents(nextEvents);
     saveSiteEvents(nextEvents);
-    setNotice(message);
+    setEventError('');
+
+    try {
+      if (syncSupabase) {
+        await syncSupabase();
+      }
+      setNotice(message);
+    } catch {
+      setEventError("L'evenement a ete modifie localement, mais la synchronisation Supabase a echoue.");
+    }
   };
 
   const handleEventChange = (event) => {
@@ -157,12 +190,16 @@ const AdminEvenements = () => {
         ? 'Les nouvelles informations seront appliquees sur la page accueil si l evenement est publie.'
         : 'Cet evenement sera ajoute a la liste et pourra apparaitre sur la page accueil.',
       confirmLabel: editingId ? 'Enregistrer' : 'Creer',
-      onConfirm: () => {
+      onConfirm: async () => {
         const nextEvents = editingId
           ? events.map((item) => (item.id === editingId ? cleanEvent : item))
           : [cleanEvent, ...events];
 
-        persistEvents(nextEvents, editingId ? 'Evenement mis a jour.' : 'Evenement cree et disponible sur la page accueil.');
+        await persistEvents(
+          nextEvents,
+          editingId ? 'Evenement mis a jour.' : 'Evenement cree et disponible sur la page accueil.',
+          () => saveSiteEvent(cleanEvent)
+        );
         resetEventForm();
         setShowEventsList(true);
         closeConfirmDialog();
@@ -185,11 +222,17 @@ const AdminEvenements = () => {
       title: eventItem?.published ? 'Masquer cet evenement ?' : 'Publier cet evenement ?',
       message: `Voulez-vous vraiment ${action} cet evenement sur la page d'accueil ?`,
       confirmLabel: eventItem?.published ? 'Masquer' : 'Publier',
-      onConfirm: () => {
+      onConfirm: async () => {
+        const updatedEvent = events.find((event) => event.id === id);
+        const changedEvent = updatedEvent ? { ...updatedEvent, published: !updatedEvent.published } : null;
         const nextEvents = events.map((event) => (
           event.id === id ? { ...event, published: !event.published } : event
         ));
-        persistEvents(nextEvents, 'Visibilite de l evenement mise a jour.');
+        await persistEvents(
+          nextEvents,
+          'Visibilite de l evenement mise a jour.',
+          changedEvent ? () => saveSiteEvent(changedEvent) : null
+        );
         closeConfirmDialog();
       },
     });
@@ -201,9 +244,9 @@ const AdminEvenements = () => {
       message: 'Cette action est definitive. Les visiteurs ne pourront plus voir cet evenement.',
       confirmLabel: 'Supprimer',
       variant: 'danger',
-      onConfirm: () => {
+      onConfirm: async () => {
         const nextEvents = events.filter((event) => event.id !== id);
-        persistEvents(nextEvents, 'Evenement supprime.');
+        await persistEvents(nextEvents, 'Evenement supprime.', () => deleteSiteEvent(id));
         if (editingId === id) resetEventForm();
         closeConfirmDialog();
       },
@@ -315,6 +358,12 @@ const AdminEvenements = () => {
         {notice && (
           <div className="mb-6 rounded-2xl bg-green-100 border border-green-200 px-5 py-4 text-sm font-bold text-green-700">
             {notice}
+          </div>
+        )}
+
+        {eventError && (
+          <div className="mb-6 rounded-2xl bg-red-50 border border-red-100 px-5 py-4 text-sm font-bold text-red-600">
+            {eventError}
           </div>
         )}
 
@@ -462,10 +511,22 @@ const AdminEvenements = () => {
               <div className="flex items-center justify-between gap-4 mb-5">
                 <div>
                   <h2 className="font-headline text-xl font-bold text-on-surface">Evenements programmes</h2>
-                  <p className="text-on-surface-variant text-sm">{events.length} evenement(s) classes par statut.</p>
+                  <p className="text-on-surface-variant text-sm">
+                    {isEventsLoading ? 'Chargement des evenements...' : `${events.length} evenement(s) classes par statut.`}
+                  </p>
                 </div>
+                <button type="button" onClick={loadEvents} disabled={isEventsLoading} className="h-10 w-10 rounded-xl bg-primary-fixed text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Actualiser les evenements">
+                  <span className="material-symbols-outlined text-lg">refresh</span>
+                </button>
               </div>
 
+              {isEventsLoading ? (
+                <div className="rounded-2xl bg-surface-container-low p-8 text-center">
+                  <span className="material-symbols-outlined text-4xl text-primary mb-3">hourglass_top</span>
+                  <p className="font-headline font-bold text-primary mb-1">Chargement des evenements...</p>
+                  <p className="text-sm text-on-surface-variant">Les donnees sont recuperees depuis Supabase.</p>
+                </div>
+              ) : (
               <div className="space-y-8">
                 {['current', 'future', 'past'].map((status) => (
                   <div key={status}>
@@ -526,6 +587,7 @@ const AdminEvenements = () => {
                   </div>
                 ))}
               </div>
+              )}
             </div>
             )}
 
