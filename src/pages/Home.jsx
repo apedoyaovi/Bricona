@@ -13,9 +13,13 @@ import {
   getSiteSettings,
 } from '../utils/siteContent';
 
-const partners = ['CRAFTLOG', 'ARTISAN.PRO', 'FABRIK', 'DIGIWORKS', 'MANUFAKT', 'TECH-OR'];
+// const partners = ['CRAFTLOG', 'ARTISAN.PRO', 'FABRIK', 'DIGIWORKS', 'MANUFAKT', 'TECH-OR'];
+const partners = ['Aucun partenaire pour le moment - devenez l\'un des premiers partenaires de Bricona'];
 
 const heroWords = ['Mise en relation', 'Digitalisation', 'Automatisation'];
+const showHeroPhoto = false;//permet d'afficher ou non la photo de droite dans la partie hero
+const showKeyFigures = false;//permet d'afficher ou non la section des statistiques
+const showTestimonials = false;//permet d'afficher ou non la section des témoignages clients sur la page d'accueil
 
 const eventIcons = {
   Conference: 'co_present',
@@ -171,43 +175,43 @@ const Home = () => {
           <div className="absolute bottom-[-10%] left-[-5%] w-80 h-80 bg-primary-container rounded-full blur-[80px]"></div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10 pt-10 pb-12">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10 pt-28 md:pt-32 pb-20 md:pb-24">
 
           {/* Left */}
-          <div className="lg:col-span-7 animate-fade-up">
+          <div className="lg:col-span-10 lg:col-start-2 animate-fade-up text-center flex flex-col items-center -translate-y-3 md:-translate-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
-              <p className="font-label editorial-caps text-white font-bold text-[9px]">Innovation &amp; Digitalisation Automatiser</p>
+              <p className="font-label editorial-caps text-white font-bold text-[10px] md:text-[11px]">Innovation &amp; Digitalisation Automatiser</p>
             </div>
 
-            <h1 className="font-headline text-3xl lg:text-5xl font-extrabold tracking-tight text-white leading-[1.1] mb-4">
+            <h1 className="font-headline text-[2.15rem] lg:text-[3.4rem] font-extrabold tracking-tight text-white leading-[1.1] mb-4">
               Bricona à l'Heure du <br />
               <span className="text-secondary-container">Digital de Pointe.</span>
             </h1>
             <div className="mb-4">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md shadow-sm">
                 <span className="w-2 h-2 rounded-full bg-secondary-container shadow-[0_0_12px_rgba(252,212,0,0.9)]"></span>
-                <p className="text-secondary-container font-bold text-lg tracking-wide h-6">
+                <p className="text-secondary-container font-bold text-lg md:text-xl tracking-wide h-7">
                   {heroWords[wordIndex].slice(0, subIndex)}
                   <span className="inline-block w-2 animate-pulse text-secondary-container">|</span>
                 </p>
               </div>
             </div>
-            <p className="text-sm text-primary-fixed max-w-lg mb-7 leading-relaxed opacity-90">
+            <p className="text-[15px] md:text-base text-primary-fixed max-w-2xl mx-auto mb-7 leading-relaxed opacity-90">
               Bricona digital, est une entreprise qui est dans le domaine de la digitalisation, automatisation et mise en relation des artisants avec les clients. 
             </p>
 
-            <div className="flex flex-wrap gap-3">
-              <Link to="/contact" className="bg-secondary-container text-on-secondary-container px-6 py-3 rounded-xl font-bold text-sm hover:shadow-[0_16px_40px_rgba(252,212,0,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2">
-                contacter nous
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link to="/contact" className="bg-secondary-container text-on-secondary-container px-6 py-3 rounded-xl font-bold text-[15px] hover:shadow-[0_16px_40px_rgba(252,212,0,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                Prendre un rendez-vous
                 <span className="material-symbols-outlined text-base">phone</span>
               </Link>
-              <Link to="/projets" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-white/20 transition-all">
+              <Link to="/projets" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 rounded-xl font-semibold text-[15px] hover:bg-white/20 transition-all">
                 Nos réalisations
               </Link>
             </div>
 
-            <div className="mt-8 flex items-center gap-3 text-white/60">
+            {/* <div className="mt-8 flex items-center gap-3 text-white/60">
               <div className="flex -space-x-2">
                 <img
                   alt="Artisan 1"
@@ -226,10 +230,11 @@ const Home = () => {
                 />
               </div>
               <p className="text-xs font-medium">+2,500 artisans nous font confiance pour la mise en relation</p>
-            </div>
+            </div> */}
           </div>
 
           {/* Right — Photo */}
+          {showHeroPhoto && (
           <div className="lg:col-span-5 relative animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <div className="relative w-full max-w-xs lg:max-w-sm mx-auto aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl group">
               <img
@@ -267,6 +272,7 @@ const Home = () => {
               </div>
             </div>
           </div>
+          )}
 
         </div>
       </section>
@@ -276,8 +282,12 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
           <div className="flex items-center gap-3 mb-2 text-xs md:text-sm font-bold uppercase tracking-[0.28em] text-on-surface-variant/70">
             <span className="w-10 h-px bg-outline-variant/60"></span>
-            Ils nous font confiance
+            Devenez partenaire:(contactez nous pour en savoir plus)
           </div>
+          {/* <div className="flex items-center gap-3 mb-2 text-xs md:text-sm font-bold uppercase tracking-[0.28em] text-on-surface-variant/70">
+            <span className="w-10 h-px bg-outline-variant/60"></span>
+            Ils nous font confiance
+          </div> */}
           <div
             className="overflow-hidden rounded-2xl bg-surface-container-lowest/70 border border-outline-variant/20 shadow-sm"
             style={{ maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)' }}
@@ -361,7 +371,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Key Figures ===== */}
+      {/* ===== Key Figures commented until real statistics are available ===== */}
+      {showKeyFigures && (
       <section className="py-16 bg-surface-container-low">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -379,6 +390,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      )}
 
       {/* ===== Conferences & Meetings ===== */}
       <section className="py-16 bg-white overflow-hidden">
@@ -619,7 +631,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Testimonials ===== */}
+      {/* ===== Testimonials commented until real testimonials are available ===== */}
+      {showTestimonials && (
       <section className="py-16 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="flex flex-col lg:flex-row gap-12 items-center">
@@ -709,6 +722,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      )}
 
       
 {/* ===== Partners Logos ===== */}
@@ -716,8 +730,12 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="flex items-center gap-3 mb-6 text-xs md:text-sm font-bold uppercase tracking-[0.28em] text-on-surface-variant/70">
             <span className="w-10 h-px bg-outline-variant/60"></span>
-            Nos Partenaires
+            Partenariats ouverts:(contacter nous pour devenir partenaire)
           </div>
+          {/* <div className="flex items-center gap-3 mb-6 text-xs md:text-sm font-bold uppercase tracking-[0.28em] text-on-surface-variant/70">
+            <span className="w-10 h-px bg-outline-variant/60"></span>
+            Nos Partenaires
+          </div> */}
           <div
             className="overflow-hidden rounded-2xl bg-white/70 border border-outline-variant/20 shadow-sm"
             style={{ maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)' }}
@@ -725,9 +743,11 @@ const Home = () => {
             <div className="flex items-center whitespace-nowrap animate-marquee py-6" style={{ animationDuration: '28s' }}>
               {[...partners, ...partners].map((name, i) => (
                 <div key={i} className="mx-6 inline-flex items-center gap-4">
+                  {/*
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/90 to-primary-container/80 text-white font-black font-headline flex items-center justify-center shadow-[0_10px_25px_rgba(0,50,125,0.25)]">
                     {name.replace(/[^A-Z]/g, '').slice(0, 2)}
                   </div>
+                  */}
                   <div className="px-4 py-2 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
                     <span className="text-sm md:text-base font-black tracking-[0.22em] text-primary uppercase">{name}</span>
                   </div>
