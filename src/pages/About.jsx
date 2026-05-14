@@ -13,9 +13,9 @@ const About = () => {
               L'Alliance de la <span className="text-primary-container">technologie</span> et du <span className="text-secondary">Digital Automatiser</span>.
             </h1>
             <p className="text-sm text-on-surface-variant leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8">
-              Bricona est née d'une conviction simple : le talent artisanal et entreprenarial ne doit pas être freiné par la complexité technologique. Nous créons le pont entre le savoir-faire ancestral et les outils du futur.
+              Bricona digitale est née d'une conviction simple : le talent humain et entreprenarial ne doit pas être freiné par la complexité technologique. Nous créons le pont entre le savoir-faire numérique et les outils du futur.
             </p>
-            <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
+            {/* <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
               <div className="flex items-center gap-2 px-3 py-1.5 bg-surface-container rounded-full text-xs font-medium text-primary">
                 <span className="material-symbols-outlined text-xs">verified</span>
                 Authenticité Garantie
@@ -24,7 +24,7 @@ const About = () => {
                 <span className="material-symbols-outlined text-xs">bolt</span>
                 Vitesse Digitale AUtomatiser
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="relative flex justify-center">
             <div className="w-[22rem] md:w-[24rem] lg:w-[26rem] aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl shadow-on-surface/5">
@@ -57,15 +57,15 @@ const About = () => {
             <h2 className="text-2xl lg:text-3xl font-bold font-headline mb-4">Nos Valeurs Fondatrices</h2>
             <p className="text-on-surface-variant max-w-2xl mx-auto">Chaque projet que nous entreprenons est guidé par quatre piliers immuables qui définissent l'excellence Bricona.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Value 1 */}
-            <div className="md:col-span-2 bg-surface-container-lowest p-7 rounded-[2rem] flex flex-col justify-between hover:shadow-lg transition-all duration-300">
+            {/* <div className="md:col-span-2 bg-surface-container-lowest p-7 rounded-[2rem] flex flex-col justify-between hover:shadow-lg transition-all duration-300">
               <div>
                 <span className="material-symbols-outlined text-secondary text-3xl mb-4 block">diversity_3</span>
                 <h3 className="text-xl font-bold font-headline mb-3">Human-centric</h3>
                 <p className="text-on-surface-variant leading-relaxed">Nous plaçons l'artisan au cœur de l'innovation. La technologie doit servir l'homme, jamais l'inverse.</p>
               </div>
-            </div>
+            </div> */}
             {/* Value 2 */}
             <div className="bg-primary text-on-primary p-7 rounded-[2rem] hover:scale-[1.02] transition-transform duration-300">
               <span className="material-symbols-outlined text-primary-fixed text-3xl mb-4 block">lightbulb</span>
@@ -184,7 +184,7 @@ const About = () => {
       </section>
 
       {/* Partnerships / Trust Badges */}
-      <section className="py-12 border-t border-outline-variant/10">
+      {/* <section className="py-12 border-t border-outline-variant/10">
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
           <p className="text-[10px] tracking-[0.3em] font-bold text-outline uppercase mb-6">ILS NOUS FONT CONFIANCE</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
@@ -193,7 +193,7 @@ const About = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </main>
   );
 };

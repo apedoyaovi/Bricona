@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import heroImg from '../assets/Bricona hero 1.webp';
 import heroCardImg from '../assets/Bricona hero 2.webp';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -14,9 +14,9 @@ import {
 } from '../utils/siteContent';
 
 // const partners = ['CRAFTLOG', 'ARTISAN.PRO', 'FABRIK', 'DIGIWORKS', 'MANUFAKT', 'TECH-OR'];
-const partners = ['Aucun partenaire pour le moment - devenez l\'un des premiers partenaires de Bricona'];
+const partners = ['devenez l\'un des premiers partenaires de Bricona digitale (contactez l\'équipe commerciale pour en savoir plus)'];
 
-const heroWords = ['Mise en relation', 'Digitalisation', 'Automatisation'];
+const heroWords = ["implémentation des systèmes piloté par l'IA", 'Digitalisation', 'Automatisation'];
 const showHeroPhoto = false;//permet d'afficher ou non la photo de droite dans la partie hero
 const showKeyFigures = false;//permet d'afficher ou non la section des statistiques
 const showTestimonials = false;//permet d'afficher ou non la section des témoignages clients sur la page d'accueil
@@ -28,6 +28,7 @@ const eventIcons = {
 };
 
 const Home = () => {
+  const location = useLocation();
   const featuredTestimonials = [
     {
       quote: "Bricona n'est pas juste un prestataire, c'est le moteur de notre transformation numérique. Notre chiffre d'affaires a doublé en un an.",
@@ -68,6 +69,18 @@ const Home = () => {
   const displayedCurrentEvents = eventGroups.current.slice(0, 1);
   const displayedFutureEvents = eventGroups.future.slice(0, 3);
   const hasVisibleEvents = displayedPastEvents.length > 0 || displayedCurrentEvents.length > 0 || displayedFutureEvents.length > 0;
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = setTimeout(() => {
+        document
+          .getElementById(location.hash.substring(1))
+          ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+
+      return () => clearTimeout(id);
+    }
+  }, [location.hash]);
 
   useEffect(() => {
     const syncSiteContent = async () => {
@@ -198,7 +211,7 @@ const Home = () => {
               </div>
             </div>
             <p className="text-[15px] md:text-base text-primary-fixed max-w-2xl mx-auto mb-7 leading-relaxed opacity-90">
-              Bricona digital, est une entreprise qui est dans le domaine de la digitalisation, automatisation et mise en relation des artisants avec les clients. 
+              chez bricona digitale nous concevons et déployons des solutions numériques sur mesure pour améliorer l'efficacité de vos équipes et augmente votre portefeuille. 
             </p>
 
             <div className="flex flex-wrap justify-center gap-3">
@@ -206,8 +219,8 @@ const Home = () => {
                 Prendre un rendez-vous
                 <span className="material-symbols-outlined text-base">phone</span>
               </Link>
-              <Link to="/projets" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 rounded-xl font-semibold text-[15px] hover:bg-white/20 transition-all">
-                Nos réalisations
+              <Link to="/#conferences-meetings" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 rounded-xl font-semibold text-[15px] hover:bg-white/20 transition-all">
+                s'inscrire aux webinaires 
               </Link>
             </div>
 
@@ -327,7 +340,7 @@ const Home = () => {
               <div className="w-12 h-12 bg-primary-fixed rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300 group-hover:scale-105">
                 <span className="material-symbols-outlined text-xl">hub</span>
               </div>
-              <h3 className="font-headline text-base font-bold mb-2 text-primary">Mise en Relation</h3>
+              <h3 className="font-headline text-base font-bold mb-2 text-primary">implémentation des systèmes piloté par l'IA</h3>
               <p className="text-on-surface-variant text-sm leading-relaxed mb-5">
                 Accédez à un réseau exclusif de partenaires certifiés. Notre technologie de matching garantit la synergie parfaite.
               </p>
@@ -393,16 +406,16 @@ const Home = () => {
       )}
 
       {/* ===== Conferences & Meetings ===== */}
-      <section className="py-16 bg-white overflow-hidden">
+      <section id="conferences-meetings" className="py-16 bg-white overflow-hidden scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             <div className="lg:col-span-7 scroll-reveal">
               <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-3">Conferences &amp; Meetings</p>
               <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface mb-4">
-                Participez aux conferences et meetings Bricona.
+                Participez aux conférences et meetings Bricona.
               </h2>
               <p className="text-on-surface-variant text-sm leading-relaxed max-w-2xl mb-8">
-                Decouvrez les prochains rendez-vous, consultez les evenements en cours ou passes, et inscrivez-vous aux sessions ouvertes.
+                Découvrez les prochains rendez-vous, consultez les evenements en cours ou passes, et inscrivez-vous aux sessions ouvertes(future).
               </p>
 
               {hasVisibleEvents ? (
@@ -529,7 +542,7 @@ const Home = () => {
                   </div>
                   <div>
                     <h3 className="font-headline text-xl font-bold text-on-surface">Inscription rapide</h3>
-                    <p className="text-on-surface-variant text-sm">Choisissez un evenement futur et laissez vos coordonnees.</p>
+                    <p className="text-on-surface-variant text-sm">Choisissez un evenement future et laissez vos coordonnées.</p>
                   </div>
                 </div>
 
@@ -543,7 +556,7 @@ const Home = () => {
                       defaultValue=""
                       className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                     >
-                      <option value="" disabled>Selectionner un evenement</option>
+                      <option value="" disabled>Sélectionner un evenement</option>
                       {eventGroups.future.map((event) => (
                         <option key={event.id} value={event.id}>{event.title}</option>
                       ))}
@@ -771,15 +784,15 @@ const Home = () => {
             Façonnez votre <span className="text-secondary-container">futur digital</span>.
           </h2>
           <p className="text-primary-fixed text-sm max-w-xl mx-auto mb-8 opacity-90 leading-relaxed">
-            Rejoignez l'élite des artisans connectés. Une solution complète, de la vision à l'excellence opérationnelle.
+            Une solution complète, de la vision à l'excellence opérationnelle.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link to="/contact" className="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold text-base hover:scale-105 transition-all shadow-lg">
-              Démarrer Maintenant
+              Contacter l'équipe commerciale
             </Link>
-            <Link to="/services" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-base hover:bg-white/20 transition-all">
+            {/* <Link to="/services" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-base hover:bg-white/20 transition-all">
               Visiter nos services
-            </Link>
+            </Link> */}
           </div>
         </div>
       </section>

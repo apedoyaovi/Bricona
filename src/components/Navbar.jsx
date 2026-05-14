@@ -4,8 +4,8 @@ import logoImg from '../assets/Logo.png';
 
 const navLinks = [
   { to: '/', label: 'Accueil' },
-  { to: '/projets', label: 'Réalisations' },
-  { to: '/blog', label: 'Blog' },
+  { to: '/projets', label: 'Réalisations', hidden: true },
+  { to: '/blog', label: 'Blog', hidden: true },
   { to: '/about', label: 'à propos' },
   { to: '/contact', label: 'Contact' },
 ];
@@ -109,7 +109,7 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
-            {navLinks.filter((link) => link.to !== '/').map((link) => (
+            {navLinks.filter((link) => link.to !== '/' && !link.hidden).map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -129,7 +129,7 @@ const Navbar = () => {
             to="/contact"
             className="hidden md:inline-block bg-primary-container text-on-primary px-6 py-2.5 rounded-xl font-medium scale-95 active:scale-90 transition-transform shadow-md"
           >
-            Contacter Nous 
+            Contacter l'équipe commerciale
           </Link>
 
           {/* Hamburger Button (Mobile) */}
@@ -182,7 +182,7 @@ const Navbar = () => {
 
         {/* Drawer Nav Links */}
         <nav className="flex flex-col px-4 py-6 gap-1 flex-grow">
-          {navLinks.filter((link) => link.to !== '/services').map((link) => (
+          {navLinks.filter((link) => link.to !== '/services' && !link.hidden).map((link) => (
             <Link
               key={link.to}
               to={link.to}

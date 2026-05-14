@@ -98,9 +98,9 @@ const Contact = () => {
             Parlons de <span className="text-primary">votre projet</span>.
           </h1>
           <p className="text-sm text-on-surface-variant max-w-lg mb-8 leading-relaxed">
-            De la digitalisation, automatisation au développement logiciel sur-mesure et la mise en relation des artisants et clients, Bricona transforme vos idées en réalités structurelles et numériques.
+            De la digitalisation, automatisation au développement logiciel sur-mesure. Bricona digitale transforme vos idées en réalités structurelles et numériques.
           </p>
-          <div className="flex gap-4 items-center">
+          {/* <div className="flex gap-4 items-center">
             <div className="flex -space-x-3">
               <img className="w-9 h-9 rounded-full border-2 border-surface" alt="Artisan 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq1HhhKxEdiuv6mVZO6JcoEWvVsguxC3B_Y67YTRkzK7iV0LH0HdO8JCHzsPfzYO6gtSUBIeEoPpLeKPyjcoQWOOSXCl0ErTZDxRn20t3bjJ-_6K8rG12r0pyPXi2ydAiuf4oc2RhqiHxr_MVX5KHBE1TnPZ1v_NK9J2PdQ1Lg9sWBIg_-9pXrsAp47KYtkde0vJCz9_yvr3qtd28L65xOHTucS4mLjnXyoXknZtv3GvDELUlxyOq8tQgJrl4ytcY6kpUmS6SrSfG4" />
               <img className="w-9 h-9 rounded-full border-2 border-surface" alt="Artisan 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtLIkpUq5F0hS_p53fkFGOhM_lZJEE_j_VsMDH5-Qxm358Q-25zaUTyZITZzlM8SGQnJQH4dwvZWhph9wDo1FIyEybOkv8KzEiSy7SCoNZrYQGyDuoRbT_xRd_ZTM-6asR6d7LhKBr434iqjvB4ezrh56GspJkgk54ayLTM1cgt1Tww48fVhMguf9cE5jzsiESrNLC4iMD0xWMlpc8es4qMkfYClyhLVPkI_U5Qq3PJ11UgAbS7CbZUvsxTnklMLD4LOhihCQacpwl" />
@@ -109,7 +109,7 @@ const Contact = () => {
             <div className="text-xs font-medium">
               <span className="text-primary">+500 projets réalisés avec passion</span>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="relative">
           <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
