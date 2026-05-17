@@ -2,6 +2,11 @@ import { Link } from 'react-router-dom';
 import logoImg from '../assets/Logo.png';
 
 const Footer = () => {
+  const socialLinks = [
+    { label: 'Facebook', href: 'https://web.facebook.com/profile.php?id=61586741540007' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/company/briconation-corp/' },
+  ];
+
   return (
     <footer className="w-full border-t border-slate-200 bg-slate-50">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-8 py-12 max-w-7xl mx-auto font-body text-sm text-slate-500">
@@ -41,9 +46,17 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-8 py-8 border-t border-slate-200/60 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
         <p>© 2025 Bricona. Digitalisation et Automatisation Intuitive.</p>
         <div className="flex gap-6">
-          <a className="hover:text-blue-600 transition-colors" href="#">Facebook</a>
-          <a className="hover:text-blue-600 transition-colors" href="#">LinkedIn</a>
-          <a className="hover:text-blue-600 transition-colors" href="#">Instagram</a>
+          {socialLinks.map((link) => (
+            <a
+              key={link.label}
+              className="hover:text-blue-600 transition-colors"
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {link.label}
+            </a>
+          ))}
         </div>
       </div>
     </footer>
