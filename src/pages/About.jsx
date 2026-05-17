@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import aboutHeroImg from '../assets/Bricona about.webp';
+import jeanBaptisteImg from '../assets/Jean Baptiste.jpeg';
+import jonathanAyiteImg from '../assets/Jonathan Ayite.jpg';
 
 const About = () => {
   return (
@@ -154,17 +156,17 @@ const About = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {[
             {
-              name: 'Jean-Marc Bricon', role: 'CEO & Fondateur', quote: '"L\'innovation n\'a de sens que si elle préserve l\'essence du travail bien fait."',
-              img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAGvKUBv3yXRahc1FiSdWNnSltJsN4XLxAbVfm7vIr1NMVXXXoHWfQ7GTcNf7lT3wYZ83eLLxSOhgWlb7ghwK1uDbukUXWiPtf9PRLU8XFxwhpN5EptLaIM3R4WrYZDIAu2ol4P9U0Hrybkl-mMWz7SvKJF5LofFoLjZHBz1YQGQTrZX1uQrL6ADDuYkpT2ax5TW37eSZKtv6j-QOJtsrZKenHObSBagZcVZ2_MIYYj5nK25DTHsUMVGDOgA3s9G-bG6GsuMdO7okuh'
+              name: 'Jean Baptiste', role: 'Fondateur & Commercial', quote: '"L\'innovation n\'a de sens que si elle préserve l\'essence du travail bien fait."',
+              img: jeanBaptisteImg
             },
             {
-              name: 'Sarah El Fassi', role: "Directrice de l'Innovation", quote: '"Concevoir des interfaces qui s\'effacent pour laisser place à la créativité."',
-              img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBUs2C4WEvYlRzTsPtgM-LG-8Cj0Z_C5Nt4Rik9ACmwb133AtXTNvikCxIbQtGA5GHzWvW7EPwR8KZB-oqqdIFSxppeGt8BHBO096L4YJs4RhCfu9sSU4XAmzfvTPMATXeD4rOyWliSo7v4w-WyG0D35ZljEYadgSt16eA7fEzfzEBdF2Fdjm16xfWO92SGHVCk0riFteD5x3grXhxHqWqIzKBmanpPGHxr_J82nNvDXP-CZpE-kHrhki_FmAKozdml5uIxuywGM7nU'
+              name: 'Jonathan Ayite', role: 'Designer & Graphiste', quote: '"Concevoir des interfaces qui s\'effacent pour laisser place à la créativité."',
+              img: jonathanAyiteImg
             },
-            {
-              name: 'Thomas Legrand', role: 'CTO', quote: '"Le code est notre outil de sculpture pour le monde moderne."',
-              img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBSZAABrDMYrYrLmtu9CvdyqTE_IyzRLG5SACsWojDhfed9S5GIQwbnfIyRGGZ98vohjioRd8Nh2glFHf01wsa8PEovOv26UfoJAN62_Cxhg2srsisWBtRXOY02VyDCbBdQ7Ix1TXYqr3I0ZVdPvDRZMqb8TK6VlV5i794pxqfTxWBX4D3WWr4gSRhWZjQkAjnm_VjIGhslw4wJGhWVAzXeMmK5OJdxelSEiJASUikkBYZNdekBVjio4CRDJVcqIxFNx4rJvFcgfpaN'
-            },
+            // {
+            //   name: 'Thomas Legrand', role: 'CTO', quote: '"Le code est notre outil de sculpture pour le monde moderne."',
+            //   img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBSZAABrDMYrYrLmtu9CvdyqTE_IyzRLG5SACsWojDhfed9S5GIQwbnfIyRGGZ98vohjioRd8Nh2glFHf01wsa8PEovOv26UfoJAN62_Cxhg2srsisWBtRXOY02VyDCbBdQ7Ix1TXYqr3I0ZVdPvDRZMqb8TK6VlV5i794pxqfTxWBX4D3WWr4gSRhWZjQkAjnm_VjIGhslw4wJGhWVAzXeMmK5OJdxelSEiJASUikkBYZNdekBVjio4CRDJVcqIxFNx4rJvFcgfpaN'
+            // },
           ].map((member) => (
             <div key={member.name} className="group">
               <div className="aspect-[3/4] rounded-[2rem] overflow-hidden mb-4 relative">
