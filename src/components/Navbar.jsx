@@ -4,6 +4,7 @@ import logoImg from '../assets/Logo.png';
 
 const navLinks = [
   { to: '/', label: 'Accueil' },
+  { to: '/offres', label: 'Offres' },
   { to: '/projets', label: 'Réalisations', hidden: true },
   { to: '/blog', label: 'Blog', hidden: true },
   { to: '/about', label: 'à propos' },

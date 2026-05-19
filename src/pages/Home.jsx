@@ -405,6 +405,71 @@ const Home = () => {
       </section>
       )}
 
+      {/* ===== Offres résumé ===== */}
+      <section id="offres-summary" className="py-16 bg-surface relative overflow-hidden scroll-mt-24">
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <div className="absolute -top-10 -left-10 w-96 h-96 bg-secondary-container rounded-full blur-[100px]"></div>
+          <div className="absolute -bottom-10 -right-10 w-80 h-80 bg-primary/20 rounded-full blur-[90px]"></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+          <div className="text-center mb-12 scroll-reveal active">
+            <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-1">Offres BRICONATION</p>
+            <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface mb-3">Nos offres essentielles</h2>
+            <p className="text-on-surface-variant text-sm max-w-2xl mx-auto leading-relaxed">
+              Un aperçu rapide de nos trois phases. Pour le détail complet et toutes les conditions, rendez-vous sur la page Offres.
+            </p>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            <div className="group rounded-[2rem] bg-white border border-outline-variant/10 p-7 shadow-sm hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.12)] transition-all scroll-reveal active">
+              <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-secondary-container text-white mb-4">
+                <span className="material-symbols-outlined">analytics</span>
+              </div>
+              <h3 className="font-headline text-lg font-bold text-primary mb-3">Phase 1 — Diagnostic</h3>
+              <p className="text-sm text-on-surface-variant leading-relaxed mb-4">
+                Audit de vos processus, recommandations priorisées et feuille de route claire.
+              </p>
+              <p className="text-sm font-bold text-primary mb-3">75 000 FCFA</p>
+              <p className="text-xs text-on-surface-variant">Offert si contrat Déploiement signé sous 30 jours.</p>
+            </div>
+
+            <div className="group rounded-[2rem] bg-white border border-outline-variant/10 p-7 shadow-sm hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.12)] transition-all scroll-reveal active">
+              <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-primary text-white mb-4">
+                <span className="material-symbols-outlined">construction</span>
+              </div>
+              <h3 className="font-headline text-lg font-bold text-primary mb-3">Phase 2 — Déploiement</h3>
+              <p className="text-sm text-on-surface-variant leading-relaxed mb-4">
+                Conception et déploiement sur mesure des solutions adaptées à votre projet.
+              </p>
+              <p className="text-sm font-bold text-primary mb-3">Sur devis</p>
+              <p className="text-xs text-on-surface-variant">Fourchette indicatives : 150 000 à 800 000 FCFA.</p>
+            </div>
+
+            <div className="group rounded-[2rem] bg-white border border-outline-variant/10 p-7 shadow-sm hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.12)] transition-all scroll-reveal active">
+              <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-secondary-container text-white mb-4">
+                <span className="material-symbols-outlined">support_agent</span>
+              </div>
+              <h3 className="font-headline text-lg font-bold text-primary mb-3">Phase 3 — Pilotage</h3>
+              <p className="text-sm text-on-surface-variant leading-relaxed mb-4">
+                Suivi opérationnel, optimisation continue et support prioritaire pour vos outils.
+              </p>
+              <p className="text-sm font-bold text-primary mb-3">35 000 FCFA / mois</p>
+              <p className="text-xs text-on-surface-variant">29 000 FCFA / mois en annuel — 348 000 FCFA/an.</p>
+            </div>
+          </div>
+
+          <div className="mt-10 text-center scroll-reveal">
+            <p className="text-on-surface-variant text-sm mb-5">
+              Chaque phase peut être souscrite indépendamment, mais la Phase 1 est recommandée comme point de départ.
+            </p>
+            <Link to="/offres" className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-primary-container transition-all">
+              Voir la page Offres
+              <span className="material-symbols-outlined">arrow_forward</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ===== Conferences & Meetings ===== */}
       <section id="conferences-meetings" className="py-16 bg-white overflow-hidden scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
