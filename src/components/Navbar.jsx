@@ -7,7 +7,7 @@ const navLinks = [
   { to: '/offres', label: 'Offres' },
   { to: '/projets', label: 'Réalisations', hidden: true },
   { to: '/blog', label: 'Blog', hidden: true },
-  { to: '/about', label: 'à propos' },
+  { to: '/about', label: 'A Propos' },
   { to: '/contact', label: 'Contact' },
 ];
 
@@ -18,7 +18,7 @@ const servicesLinks = [
 
   { to: '/services#automatisation', label: 'Automatisation' },
 
-  { to: '/services#mise-en-relation', label: 'Mise en relation' },
+  { to: '/services#mise-en-relation', label: 'Mise en relation', hidden: true },
 
 ];
 
@@ -98,7 +98,7 @@ const Navbar = () => {
               </Link>
               <div className="absolute left-0 top-full pt-3 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-all duration-200">
                 <div className="min-w-[220px] rounded-xl bg-white shadow-xl border border-slate-200 p-2">
-                  {servicesLinks.map((item) => (
+                  {servicesLinks.filter((item) => !item.hidden).map((item) => (
                     <Link
                       key={item.to}
                       to={item.to}
@@ -130,7 +130,7 @@ const Navbar = () => {
             to="/contact"
             className="hidden md:inline-block bg-primary-container text-on-primary px-6 py-2.5 rounded-xl font-medium scale-95 active:scale-90 transition-transform shadow-md"
           >
-            Contacter l'équipe commerciale
+            Contactez l'équipe commerciale
           </Link>
 
           {/* Hamburger Button (Mobile) */}
@@ -207,7 +207,7 @@ const Navbar = () => {
               Services
             </Link>
             <div className="flex flex-col">
-              {servicesLinks.map((item) => (
+              {servicesLinks.filter((item) => !item.hidden).map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}

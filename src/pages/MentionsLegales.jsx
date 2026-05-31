@@ -37,9 +37,9 @@ export default function MentionsLegales() {
             <div className="bg-surface-container-low p-6 rounded-xl">
               <p className="font-bold text-on-surface mb-1">Bricona</p>
               <p>Digital Artisan Excellence</p>
-              <p className="mt-3"><strong className="text-on-surface">Adresse :</strong> 42 Rue de l'Innovation, 75002 Paris</p>
+              <p className="mt-3"><strong className="text-on-surface">Adresse :</strong> Baguida bateauvi, Lomé-Togo</p>
               <p><strong className="text-on-surface">Email :</strong> contact@bricona.io</p>
-              <p><strong className="text-on-surface">Téléphone :</strong> +33 1 45 67 89 00</p>
+              <p><strong className="text-on-surface">Téléphone :</strong> +228 79340002</p>
             </div>
           </Section>
 
@@ -66,15 +66,15 @@ export default function MentionsLegales() {
           </Section>
 
           <Section title="Droit Applicable">
-            <p>Les présentes mentions légales sont régies par le droit français. En cas de litige, les tribunaux français seront seuls compétents.</p>
+            <p>Les présentes mentions légales sont régies par le droit togolais. En cas de litige, les tribunaux togolais seront seuls compétents.</p>
           </Section>
 
           <Section title="Contact">
             <div className="p-6 bg-primary-fixed rounded-xl border border-primary/10">
               <p className="font-bold text-on-surface">Bricona - Digital Artisan Excellence</p>
               <p>📧 contact@bricona.io</p>
-              <p>📱 +33 1 45 67 89 00</p>
-              <p>📍 42 Rue de l'Innovation, 75002 Paris</p>
+              <p>📱 +228 79340002</p>
+              <p>📍 Baguida bateauvi, Lomé-Togo</p>
             </div>
           </Section>
         </div>

@@ -80,8 +80,8 @@ export default function PolitiqueConfidentialite() {
             <div className="p-6 bg-primary-fixed rounded-xl border border-primary/10">
               <p className="font-bold text-on-surface">Bricona - Digital Artisan Excellence</p>
               <p>📧 contact@bricona.io</p>
-              <p>📱 +33 1 45 67 89 00</p>
-              <p>📍 42 Rue de l'Innovation, 75002 Paris</p>
+              <p>📱 +228 79340002</p>
+              <p>📍 Baguida bateauvi, Lomé-Togo</p>
             </div>
           </Section>
         </div>

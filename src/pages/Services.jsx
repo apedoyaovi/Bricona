@@ -189,47 +189,6 @@ const Services = () => {
         </div>
       </section>
 
-      <section id="mise-en-relation" className="py-16 px-6 md:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="bg-surface-container-lowest rounded-xxl p-8 ghost-border flex flex-col gap-6 hover:shadow-xl transition-shadow">
-            <div className="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary text-2xl">handshake</span>
-            </div>
-            <div>
-              <h2 className="font-headline text-3xl font-bold text-on-surface mb-4">Mise en Relation</h2>
-              <p className="text-on-surface-variant text-lg mb-6 leading-relaxed">
-                Nous créons le pont parfait entre l'excellence artisanale et la demande client. Un écosystème de confiance pour des projets réussis sans friction.
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary text-lg mt-0.5">verified</span>
-                  <span className="text-on-surface-variant">Vérification rigoureuse des compétences</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary text-lg mt-0.5">security</span>
-                  <span className="text-on-surface-variant">Garantie de qualité et de fiabilité</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary text-lg mt-0.5">support</span>
-                  <span className="text-on-surface-variant">Support continu et médiation si nécessaire</span>
-                </li>
-              </ul>
-              <Link className="inline-flex items-center text-primary font-bold text-sm hover:gap-4 gap-2 transition-all" to="/contact">
-                En savoir plus <span className="material-symbols-outlined ml-2">arrow_forward</span>
-              </Link>
-            </div>
-          </div>
-          <div className="relative">
-            <img
-              alt="Mise en relation"
-              className="w-full h-96 object-cover rounded-xxl"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeFXyiUNXIfCAOGsvaZkauUWuJ6-AoneiG8jEigwooNqcIBWdZ7DZaaKNfHD-ZkUDEivXw__Zpvaq9M3IeA0fkXfqn8hwYQy-QdTlEIJlwiREPQivBdN5zOu4vlIxAvZvQG4jPkzu_dDt724GQ6BwTVpxS3YY5e7I6JHaP7OG36TeoriXgqyZI8ERzSO-2Z3oof17gkvvcJaUaFOx7XfexFgefri6XpycQrQbMIDCi2DilfobZSSg-9784HdxOKETjbkzjzkH404KO"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent rounded-xxl"></div>
-          </div>
-        </div>
-      </section>
-
       {/* Process Section */}
       <section className="py-16 bg-surface-container-low">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
@@ -273,11 +232,11 @@ const Services = () => {
           </div>
           <div className="relative z-10 flex flex-col sm:flex-row gap-4">
             <Link to="/contact" className="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold text-base hover:shadow-2xl transition-all hover:-translate-y-1 inline-block text-center">
-              Contacter nous
+              Contactez-nous
               <span className="material-symbols-outlined text-base ml-2">phone</span>
             </Link>
             <Link to="/projets" className="bg-white/10 text-white backdrop-blur-md px-8 py-4 rounded-xl font-bold text-base border border-white/20 hover:bg-white/20 transition-all inline-block text-center">
-              Nos realisations
+              Nos réalisations
               <span className="material-symbols-outlined text-base ml-2">web_asset</span>
             </Link>
           </div>

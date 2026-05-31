@@ -40,7 +40,6 @@ export default function ConditionsUtilisation() {
           <Section title="Services Proposés">
             <p>Bricona propose les services suivants :</p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Mise en relation entre artisans et clients</li>
               <li>Digitalisation des processus artisanaux</li>
               <li>Automatisation par intelligence artificielle</li>
               <li>Développement logiciel sur-mesure</li>

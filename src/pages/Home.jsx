@@ -194,7 +194,7 @@ const Home = () => {
           <div className="lg:col-span-10 lg:col-start-2 animate-fade-up text-center flex flex-col items-center -translate-y-3 md:-translate-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
-              <p className="font-label editorial-caps text-white font-bold text-[10px] md:text-[11px]">Innovation &amp; Digitalisation Automatiser</p>
+              <p className="font-label editorial-caps text-white font-bold text-[10px] md:text-[11px]">Innovation &amp; Digitalisation Automatisée</p>
             </div>
 
             <h1 className="font-headline text-[2.15rem] lg:text-[3.4rem] font-extrabold tracking-tight text-white leading-[1.1] mb-4">
@@ -211,7 +211,7 @@ const Home = () => {
               </div>
             </div>
             <p className="text-[15px] md:text-base text-primary-fixed max-w-2xl mx-auto mb-7 leading-relaxed opacity-90">
-              chez bricona digitale nous concevons et déployons des solutions numériques sur mesure pour améliorer l'efficacité de vos équipes et augmente votre portefeuille. 
+              Chez Bricona digitale nous concevons et déployons des solutions numériques sur mesure pour améliorer l'efficacité de vos équipes et augmente votre portefeuille. 
             </p>
 
             <div className="flex flex-wrap justify-center gap-3">
@@ -853,7 +853,7 @@ const Home = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link to="/contact" className="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold text-base hover:scale-105 transition-all shadow-lg">
-              Contacter l'équipe commerciale
+              Contactez l'équipe commerciale
             </Link>
             {/* <Link to="/services" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-base hover:bg-white/20 transition-all">
               Visiter nos services
