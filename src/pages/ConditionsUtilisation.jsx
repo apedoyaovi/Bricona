@@ -88,7 +88,7 @@ export default function ConditionsUtilisation() {
           <Section title="Contact">
             <div className="p-6 bg-primary-fixed rounded-xl border border-primary/10">
               <p className="font-bold text-on-surface">Bricona - Digital Artisan Excellence</p>
-              <p>📧 contact@bricona.io</p>
+              <p>📧 contact@bricona.net</p>
               <p>📱 +33 1 45 67 89 00</p>
               <p>📍 42 Rue de l'Innovation, 75002 Paris</p>
             </div>
