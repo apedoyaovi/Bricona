@@ -38,7 +38,7 @@ export default function MentionsLegales() {
               <p className="font-bold text-on-surface mb-1">Bricona</p>
               <p>Digital Artisan Excellence</p>
               <p className="mt-3"><strong className="text-on-surface">Adresse :</strong> Baguida bateauvi, Lomé-Togo</p>
-              <p><strong className="text-on-surface">Email :</strong> contact@bricona.io</p>
+              <p><strong className="text-on-surface">Email :</strong> contact@bricona.net</p>
               <p><strong className="text-on-surface">Téléphone :</strong> +228 79340002</p>
             </div>
           </Section>
@@ -61,7 +61,7 @@ export default function MentionsLegales() {
 
           <Section title="Données Personnelles">
             <p>Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles.</p>
-            <p>Pour exercer ces droits, contactez-nous à : <a href="mailto:contact@bricona.io" className="text-primary font-bold hover:underline">contact@bricona.io</a></p>
+            <p>Pour exercer ces droits, contactez-nous à : <a href="mailto:contact@bricona.net" className="text-primary font-bold hover:underline">contact@bricona.net</a></p>
             <p>Consultez notre <Link to="/politique-de-confidentialite" className="text-primary font-bold hover:underline">Politique de Confidentialité</Link> pour plus d'informations.</p>
           </Section>
 
