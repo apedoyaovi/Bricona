@@ -429,7 +429,7 @@ const Home = () => {
               <p className="text-sm text-on-surface-variant leading-relaxed mb-4">
                 Audit de vos processus, recommandations priorisées et feuille de route claire.
               </p>
-              <p className="text-sm font-bold text-primary mb-3">75 000 FCFA</p>
+              <p className="text-sm font-bold text-primary mb-3">120 €</p>
               <p className="text-xs text-on-surface-variant">Offert si contrat Déploiement signé sous 30 jours.</p>
             </div>
 
@@ -442,7 +442,7 @@ const Home = () => {
                 Conception et déploiement sur mesure des solutions adaptées à votre projet.
               </p>
               <p className="text-sm font-bold text-primary mb-3">Sur devis</p>
-              <p className="text-xs text-on-surface-variant">Fourchette indicatives : 150 000 à 800 000 FCFA.</p>
+              <p className="text-xs text-on-surface-variant">A partir de 1 300 € selon la complexité.</p>
             </div>
 
             <div className="group rounded-[2rem] bg-white border border-outline-variant/10 p-7 shadow-sm hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.12)] transition-all scroll-reveal active">
@@ -453,8 +453,8 @@ const Home = () => {
               <p className="text-sm text-on-surface-variant leading-relaxed mb-4">
                 Suivi opérationnel, optimisation continue et support prioritaire pour vos outils.
               </p>
-              <p className="text-sm font-bold text-primary mb-3">35 000 FCFA / mois</p>
-              <p className="text-xs text-on-surface-variant">29 000 FCFA / mois en annuel — 348 000 FCFA/an.</p>
+              <p className="text-sm font-bold text-primary mb-3">90 €/mois ou 75 €/mois</p>
+              <p className="text-xs text-on-surface-variant">90 €/mois ou 75 €/mois si abonnement annuel (sans frais cachés).</p>
             </div>
           </div>
 

@@ -65,7 +65,7 @@ const Offres = () => {
               </ul>
               <div className="rounded-3xl bg-surface-container-low p-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-on-surface-variant mb-2">Tarif</p>
-                <p className="text-2xl font-black text-primary">75 000 FCFA</p>
+                <p className="text-2xl font-black text-primary">120 €</p>
                 <p className="text-xs text-on-surface-variant mt-2">Offert si contrat Déploiement signé sous 30 jours</p>
               </div>
             </article>
@@ -94,7 +94,7 @@ const Offres = () => {
               <div className="rounded-3xl bg-surface-container-low p-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-on-surface-variant mb-2">Tarif</p>
                 <p className="text-2xl font-black text-primary">Sur devis</p>
-                <p className="text-xs text-on-surface-variant mt-2">150 000 à 800 000 FCFA selon complexité</p>
+                <p className="text-xs text-on-surface-variant mt-2">A partir de 1 300 € selon la complexité</p>
               </div>
             </article>
 
@@ -121,9 +121,8 @@ const Offres = () => {
               </ul>
               <div className="rounded-3xl bg-surface-container-low p-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-on-surface-variant mb-2">Formules</p>
-                <p className="text-2xl font-black text-primary">35 000 FCFA / mois</p>
-                <p className="text-sm text-on-surface-variant mt-2">29 000 FCFA / mois en annuel</p>
-                <p className="text-xs text-on-surface-variant mt-2">348 000 FCFA/an (économie de 72 000 FCFA)</p>
+                <p className="text-2xl font-black text-primary">390 €/mois ou 75 €/mois</p>
+                <p className="text-sm text-on-surface-variant mt-2">90 €/mois ou 75 €/mois si abonnement annuel (sans frais cachés).</p>
               </div>
             </article>
           </div>
@@ -141,9 +140,9 @@ const Offres = () => {
                 </thead>
                 <tbody>
                   {[
-                    { phase: 'DIAGNOSTIC', detail: 'Rapport d’audit + feuille de route + recommandations chiffrées', tarif: '75 000 FCFA' },
+                    { phase: 'DIAGNOSTIC', detail: 'Rapport d’audit + feuille de route + recommandations chiffrées', tarif: '120 €' },
                     { phase: 'DEPLOIEMENT', detail: 'Conception, implémentation, formation — modules sur mesure', tarif: 'Sur devis' },
-                    { phase: 'PILOTAGE', detail: 'Suivi opérationnel, support permanent, optimisation continue', tarif: '35 000 FCFA/mois ou 29 000 FCFA/mois annuel' },
+                    { phase: 'PILOTAGE', detail: 'Suivi opérationnel, support permanent, optimisation continue', tarif: '90 €/mois ou 75 €/mois si abonnement annuel sans frais cachés' },
                   ].map((row) => (
                     <tr key={row.phase} className="border-t border-outline-variant/20">
                       <td className="px-4 py-4 font-bold text-on-surface">{row.phase}</td>
