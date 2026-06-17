@@ -66,7 +66,7 @@ const Offres = () => {
               <div className="rounded-3xl bg-surface-container-low p-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-on-surface-variant mb-2">Tarif</p>
                 <p className="text-2xl font-black text-primary">120 €</p>
-                <p className="text-xs text-on-surface-variant mt-2">Offert si contrat Déploiement signé sous 30 jours</p>
+                <p className="text-xs text-on-surface-variant mt-2">Offert si contrat Déploiement signé sous 7 jours</p>
               </div>
             </article>
 
@@ -121,7 +121,7 @@ const Offres = () => {
               </ul>
               <div className="rounded-3xl bg-surface-container-low p-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-on-surface-variant mb-2">Formules</p>
-                <p className="text-2xl font-black text-primary">390 €/mois ou 75 €/mois</p>
+                <p className="text-2xl font-black text-primary">90 €/mois ou 75 €/mois</p>
                 <p className="text-sm text-on-surface-variant mt-2">90 €/mois ou 75 €/mois si abonnement annuel (sans frais cachés).</p>
               </div>
             </article>

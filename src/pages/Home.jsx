@@ -430,7 +430,7 @@ const Home = () => {
                 Audit de vos processus, recommandations priorisées et feuille de route claire.
               </p>
               <p className="text-sm font-bold text-primary mb-3">120 €</p>
-              <p className="text-xs text-on-surface-variant">Offert si contrat Déploiement signé sous 30 jours.</p>
+              <p className="text-xs text-on-surface-variant">Offert si contrat Déploiement signé sous 7 jours.</p>
             </div>
 
             <div className="group rounded-[2rem] bg-white border border-outline-variant/10 p-7 shadow-sm hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.12)] transition-all scroll-reveal active">
