@@ -1,11 +1,11 @@
 // Service Worker pour cache offline et optimisation de performance
 // Version 1.2 - Robust error handling
 
-const CACHE_NAME = 'yaodev-cache-v2';
+const CACHE_NAME = 'yaodev-cache-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/icone.png',
+  '/enessence_logo.png',
   '/robots.txt',
   '/sitemap.xml'
 ];
