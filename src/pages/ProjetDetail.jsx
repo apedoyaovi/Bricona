@@ -4,7 +4,7 @@ const projetsData = {
   'mise-en-relation': {
     title: 'Mise en Relation',
     category: 'Plateforme',
-    client: 'Bricona Network',
+    client: 'Enesence Network',
     annee: '2023',
     desc: "Un écosystème de confiance entre artisans et clients qualifiés, propulsé par un algorithme de matching intelligent. Ce projet a permis à 2500+ artisans de trouver des missions qualifiées en moins de 48h.",
     img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDeFXyiUNXIfCAOGsvaZkauUWuJ6-AoneiG8jEigwooNqcIBWdZ7DZaaKNfHD-ZkUDEivXw__Zpvaq9M3IeA0fkXfqn8hwYQy-QdTlEIJlwiREPQivBdN5zOu4vlIxAvZvQG4jPkzu_dDt724GQ6BwTVpxS3YY5e7I6JHaP7OG36TeoriXgqyZI8ERzSO-2Z3oof17gkvvcJaUaFOx7XfexFgefri6XpycQrQbMIDCi2DilfobZSSg-9784HdxOKETjbkzjzkH404KO',
@@ -14,11 +14,11 @@ const projetsData = {
 };
 
 const defaultProjet = {
-  title: 'Réalisation Bricona',
+  title: 'Réalisation Enesence',
   category: 'Digital',
-  client: 'Client Bricona',
+  client: 'Client Enesence',
   annee: '2024',
-  desc: "Un projet d'excellence alliant savoir-faire artisanal et innovation digitale. Bricona a accompagné ce client de la conception à la livraison, en garantissant une qualité premium à chaque étape.",
+  desc: "Un projet d'excellence alliant savoir-faire artisanal et innovation digitale. Enesence a accompagné ce client de la conception à la livraison, en garantissant une qualité premium à chaque étape.",
   img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBIqAnve32NSfttzaX9SZa3UXURViqcO4sPrRcs32_-bqeipV4OSayB83oLxajsZV_GXixKSsZ1MAnlpS28Hul0DxOPFxqCpSQwce6qX9eVc3v9sBTpmm0I1hcAwQ-iZ4AI-bfco13Xb6ewS3XuznfNmJRWK400ied79s3QIDxCYOdQZbLoSaFSF8L4Xh8cjEwmeWSGoNsjl_wAjcPimOSaaCuJO6P5vJI_yRi9uie61ls85QGSba9QxgptSxAYEEM8l5f4Wcsmktz6',
   tags: ['Design', 'Développement', 'Stratégie', 'Livraison'],
   stats: [{ label: 'Délai de livraison', value: '4 sem.' }, { label: 'Satisfaction client', value: '100%' }, { label: 'ROI estimé', value: '+150%' }],

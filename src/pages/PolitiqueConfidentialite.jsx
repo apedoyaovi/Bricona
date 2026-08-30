@@ -34,7 +34,7 @@ export default function PolitiqueConfidentialite() {
       <div className="px-8 pb-24">
         <div className="max-w-4xl mx-auto">
           <Section title="Introduction">
-            <p>Bricona s'engage à protéger la confidentialité de vos données personnelles. Cette politique explique comment nous collectons, utilisons et protégeons vos informations lorsque vous utilisez notre site web et nos services.</p>
+            <p>Enesence s'engage à protéger la confidentialité de vos données personnelles. Cette politique explique comment nous collectons, utilisons et protégeons vos informations lorsque vous utilisez notre site web et nos services.</p>
           </Section>
 
           <Section title="Données Collectées">
@@ -78,7 +78,7 @@ export default function PolitiqueConfidentialite() {
 
           <Section title="Contact">
             <div className="p-6 bg-primary-fixed rounded-xl border border-primary/10">
-              <p className="font-bold text-on-surface">Bricona - Digital Artisan Excellence</p>
+              <p className="font-bold text-on-surface">Enesence - Digital Artisan Excellence</p>
               <p>📧 contact@bricona.net</p>
               <p>📱 +228 79340002</p>
               <p>📍 Baguida bateauvi, Lomé-Togo</p>

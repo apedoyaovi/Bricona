@@ -6,7 +6,7 @@ const Offres = () => {
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <div className="max-w-3xl mx-auto text-center mb-12">
-            <p className="text-xs uppercase tracking-[0.28em] text-secondary-container font-bold mb-3">BRICONATION</p>
+            <p className="text-xs uppercase tracking-[0.28em] text-secondary-container font-bold mb-3">ENESENCE</p>
             <h1 className="font-headline text-3xl md:text-4xl font-extrabold text-on-surface mb-4">Grille des offres et tarifs</h1>
             <p className="text-sm text-on-surface-variant leading-relaxed">
               Trois phases distinctes pour accompagner votre transformation numérique : Diagnostic, Déploiement et Pilotage.
@@ -114,7 +114,7 @@ const Offres = () => {
                   'Conseil mensuel',
                   'Support WhatsApp et email 24h',
                   'Accès prioritaire aux nouvelles fonctionnalités',
-                  'Accès événements BRICONATION',
+                  'Accès événements ENESENCE',
                 ].map((item) => (
                   <li key={item} className="flex gap-2"><span className="material-symbols-outlined text-primary text-base">check</span>{item}</li>
                 ))}

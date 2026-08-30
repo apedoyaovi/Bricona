@@ -38,7 +38,7 @@ const Services = () => {
             </h1>
             <div className="text-sm text-primary-fixed max-w-lg mb-8 leading-relaxed">
               <p className="mb-4">
-                Bricona fusionne le savoir-faire actuel des entreprises et l'innovation technologique pour propulser votre activité vers de nouveaux horizons de performance.
+                Enesence fusionne le savoir-faire actuel des entreprises et l'innovation technologique pour propulser votre activité vers de nouveaux horizons de performance.
                 En offrant une gamme complète de services numériques, nous sommes votre partenaire de confiance pour naviguer dans la transformation digitale avec succès:
               </p>
               <ul className="list-disc list-inside space-y-2">

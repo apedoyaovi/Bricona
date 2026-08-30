@@ -75,10 +75,10 @@ const Projets = () => {
           <div className="max-w-2xl">
             <span className="inline-block text-secondary-fixed font-bold tracking-[0.1em] mb-4 text-xs">NOS RÉALISATIONS</span>
             <h1 className="font-headline text-3xl md:text-5xl font-extrabold text-white leading-tight tracking-tight mb-4">
-              L'Excellence en Action avec<br /><span className="text-secondary-container">Bricona digital</span>.
+              L'Excellence en Action avec<br /><span className="text-secondary-container">Enesence digital</span>.
             </h1>
             <p className="text-sm text-primary-fixed max-w-lg mb-8 leading-relaxed">
-              Découvrez comment Bricona a transformé des visions des entreprises en réalités numériques d'exception.
+              Découvrez comment Enesence a transformé des visions des entreprises en réalités numériques d'exception.
             </p>
           </div>
         </div>
@@ -130,7 +130,7 @@ const Projets = () => {
             Votre projet sera le prochain.
           </h2>
           <p className="text-primary-fixed text-xs max-w-2xl mx-auto mb-5 opacity-90">
-            Rejoignez les entreprises qui façonnent le futur de leur métier avec Bricona.
+            Rejoignez les entreprises qui façonnent le futur de leur métier avec Enesence.
           </p>
           <Link to="/contact" className="bg-secondary-container text-on-secondary-container px-7 py-3 rounded-xl font-black text-sm hover:scale-105 active:scale-95 transition-all shadow-xl inline-block">
             Démarrer un projet

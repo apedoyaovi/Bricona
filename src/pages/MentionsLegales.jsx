@@ -35,7 +35,7 @@ export default function MentionsLegales() {
         <div className="max-w-4xl mx-auto">
           <Section title="Éditeur du Site">
             <div className="bg-surface-container-low p-6 rounded-xl">
-              <p className="font-bold text-on-surface mb-1">Bricona</p>
+              <p className="font-bold text-on-surface mb-1">Enesence</p>
               <p>Digital Artisan Excellence</p>
               <p className="mt-3"><strong className="text-on-surface">Adresse :</strong> Baguida bateauvi, Lomé-Togo</p>
               <p><strong className="text-on-surface">Email :</strong> contact@bricona.net</p>
@@ -44,7 +44,7 @@ export default function MentionsLegales() {
           </Section>
 
           <Section title="Directeur de Publication">
-            <p>Le directeur de la publication du site est le représentant légal de Bricona.</p>
+            <p>Le directeur de la publication du site est le représentant légal d'Enesence.</p>
           </Section>
 
           <Section title="Hébergement">
@@ -55,8 +55,8 @@ export default function MentionsLegales() {
           </Section>
 
           <Section title="Propriété Intellectuelle">
-            <p>L'ensemble des contenus présents sur le site Bricona (structure, textes, logos, images, vidéos, etc.) est protégé par le droit d'auteur et le droit de la propriété intellectuelle.</p>
-            <p>Toute reproduction, représentation, modification, publication ou adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de Bricona.</p>
+            <p>L'ensemble des contenus présents sur le site Enesence (structure, textes, logos, images, vidéos, etc.) est protégé par le droit d'auteur et le droit de la propriété intellectuelle.</p>
+            <p>Toute reproduction, représentation, modification, publication ou adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable d'Enesence.</p>
           </Section>
 
           <Section title="Données Personnelles">
@@ -71,7 +71,7 @@ export default function MentionsLegales() {
 
           <Section title="Contact">
             <div className="p-6 bg-primary-fixed rounded-xl border border-primary/10">
-              <p className="font-bold text-on-surface">Bricona - Digital Artisan Excellence</p>
+              <p className="font-bold text-on-surface">Enesence - Digital Artisan Excellence</p>
               <p>📧 contact@bricona.net</p>
               <p>📱 +228 79340002</p>
               <p>📍 Baguida bateauvi, Lomé-Togo</p>

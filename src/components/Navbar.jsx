@@ -60,12 +60,12 @@ const Navbar = () => {
           <Link
             to="/"
             className="inline-flex items-center h-10 hover:opacity-80 transition-opacity z-10"
-            aria-label="Bricona"
+            aria-label="Enesence"
           >
             <img
               src={logoImg}
-              alt="Bricona"
-              className="block h-10 w-auto scale-[3.2] origin-left"
+              alt="Enesence"
+              className="block h-8 w-auto md:h-9"
             />
           </Link>
 
@@ -171,7 +171,7 @@ const Navbar = () => {
       >
         {/* Drawer Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-outline-variant/20">
-          <img src={logoImg} alt="Bricona" className="block h-10 w-auto scale-[3.2] origin-left" />
+          <img src={logoImg} alt="Enesence" className="block h-8 w-auto" />
           <button
             onClick={() => setMenuOpen(false)}
             className="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors"

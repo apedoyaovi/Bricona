@@ -85,7 +85,7 @@ export default function BlogPost() {
                         />
                         <div>
                             <p className="text-xs font-bold text-gray-900 uppercase tracking-tight">{post.author.name}</p>
-                            <p className="text-[10px] text-gray-400 font-medium">Expert Bricona</p>
+                            <p className="text-[10px] text-gray-400 font-medium">Expert Enesence</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
@@ -144,7 +144,7 @@ export default function BlogPost() {
             <CTASection
                 title="Vous avez un projet similaire en tête ?"
                 description="Besoin d'accompagnement pour digitaliser, automatiser ou íitions de relation avec vos clients ? Parlons-en aujourd'hui."
-                primaryBtnText="Contacter Bricona"
+                primaryBtnText="Contacter Enesence"
             />
         </div>
     );

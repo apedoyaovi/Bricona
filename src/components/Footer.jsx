@@ -11,7 +11,7 @@ const Footer = () => {
     <footer className="w-full border-t border-slate-200 bg-slate-50">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-8 py-12 max-w-7xl mx-auto font-body text-sm text-slate-500">
         <div className="space-y-4">
-          <img src={logoImg} alt="Bricona" className="block h-10 w-auto scale-[3.2] origin-left" />
+          <img src={logoImg} alt="Enesence" className="block h-8 w-auto md:h-9" />
           <p className="leading-relaxed">Digital Artisan Excellence. Fusionner la tradition et la technologie.</p>
           <div className="flex gap-4">
             <span className="material-symbols-outlined text-primary cursor-pointer hover:opacity-100 opacity-80 transition-opacity">language</span>
@@ -44,7 +44,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-8 py-8 border-t border-slate-200/60 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-        <p>© 2025 Bricona. Digitalisation et Automatisation Intuitive.</p>
+        <p>© 2025 Enesence. Digitalisation et Automatisation Intuitive.</p>
         <div className="flex gap-6">
           {socialLinks.map((link) => (
             <a

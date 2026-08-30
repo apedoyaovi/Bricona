@@ -34,11 +34,11 @@ export default function ConditionsUtilisation() {
       <div className="px-8 pb-24">
         <div className="max-w-4xl mx-auto">
           <Section title="Acceptation des Conditions">
-            <p>En accédant et en utilisant le site web de Bricona, vous acceptez d'être lié par ces conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre site.</p>
+            <p>En accédant et en utilisant le site web d'Enesence, vous acceptez d'être lié par ces conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre site.</p>
           </Section>
 
           <Section title="Services Proposés">
-            <p>Bricona propose les services suivants :</p>
+            <p>Enesence propose les services suivants :</p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Digitalisation des processus artisanaux</li>
               <li>Automatisation par intelligence artificielle</li>
@@ -48,7 +48,7 @@ export default function ConditionsUtilisation() {
           </Section>
 
           <Section title="Propriété Intellectuelle">
-            <p>Tous les contenus présents sur ce site (textes, images, logos, design) sont la propriété exclusive de Bricona et sont protégés par les lois sur la propriété intellectuelle.</p>
+            <p>Tous les contenus présents sur ce site (textes, images, logos, design) sont la propriété exclusive d'Enesence et sont protégés par les lois sur la propriété intellectuelle.</p>
             <p>Toute reproduction, distribution ou utilisation non autorisée est strictement interdite.</p>
           </Section>
 
@@ -63,7 +63,7 @@ export default function ConditionsUtilisation() {
           </Section>
 
           <Section title="Responsabilités">
-            <p><strong className="text-on-surface">Bricona s'engage à :</strong></p>
+            <p><strong className="text-on-surface">Enesence s'engage à :</strong></p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Réaliser les prestations avec professionnalisme et dans les délais convenus</li>
               <li>Assurer un support technique après livraison</li>
@@ -78,16 +78,16 @@ export default function ConditionsUtilisation() {
           </Section>
 
           <Section title="Limitation de Responsabilité">
-            <p>Bricona ne peut être tenu responsable des dommages indirects résultant de l'utilisation de nos services ou de dysfonctionnements techniques indépendants de notre volonté.</p>
+            <p>Enesence ne peut être tenu responsable des dommages indirects résultant de l'utilisation de nos services ou de dysfonctionnements techniques indépendants de notre volonté.</p>
           </Section>
 
           <Section title="Modification des Conditions">
-            <p>Bricona se réserve le droit de modifier ces conditions d'utilisation à tout moment. Les modifications entrent en vigueur dès leur publication sur le site.</p>
+            <p>Enesence se réserve le droit de modifier ces conditions d'utilisation à tout moment. Les modifications entrent en vigueur dès leur publication sur le site.</p>
           </Section>
 
           <Section title="Contact">
             <div className="p-6 bg-primary-fixed rounded-xl border border-primary/10">
-              <p className="font-bold text-on-surface">Bricona - Digital Artisan Excellence</p>
+              <p className="font-bold text-on-surface">Enesence - Digital Artisan Excellence</p>
               <p>📧 contact@bricona.net</p>
               <p>📱 +33 1 45 67 89 00</p>
               <p>📍 42 Rue de l'Innovation, 75002 Paris</p>

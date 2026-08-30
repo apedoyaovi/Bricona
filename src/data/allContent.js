@@ -155,7 +155,7 @@ export const blogPosts = [
         image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         link: "/blog/3",
         content: `
-      <p>Trouver les bons clients est un défi constant pour les artisans. Bricona résout ce problème par une mise en relation intelligente et vérifiée.</p>
+      <p>Trouver les bons clients est un défi constant pour les artisans. Enesence résout ce problème par une mise en relation intelligente et vérifiée.</p>
       <h3>Une Plateforme de Confiance</h3>
       <p>Chaque artisan est vérifié pour son expertise, chaque client pour son sérieux. Fini les devis perdus et les clients fantômes.</p>
       <h3>Growth Stratégique</h3>
