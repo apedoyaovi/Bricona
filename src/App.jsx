@@ -2,6 +2,7 @@ import './App.css'
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, lazy, Suspense } from 'react';
 import FloatingButtons from './components/FloatingButtons';
+import CookieConsent from './components/CookieConsent';
 
 // Composants communs (chargés immédiatement)
 import Navbar from './components/Navbar';
@@ -39,6 +40,7 @@ const Contact = lazy(() => import('./pages/Contact'));
 const About = lazy(() => import('./pages/About'));
 const MentionsLegales = lazy(() => import('./pages/MentionsLegales'));
 const PolitiqueConfidentialite = lazy(() => import('./pages/PolitiqueConfidentialite'));
+const PolitiqueCookies = lazy(() => import('./pages/PolitiqueCookies'));
 const ConditionsUtilisation = lazy(() => import('./pages/ConditionsUtilisation'));
 const AdminEvenements = lazy(() => import('./pages/AdminEvenements'));
 const AdminInscriptions = lazy(() => import('./pages/AdminInscriptions'));
@@ -63,6 +65,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
             <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
+            <Route path="/politique-cookies" element={<PolitiqueCookies />} />
             <Route path="/conditions-utilisation" element={<ConditionsUtilisation />} />
             <Route path="/mentions-legales" element={<MentionsLegales />} />
             <Route path="/admin-evenements" element={<AdminEvenements />} />
@@ -74,6 +77,7 @@ function App() {
       </main>
       <Footer />
       <FloatingButtons />
+      <CookieConsent />
     </div>
   );
 }

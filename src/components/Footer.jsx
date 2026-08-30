@@ -40,6 +40,7 @@ const Footer = () => {
             <li><Link className="hover:text-blue-600 transition-colors" to="/mentions-legales">Mentions Légales</Link></li>
             <li><Link className="hover:text-blue-600 transition-colors" to="/conditions-utilisation">Conditions d'Utilisation</Link></li>
             <li><Link className="hover:text-blue-600 transition-colors" to="/politique-de-confidentialite">Confidentialité</Link></li>
+            <li><Link className="hover:text-blue-600 transition-colors" to="/politique-cookies">Politique de Cookies</Link></li>
           </ul>
         </div>
       </div>
