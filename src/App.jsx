@@ -1,6 +1,7 @@
 import './App.css'
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, lazy, Suspense } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import FloatingButtons from './components/FloatingButtons';
 import CookieConsent from './components/CookieConsent';
 
@@ -78,6 +79,7 @@ function App() {
       <Footer />
       <FloatingButtons />
       <CookieConsent />
+      <Analytics />
     </div>
   );
 }
