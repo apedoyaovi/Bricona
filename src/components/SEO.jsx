@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://bricona.net').replace(/\/$/, '');
+const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://www.xn--ensense-cya.com').replace(/\/$/, '');
 const SITE_NAME = 'Enésense';
 const BRAND_VARIANTS = 'Enésense, Enésence, Enesence, enésence, enesence, Enesense';
 

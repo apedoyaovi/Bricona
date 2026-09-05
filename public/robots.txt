@@ -4,4 +4,4 @@ Allow: /
 Disallow: /admin
 Disallow: /.git
 
-Sitemap: https://bricona.net/sitemap.xml
+Sitemap: https://www.xn--ensense-cya.com/sitemap.xml
