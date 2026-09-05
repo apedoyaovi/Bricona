@@ -15,7 +15,7 @@ const About = () => {
               L'Alliance de la <span className="text-primary-container">technologie</span> et du <span className="text-secondary">Digital Automatiser</span>.
             </h1>
             <p className="text-sm text-on-surface-variant leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8">
-              Enesence digitale est née d'une conviction simple : le talent humain et entreprenarial ne doit pas être freiné par la complexité technologique. Nous créons le pont entre le savoir-faire numérique et les outils du futur.
+              Enésense digitale est née d'une conviction simple : le talent humain et entreprenarial ne doit pas être freiné par la complexité technologique. Nous créons le pont entre le savoir-faire numérique et les outils du futur.
             </p>
             {/* <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
               <div className="flex items-center gap-2 px-3 py-1.5 bg-surface-container rounded-full text-xs font-medium text-primary">
@@ -43,7 +43,7 @@ const About = () => {
                   <span className="material-symbols-outlined text-on-secondary-container">auto_fix_high</span>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-on-surface">Fondation Enesence</p>
+                  <p className="text-xs font-bold text-on-surface">Fondation Enésense</p>
                   <p className="text-[10px] text-on-surface-variant">Est. 2025</p>
                 </div>
               </div>
@@ -57,7 +57,7 @@ const About = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="text-center mb-10">
             <h2 className="text-2xl lg:text-3xl font-bold font-headline mb-4">Nos Valeurs Fondatrices</h2>
-            <p className="text-on-surface-variant max-w-2xl mx-auto">Chaque projet que nous entreprenons est guidé par quatre piliers immuables qui définissent l'excellence Enesence.</p>
+            <p className="text-on-surface-variant max-w-2xl mx-auto">Chaque projet que nous entreprenons est guidé par quatre piliers immuables qui définissent l'excellence Enésense.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Value 1 */}
@@ -113,9 +113,9 @@ const About = () => {
             </div>
             <div>
               <span className="text-secondary-fixed font-bold tracking-[0.3em] text-xs font-label">HORIZON 2030</span>
-              <h2 className="text-2xl lg:text-3xl font-extrabold font-headline text-on-primary mt-6 mb-4 leading-tight">Enesence digitale, un Nouveau Standard Mondial.</h2>
+              <h2 className="text-2xl lg:text-3xl font-extrabold font-headline text-on-primary mt-6 mb-4 leading-tight">Enésense digitale, un Nouveau Standard Mondial.</h2>
               <p className="text-on-primary/70 text-sm leading-relaxed mb-8">
-                Dans 10 ans, chaque entreprise disposera d'un écosystème digital intelligent qui n'effacera pas son travail, mais le libérera des contraintes administratives et logistiques. Enesence construit ce socle.
+                Dans 10 ans, chaque entreprise disposera d'un écosystème digital intelligent qui n'effacera pas son travail, mais le libérera des contraintes administratives et logistiques. Enésense construit ce socle.
               </p>
               <ul className="space-y-4">
                 <li className="flex items-start gap-4">

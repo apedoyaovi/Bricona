@@ -150,7 +150,7 @@ export default function Blog() {
               {/* Newsletter */}
               <div className="bg-gray-900 rounded-2xl p-6 text-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl"></div>
-                <h3 className="text-sm font-bold mb-2 relative z-10">Newsletter Enesence</h3>
+                <h3 className="text-sm font-bold mb-2 relative z-10">Newsletter Enésense</h3>
                 <p className="text-gray-400 text-[10px] mb-6 relative z-10 leading-relaxed font-medium uppercase tracking-tight">
                   Conseils mensuels pour transformer votre artisanat numériquement.
                 </p>
@@ -183,8 +183,8 @@ export default function Blog() {
       {/* CTA Section */}
       <CTASection
         title="Besoin d'une expertise pour votre transformation digitale ?"
-        description="Enesence accompagne les artisans dans leur digitalisation, automatisation et mise en relation avec les bons clients."
-        primaryBtnText="Contacter Enesence"
+        description="Enésense accompagne les artisans dans leur digitalisation, automatisation et mise en relation avec les bons clients."
+        primaryBtnText="Contacter Enésense"
         secondaryBtnText="WhatsApp"
         secondaryBtnLink="https://wa.me/22879340002"
         showWhatsAppIcon={true}

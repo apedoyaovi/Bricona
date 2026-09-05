@@ -4,4 +4,4 @@ Allow: /
 Disallow: /admin
 Disallow: /.git
 
-Sitemap: https://yao-dev.vercel.app/sitemap.xml
+Sitemap: https://bricona.net/sitemap.xml

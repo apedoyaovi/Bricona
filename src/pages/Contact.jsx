@@ -11,7 +11,7 @@ const faqItems = [
   },
   {
     q: 'Travaillez-vous avec des particuliers ?',
-    a: "Oui, Enesence accompagne tant les professionnels pour leurs besoins d'infrastructure digitale que les particuliers recherchant des artisans d'exception pour des projets de rénovation ou de création.",
+    a: "Oui, Enésense accompagne tant les professionnels pour leurs besoins d'infrastructure digitale que les particuliers recherchant des artisans d'exception pour des projets de rénovation ou de création.",
   },
   {
     q: 'Comment garantissez-vous la qualité des artisans ?',
@@ -98,7 +98,7 @@ const Contact = () => {
             Parlons de <span className="text-primary">votre projet</span>.
           </h1>
           <p className="text-sm text-on-surface-variant max-w-lg mb-8 leading-relaxed">
-            De la digitalisation, automatisation au développement logiciel sur-mesure. Enesence digitale transforme vos idées en réalités structurelles et numériques.
+            De la digitalisation, automatisation au développement logiciel sur-mesure. Enésense digitale transforme vos idées en réalités structurelles et numériques.
           </p>
           {/* <div className="flex gap-4 items-center">
             <div className="flex -space-x-3">

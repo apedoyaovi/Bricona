@@ -68,7 +68,7 @@ export default function PolitiqueCookies() {
       <div className="px-8 pb-24">
         <div className="max-w-4xl mx-auto">
           <Section title="1. Introduction">
-            <p>Enesence utilise des cookies et technologies similaires afin d’améliorer votre navigation, sécuriser notre site et mieux comprendre l’utilisation que vous faites de nos services.</p>
+            <p>Enésense utilise des cookies et technologies similaires afin d’améliorer votre navigation, sécuriser notre site et mieux comprendre l’utilisation que vous faites de nos services.</p>
             <p>Cette politique vous explique ce que sont les cookies, quels cookies nous utilisons, pourquoi nous les utilisons et comment vous pouvez les gérer.</p>
           </Section>
 
@@ -117,13 +117,13 @@ export default function PolitiqueCookies() {
           </Section>
 
           <Section title="8. Modifications de la politique">
-            <p>Enesence peut modifier cette politique de cookies afin de refléter les évolutions de nos pratiques, de la législation ou des services proposés.</p>
+            <p>Enésense peut modifier cette politique de cookies afin de refléter les évolutions de nos pratiques, de la législation ou des services proposés.</p>
             <p>Les mises à jour seront publiées sur cette page avec une date de mise à jour indiquée.</p>
           </Section>
 
           <Section title="9. Contact">
             <div className="p-6 bg-primary-fixed rounded-xl border border-primary/10">
-              <p className="font-bold text-on-surface mb-2">Enesence - Digital Artisan Excellence</p>
+              <p className="font-bold text-on-surface mb-2">Enésense - Digital Artisan Excellence</p>
               <p>📧 contact@bricona.net</p>
               <p>📱 +228 79340002</p>
               <p>📍 Baguida bateauvi, Lomé-Togo</p>

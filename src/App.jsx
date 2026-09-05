@@ -4,6 +4,7 @@ import { useEffect, lazy, Suspense } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import FloatingButtons from './components/FloatingButtons';
 import CookieConsent from './components/CookieConsent';
+import SEO from './components/SEO';
 
 // Composants communs (chargés immédiatement)
 import Navbar from './components/Navbar';
@@ -51,6 +52,7 @@ const PageNonTrouvee = lazy(() => import('./pages/PageNonTrouvee.jsx'));
 function App() {
   return (
     <div className="min-h-screen flex flex-col bg-surface">
+      <SEO />
       <Navbar />
       <main className="flex-grow">
         <ScrollToTop />

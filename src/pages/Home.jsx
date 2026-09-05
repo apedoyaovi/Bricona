@@ -14,7 +14,7 @@ import {
 } from '../utils/siteContent';
 
 // const partners = ['CRAFTLOG', 'ARTISAN.PRO', 'FABRIK', 'DIGIWORKS', 'MANUFAKT', 'TECH-OR'];
-const partners = ['devenez l\'un des premiers partenaires de Enesence digitale (contactez l\'équipe commerciale pour en savoir plus)'];
+const partners = ['devenez l\'un des premiers partenaires de Enésense digitale (contactez l\'équipe commerciale pour en savoir plus)'];
 
 const heroWords = ["implémentation des systèmes piloté par l'IA", 'Digitalisation', 'Automatisation'];
 const showHeroPhoto = false;//permet d'afficher ou non la photo de droite dans la partie hero
@@ -31,7 +31,7 @@ const Home = () => {
   const location = useLocation();
   const featuredTestimonials = [
     {
-      quote: "Enesence n'est pas juste un prestataire, c'est le moteur de notre transformation numérique. Notre chiffre d'affaires a doublé en un an.",
+      quote: "Enésense n'est pas juste un prestataire, c'est le moteur de notre transformation numérique. Notre chiffre d'affaires a doublé en un an.",
       name: 'Jean-Marc Lefebvre',
       role: 'Maître Forgeron & Innovateur',
       img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC2OyJkYZiDFYO8DZTe8vulU-mCPqCj8TlkeOwKZH2QaNJDGOI2lkEE4N_RY5bJglkIVtFHb68tKNVmQ13CxTTB6-42bfjABr4VyzZJy8FmJaEy2TjLeHVpUJnJa4crWZeA6R_9S0j6pZDqzfd9yGyx--yUaudzvqYExMzOua59sR9b1rx0V3DOd65FZsqd-GxwKFhSSOyL2B2ACk2NFQKxMs4f5KPX1s6OmfT_5J-WRGSG73Pb1JPQTTwgmKs0mBtGjLfC0xJ7a3YF',
@@ -152,7 +152,7 @@ const Home = () => {
       <ConfirmDialog
         open={confirmDialog.open}
         title="Confirmer l'inscription ?"
-        message="Votre inscription sera transmise a l equipe Enesence pour confirmer votre place a l evenement."
+        message="Votre inscription sera transmise a l equipe Enésense pour confirmer votre place a l evenement."
         confirmLabel="S'inscrire"
         onCancel={() => setConfirmDialog({ open: false, registration: null, formElement: null })}
         onConfirm={async () => {
@@ -198,7 +198,7 @@ const Home = () => {
             </div>
 
             <h1 className="font-headline text-[2.15rem] lg:text-[3.4rem] font-extrabold tracking-tight text-white leading-[1.1] mb-4">
-              Enesence à l'Heure du <br />
+              Enésense à l'Heure du <br />
               <span className="text-secondary-container">Digital de Pointe.</span>
             </h1>
             <div className="mb-4">
@@ -211,7 +211,7 @@ const Home = () => {
               </div>
             </div>
             <p className="text-[15px] md:text-base text-primary-fixed max-w-2xl mx-auto mb-7 leading-relaxed opacity-90">
-              Chez Enesence digitale nous concevons et déployons des solutions numériques sur mesure pour améliorer l'efficacité de vos équipes et augmente votre portefeuille. 
+              Chez Enésense digitale nous concevons et déployons des solutions numériques sur mesure pour améliorer l'efficacité de vos équipes et augmente votre portefeuille. 
             </p>
 
             <div className="flex flex-wrap justify-center gap-3">
@@ -413,7 +413,7 @@ const Home = () => {
         </div>
         <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
           <div className="text-center mb-12 scroll-reveal active">
-            <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-1">Offres ENESENCE</p>
+            <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-1">Offres ENÉSENSE</p>
             <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface mb-3">Nos offres essentielles</h2>
             <p className="text-on-surface-variant text-sm max-w-2xl mx-auto leading-relaxed">
               Un aperçu rapide de nos trois phases. Pour le détail complet et toutes les conditions, rendez-vous sur la page Offres.
@@ -477,7 +477,7 @@ const Home = () => {
             <div className="lg:col-span-7 scroll-reveal">
               <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-3">Conferences &amp; Meetings</p>
               <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface mb-4">
-                Participez aux conférences et meetings Enesence.
+                Participez aux conférences et meetings Enésense.
               </h2>
               <p className="text-on-surface-variant text-sm leading-relaxed max-w-2xl mb-8">
                 Découvrez les prochains rendez-vous, consultez les evenements en cours ou passes, et inscrivez-vous aux sessions ouvertes(future).
