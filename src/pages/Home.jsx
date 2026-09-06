@@ -16,7 +16,7 @@ import {
 // const partners = ['CRAFTLOG', 'ARTISAN.PRO', 'FABRIK', 'DIGIWORKS', 'MANUFAKT', 'TECH-OR'];
 const partners = ['devenez l\'un des premiers partenaires de Enésense digitale (contactez l\'équipe commerciale pour en savoir plus)'];
 
-const heroWords = ["implémentation des systèmes piloté par l'IA", 'Digitalisation', 'Automatisation'];
+const heroWords = ["Implémentation des systèmes piloté par l'IA", 'Digitalisation', 'Automatisation'];
 const showHeroPhoto = false;//permet d'afficher ou non la photo de droite dans la partie hero
 const showKeyFigures = false;//permet d'afficher ou non la section des statistiques
 const showTestimonials = false;//permet d'afficher ou non la section des témoignages clients sur la page d'accueil
@@ -211,7 +211,7 @@ const Home = () => {
               </div>
             </div>
             <p className="text-[15px] md:text-base text-primary-fixed max-w-2xl mx-auto mb-7 leading-relaxed opacity-90">
-              Chez Enésense digitale nous concevons et déployons des solutions numériques sur mesure pour améliorer l'efficacité de vos équipes et augmente votre portefeuille. 
+              Chez Enésense digitale nous concevons et déployons des solutions numériques sur mesure pour améliorer l'efficacité de vos équipes et augmenter votre portefeuille. 
             </p>
 
             <div className="flex flex-wrap justify-center gap-3">
@@ -220,7 +220,7 @@ const Home = () => {
                 <span className="material-symbols-outlined text-base">phone</span>
               </Link>
               <Link to="/#conferences-meetings" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 rounded-xl font-semibold text-[15px] hover:bg-white/20 transition-all">
-                s'inscrire aux webinaires 
+                S'inscrire aux webinaires 
               </Link>
             </div>
 
@@ -675,7 +675,6 @@ const Home = () => {
                       className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                     >
                       <option value="" disabled>Choisir votre profil</option>
-                      <option value="artisan">Artisan</option>
                       <option value="client">Client</option>
                       <option value="partenaire">Partenaire</option>
                       <option value="entreprise">Entreprise</option>

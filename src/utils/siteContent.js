@@ -3,10 +3,10 @@ import { hasSupabaseConfig, supabase } from './supabaseClient';
 export const SITE_CONTENT_EVENT = 'bricona-site-content-updated';
 
 export const defaultSiteSettings = {
-  email: 'contact@bricona.net',
+  email: 'contact@enesense.com',
   phone: '+22872483165',
   whatsapp: '+22879340002',
-  address: 'Lome, Togo',
+  address: 'Colombs, France',
 };
 
 export const defaultEvents = [
