@@ -3,16 +3,44 @@ import { useLocation } from 'react-router-dom';
 
 const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://www.xn--ensense-cya.com').replace(/\/$/, '');
 const SITE_NAME = 'Enésense';
-const BRAND_VARIANTS = 'Enésense, Enésence, Enesence, enésence, enesence, Enesense';
+const BRAND_VARIANTS = 'Enésense, Enésese, Enésence, Enésance, Enésens, Enésens, Enesense, Enesence, Enesense, Enésense, enésense, enesence, Enesense';
 
 const pageMetadata = {
-    '/': { title: 'Enésense | Digitalisation et automatisation des artisans', description: 'Enésense accompagne les artisans dans leur digitalisation, leur automatisation et leur mise en relation avec de nouveaux clients au Togo.', keywords: `${BRAND_VARIANTS}, digitalisation des artisans, automatisation, mise en relation artisans, innovation artisanale Togo` },
-    '/services': { title: 'Services | Enésense, solutions digitales pour artisans', description: 'Découvrez les services Enésense : digitalisation, automatisation, référencement et mise en relation pour développer votre activité artisanale.', keywords: `${BRAND_VARIANTS}, services digitaux, automatisation entreprise, SEO Togo, digitalisation artisanat` },
-    '/offres': { title: 'Offres digitales pour artisans | Enésense', description: 'Choisissez une offre Enésense adaptée à vos objectifs de visibilité, de digitalisation et de croissance.', keywords: `${BRAND_VARIANTS}, offres digitales, solutions pour artisans, visibilité en ligne Togo` },
-    '/projets': { title: 'Projets | Enésense, artisanat et technologie', description: 'Explorez les projets réalisés par Enésense pour rapprocher artisanat, technologie et opportunités commerciales.', keywords: `${BRAND_VARIANTS}, projets digitaux, portfolio, artisanat et technologie` },
-    '/blog': { title: 'Blog | Conseils digitalisation et automatisation | Enésense', description: 'Conseils pratiques d’Enésense pour digitaliser un atelier, automatiser son activité et mieux trouver ses clients.', keywords: `${BRAND_VARIANTS}, blog digitalisation, conseils artisans, automatisation activité` },
-    '/contact': { title: 'Contact | Enésense', description: 'Contactez Enésense pour parler de votre projet de digitalisation, d’automatisation ou de mise en relation.', keywords: `${BRAND_VARIANTS}, contact Enésense, projet digital Togo, devis digitalisation` },
-    '/about': { title: 'À propos | Enésense', description: 'Découvrez la mission d’Enésense : faire grandir les artisans grâce à des outils digitaux simples, utiles et accessibles.', keywords: `${BRAND_VARIANTS}, à propos, entreprise digitale Togo, artisanat numérique` },
+    '/': { 
+      title: 'Enésense | Digitalisation, Automatisation et Mise en relation pour artisans et entreprises', 
+      description: 'Enésense (Enésese, Enésence, Enesense) accompagne les artisans et entreprises dans leur transformation digitale : digitalisation, automatisation, mise en relation avec des clients et développement de logiciels sur mesure en France et au Togo.', 
+      keywords: `${BRAND_VARIANTS}, digitalisation entreprise, automatisation processus, mise en relation artisans, développement logiciel sur mesure, maintenance informatique, digitalisation artisans, automatisation atelier, logiciel sur mesure Togo, digitalisation France, Enésense contact, devis digitalisation, solution digitale artisan` 
+    },
+    '/services': { 
+      title: 'Services | Enésense, digitalisation, automatisation et développement sur mesure', 
+      description: 'Découvrez les services Enésense : digitalisation d\'entreprises et d\'ateliers, automatisation des processus, mise en relation avec des clients qualifiés, développement de logiciels sur mesure et maintenance. Solutions adaptées aux artisans et PME.', 
+      keywords: `${BRAND_VARIANTS}, services digitaux, automatisation entreprise, digitalisation atelier, mise en relation artisans clients, développement logiciel sur mesure, maintenance informatique, SEO Togo, digitalisation artisanat, automatisation processus métier, solution digitale entreprise` 
+    },
+    '/offres': { 
+      title: 'Offres digitales pour artisans et entreprises | Enésense', 
+      description: 'Choisissez une offre Enésense adaptée à vos objectifs de visibilité, de digitalisation et de croissance. Diagnostic, déploiement et pilotage pour transformer votre activité.', 
+      keywords: `${BRAND_VARIANTS}, offres digitales, solutions pour artisans, visibilité en ligne Togo, diagnostic digital, déploiement solution, pilotage activité, tarif digitalisation, devis automatisation` 
+    },
+    '/projets': { 
+      title: 'Projets | Enésense, réalisation digitale pour artisans et entreprises', 
+      description: 'Explorez les projets réalisés par Enésense pour rapprocher artisanat, technologie et opportunités commerciales. Digitalisation, automatisation et mise en relation.', 
+      keywords: `${BRAND_VARIANTS}, projets digitaux, portfolio, artisanat et technologie, réalisations digitales, cas clients digitalisation, projets automatisation` 
+    },
+    '/blog': { 
+      title: 'Blog | Conseils digitalisation, automatisation et mise en relation | Enésense', 
+      description: 'Conseils pratiques d\'Enésense pour digitaliser un atelier, automatiser son activité, développer un logiciel sur mesure et mieux trouver ses clients.', 
+      keywords: `${BRAND_VARIANTS}, blog digitalisation, conseils artisans, automatisation activité, mise en relation clients, développement logiciel, blog digital Togo, conseils digitalisation entreprise` 
+    },
+    '/contact': { 
+      title: 'Contact | Enésense - Digitalisation, Automatisation, Développement sur mesure', 
+      description: 'Contactez Enésense pour parler de votre projet de digitalisation, d\'automatisation, de mise en relation ou de développement de logiciel sur mesure. Devis gratuit sous 24h.', 
+      keywords: `${BRAND_VARIANTS}, contact Enésense, projet digital Togo, devis digitalisation, contact automation, développement logiciel contact, Enésense adresse, Enésense téléphone` 
+    },
+    '/about': { 
+      title: 'À propos | Enésense - Notre mission : digitaliser et automatiser les artisans', 
+      description: 'Découvrez la mission d\'Enésense : faire grandir les artisans et les entreprises grâce à des outils digitaux simples, utiles et accessibles. Digitalisation, automatisation, mise en relation et développement sur mesure.', 
+      keywords: `${BRAND_VARIANTS}, à propos, entreprise digitale Togo, artisanat numérique, qui sommes nous Enésense, équipe digitalisation, mission Enésense` 
+    },
 };
 
 const getPageMetadata = (pathname) => {
@@ -78,16 +106,31 @@ export default function SEO({
             '@context': 'https://schema.org',
             '@type': 'Organization',
             name: SITE_NAME,
-            alternateName: ['Enésence', 'Enesence', 'enésence', 'enesence', 'Enesense'],
+            alternateName: ['Enésese', 'Enésence', 'Enésance', 'Enésens', 'Enesense', 'Enesence', 'enésense', 'enesense', 'Enésense'],
             url: SITE_URL,
             logo: image,
-            description: pageMetadata['/'].description,
+            description: 'Enésense (Enésese, Enésence, Enesense) accompagne les artisans et entreprises dans leur transformation digitale : digitalisation, automatisation, mise en relation avec des clients et développement de logiciels sur mesure.',
             email: 'contact@bricona.net',
             telephone: '+22879340002',
-            areaServed: 'TG',
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Colombs',
+              addressCountry: 'FR',
+            },
+            areaServed: {
+              '@type': 'Country',
+              name: 'France',
+            },
             sameAs: [
                 'https://www.linkedin.com/company/briconation-corp/',
                 'https://web.facebook.com/profile.php?id=61586741540007',
+            ],
+            makesOffer: [
+              { '@type': 'Offer', name: 'Digitalisation', description: 'Digitalisation d\'entreprises et d\'ateliers' },
+              { '@type': 'Offer', name: 'Automatisation', description: 'Automatisation des processus métier' },
+              { '@type': 'Offer', name: 'Mise en relation', description: 'Mise en relation artisans et clients qualifiés' },
+              { '@type': 'Offer', name: 'Développement sur mesure', description: 'Développement de logiciels sur mesure' },
+              { '@type': 'Offer', name: 'Maintenance', description: 'Maintenance informatique et technique' },
             ],
         };
         let schema = document.head.querySelector('script[data-enesence-schema]');
