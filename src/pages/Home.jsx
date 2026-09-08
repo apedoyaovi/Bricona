@@ -28,6 +28,50 @@ const eventIcons = {
   Atelier: 'event_available',
 };
 
+const EventCard = ({ event, badge, badgeClass, gradient, showSeats, delay = 0 }) => (
+  <div
+    className="group relative rounded-[1.25rem] border border-outline-variant/15 bg-white p-6 shadow-sm hover:shadow-[0_20px_45px_-5px_rgba(0,50,125,0.12)] hover:-translate-y-1 transition-all duration-500"
+    style={{ transitionDelay: `${delay}s` }}
+  >
+    <div className={`absolute left-0 top-5 bottom-5 w-1 rounded-full ${gradient || 'bg-gradient-to-b from-secondary-container to-primary'}`}></div>
+    <div className="flex items-start justify-between gap-3 mb-4">
+      <div className="h-11 w-11 rounded-xl bg-primary-fixed text-primary flex items-center justify-center">
+        <span className="material-symbols-outlined text-xl">
+          {eventIcons[event.type] || 'event'}
+        </span>
+      </div>
+      <div className="flex flex-wrap justify-end gap-1.5">
+        <span className="rounded-full bg-primary-fixed/30 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-primary">
+          {event.type}
+        </span>
+        <span className={`rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] ${badgeClass}`}>
+          {badge}
+        </span>
+      </div>
+    </div>
+
+    <h4 className="font-headline text-base font-bold text-primary leading-snug mb-3">{event.title}</h4>
+    <p className="text-xs text-on-surface-variant leading-relaxed mb-4">{event.description}</p>
+
+    <div className="space-y-1.5 text-xs text-on-surface-variant">
+      <p className="flex items-center gap-2">
+        <span className="material-symbols-outlined text-base text-primary">calendar_month</span>
+        <span>{formatEventDate(event.date)} - {event.time}</span>
+      </p>
+      <p className="flex items-center gap-2">
+        <span className="material-symbols-outlined text-base text-primary">location_on</span>
+        <span>{event.place}</span>
+      </p>
+      {showSeats && event.seats && (
+        <p className="flex items-center gap-2 font-bold text-primary">
+          <span className="material-symbols-outlined text-base">confirmation_number</span>
+          <span>{event.seats} places disponibles</span>
+        </p>
+      )}
+    </div>
+  </div>
+);
+
 const Home = () => {
   const location = useLocation();
   const featuredTestimonials = [
@@ -473,240 +517,273 @@ const Home = () => {
       </section>
 
       {/* ===== Conferences & Meetings ===== */}
-      <section id="conferences-meetings" className="py-16 bg-white overflow-hidden scroll-mt-24">
+      <section id="conferences-meetings" className="py-20 bg-gradient-to-br from-white via-surface-container-low/30 to-white scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-            <div className="lg:col-span-7 scroll-reveal">
-              <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-3">Conferences &amp; Meetings</p>
-              <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface mb-4">
-                Participez aux conférences et meetings Enésense.
-              </h2>
-              <p className="text-on-surface-variant text-sm leading-relaxed max-w-2xl mb-8">
-                Découvrez les prochains rendez-vous, consultez les evenements en cours ou passes, et inscrivez-vous aux sessions ouvertes(future).
-              </p>
+          {/* ==== Section Header ==== */}
+          <div className="text-center mb-14 scroll-reveal">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-low mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
+              <span className="font-label editorial-caps text-primary font-bold text-[10px]">Conférences &amp; Meetings</span>
+            </div>
+            <h2 className="font-headline text-2xl lg:text-3xl font-extrabold text-on-surface mb-3">
+              Rencontrez l'expertise Enésense
+            </h2>
+            <p className="text-on-surface-variant text-sm max-w-2xl mx-auto leading-relaxed">
+              Prochains événements à venir, inscriptions aux sessions ouvertes,
+              suivez les rencontres en cours et revoyez les résumés des événements passés.
+            </p>
+          </div>
 
-              {hasVisibleEvents ? (
-                <div className="space-y-8 mb-8">
-                  {[
-                    {
-                      title: 'Evenement en cours',
-                      note: 'Disponible aujourd hui',
-                      events: displayedCurrentEvents,
-                      badge: 'En cours',
-                      icon: 'play_circle',
-                      badgeClass: 'bg-secondary-container/25 text-secondary',
-                    },
-                    {
-                      title: 'Prochains evenements',
-                      note: 'Inscription ouverte',
-                      events: displayedFutureEvents,
-                      badge: 'Futur',
-                      icon: 'event_upcoming',
-                      badgeClass: 'bg-primary-fixed text-primary',
-                    },
-                    {
-                      title: 'Evenements passes',
-                      note: 'Les 3 derniers programmes',
-                      events: displayedPastEvents,
-                      badge: 'Passe',
-                      icon: 'history',
-                      badgeClass: 'bg-slate-200 text-slate-600',
-                    },
-                  ].map((group) => (
-                    <div key={group.title}>
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="h-10 w-10 rounded-xl bg-surface-container-low text-primary flex items-center justify-center">
-                          <span className="material-symbols-outlined text-xl">{group.icon}</span>
+          {hasVisibleEvents ? (
+            <div className="space-y-16">
+              {/* ==== Prochains événements + Inscription ==== */}
+              <div className="scroll-reveal">
+                <div className="flex items-center gap-4 mb-8 pb-4 border-b border-outline-variant/15">
+                  <div className="h-12 w-12 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-lg shadow-secondary-container/20">
+                    <span className="material-symbols-outlined text-2xl">event_upcoming</span>
+                  </div>
+                  <div>
+                    <h3 className="font-headline text-xl lg:text-2xl font-bold text-on-surface">Prochains événements</h3>
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">Inscription ouverte — Réservez votre place</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                  {/* Future events — col 1-7 */}
+                  <div className="lg:col-span-7 flex flex-col items-center justify-center text-center">
+                    {displayedFutureEvents.length > 0 ? (
+                      displayedFutureEvents.map((event, i) => (
+                        <EventCard
+                          key={event.id}
+                          event={event}
+                          badge="Futur"
+                          badgeClass="bg-primary-fixed text-primary"
+                          gradient="bg-gradient-to-b from-secondary-container to-primary"
+                          showSeats={true}
+                          delay={i * 0.08}
+                        />
+                      ))
+                    ) : (
+                      <div className="py-12">
+                        <span className="material-symbols-outlined text-5xl text-primary/20 mb-4">event_available</span>
+                        <p className="font-headline text-lg font-bold text-on-surface-variant mb-3">Aucun événement futur programmé</p>
+                        <p className="text-sm text-on-surface-variant/60 max-w-sm mx-auto mb-6">
+                          Consultez les événements en cours juste en dessous, ou parcourez les résumés des rencontres passées pour vous faire une idée.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                          <a
+                            href="#evenement-en-cours"
+                            className="inline-flex items-center justify-center gap-2 rounded-full bg-white border border-outline-variant/30 px-6 py-3 text-sm font-bold text-primary hover:bg-primary-fixed hover:text-primary transition-all hover:shadow-md"
+                          >
+                            <span className="material-symbols-outlined text-base">play_circle</span>
+                            Voir l'événement en cours
+                          </a>
+                          <a
+                            href="#evenements-past"
+                            className="inline-flex items-center justify-center gap-2 rounded-full bg-white border border-outline-variant/30 px-6 py-3 text-sm font-bold text-primary hover:bg-primary-fixed hover:text-primary transition-all hover:shadow-md"
+                          >
+                            <span className="material-symbols-outlined text-base">history</span>
+                            Événements passés
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {/* Registration form — col 8-12 */}
+                  <div className="lg:col-span-5">
+                    <form
+                      className="rounded-[2rem] bg-white/60 backdrop-blur-xl border border-outline-variant/20 p-6 md:p-7 shadow-[0_24px_60px_rgba(0,50,125,0.10)]"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        const formData = new FormData(event.currentTarget);
+                        setConfirmDialog({
+                          open: true,
+                          formElement: event.currentTarget,
+                          registration: {
+                            eventId: formData.get('event-name'),
+                            fullName: formData.get('full-name'),
+                            phone: formData.get('phone-number'),
+                            email: formData.get('email-address'),
+                            profile: formData.get('profile-type'),
+                          },
+                        });
+                      }}
+                    >
+                      <div className="flex items-start gap-3 mb-6">
+                        <div className="h-12 w-12 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+                          <span className="material-symbols-outlined">how_to_reg</span>
                         </div>
                         <div>
-                          <h3 className="font-headline text-lg font-bold text-on-surface">{group.title}</h3>
-                          <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant">{group.note}</p>
+                          <h3 className="font-headline text-xl font-bold text-on-surface">Inscription rapide</h3>
+                          <p className="text-on-surface-variant text-sm">Choisissez un événement futur et laissez vos coordonnées.</p>
                         </div>
                       </div>
 
-                      {group.events.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          {group.events.map((event, i) => (
-                            <div
-                              key={event.id}
-                              className="rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-5 shadow-sm hover:shadow-[0_18px_40px_rgba(0,50,125,0.10)] hover:-translate-y-1 transition-all"
-                              style={{ transitionDelay: `${i * 0.08}s` }}
-                            >
-                              <div className="flex items-center justify-between gap-3 mb-5">
-                                <div className="h-11 w-11 rounded-xl bg-primary-fixed text-primary flex items-center justify-center">
-                                  <span className="material-symbols-outlined text-xl">{eventIcons[event.type] || 'event'}</span>
-                                </div>
-                                <div className="flex flex-wrap justify-end gap-2">
-                                  <span className="rounded-full bg-secondary-container/20 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-secondary">
-                                    {event.type}
-                                  </span>
-                                  <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] ${group.badgeClass}`}>
-                                    {group.badge}
-                                  </span>
-                                </div>
-                              </div>
-                              <h4 className="font-headline text-base font-bold text-primary leading-snug mb-3">{event.title}</h4>
-                              <p className="text-xs text-on-surface-variant leading-relaxed mb-4">{event.description}</p>
-                              <div className="space-y-2 text-xs text-on-surface-variant">
-                                <p className="flex items-center gap-2">
-                                  <span className="material-symbols-outlined text-base text-primary">calendar_month</span>
-                                  <span>{formatEventDate(event.date)} - {event.time}</span>
-                                </p>
-                                <p className="flex items-center gap-2">
-                                  <span className="material-symbols-outlined text-base text-primary">location_on</span>
-                                  <span>{event.place}</span>
-                                </p>
-                                {group.badge === 'Futur' && (
-                                  <p className="flex items-center gap-2 font-bold text-primary">
-                                    <span className="material-symbols-outlined text-base">confirmation_number</span>
-                                    <span>{event.seats} places disponibles</span>
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          ))}
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="event-name">Événement</label>
+                          <select
+                            id="event-name"
+                            name="event-name"
+                            required
+                            defaultValue=""
+                            className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                          >
+                            <option value="" disabled>Sélectionner un événement</option>
+                            {eventGroups.future.map((event) => (
+                              <option key={event.id} value={event.id}>{event.title}</option>
+                            ))}
+                          </select>
                         </div>
-                      ) : (
-                        <p className="rounded-2xl bg-surface-container-low p-5 text-sm text-on-surface-variant">
-                          Aucun evenement dans cette categorie.
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="full-name">Nom complet</label>
+                            <input
+                              id="full-name"
+                              name="full-name"
+                              required
+                              type="text"
+                              className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                              placeholder="Votre nom"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="phone-number">Téléphone</label>
+                            <input
+                              id="phone-number"
+                              name="phone-number"
+                              required
+                              type="tel"
+                              className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                              placeholder="+228 ..."
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="email-address">Email</label>
+                          <input
+                            id="email-address"
+                            name="email-address"
+                            required
+                            type="email"
+                            className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                            placeholder="votre@email.com"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="profile-type">Profil</label>
+                          <select
+                            id="profile-type"
+                            name="profile-type"
+                            required
+                            defaultValue=""
+                            className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                          >
+                            <option value="" disabled>Choisir votre profil</option>
+                            <option value="client">Client</option>
+                            <option value="partenaire">Partenaire</option>
+                            <option value="entreprise">Entreprise</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {registrationSent && (
+                        <p className="mt-5 rounded-xl bg-green-100 px-4 py-3 text-sm font-bold text-green-700" aria-live="polite">
+                          Inscription reçue. Notre équipe vous contactera via {siteSettings.email} ou {siteSettings.phone}.
                         </p>
                       )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-6 text-center mb-8">
-                  <span className="material-symbols-outlined text-4xl text-primary mb-3">event_busy</span>
-                  <p className="font-headline font-bold text-primary mb-1">Aucun evenement programme pour le moment.</p>
-                  <p className="text-sm text-on-surface-variant">Revenez bientot pour decouvrir les prochains meetings et conferences.</p>
-                </div>
-              )}
 
-            </div>
+                      {registrationError && (
+                        <p className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600" aria-live="polite">
+                          {registrationError}
+                        </p>
+                      )}
 
-            <div className="lg:col-span-5 scroll-reveal" style={{ transitionDelay: '0.2s' }}>
-              <form
-                className="rounded-[2rem] bg-surface-container-low p-6 md:p-7 border border-outline-variant/20 shadow-[0_24px_60px_rgba(0,50,125,0.10)]"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const formData = new FormData(event.currentTarget);
-                  setConfirmDialog({
-                    open: true,
-                    formElement: event.currentTarget,
-                    registration: {
-                      eventId: formData.get('event-name'),
-                      fullName: formData.get('full-name'),
-                      phone: formData.get('phone-number'),
-                      email: formData.get('email-address'),
-                      profile: formData.get('profile-type'),
-                    },
-                  });
-                }}
-              >
-                <div className="flex items-start gap-3 mb-6">
-                  <div className="h-12 w-12 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined">how_to_reg</span>
+                      <button
+                        type="submit"
+                        disabled={eventGroups.future.length === 0 || isRegistering}
+                        className="mt-6 w-full bg-secondary-container text-primary px-6 py-4 rounded-xl font-bold text-sm hover:bg-primary-fixed hover:shadow-[0_16px_40px_rgba(0,50,125,0.25)] transition-all flex items-center justify-center gap-2"
+                      >
+                        {isRegistering ? 'Enregistrement...' : "S'inscrire maintenant"}
+                        <span className="material-symbols-outlined text-base">arrow_forward</span>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              {/* ==== Événement en cours ==== */}
+              <div id="evenement-en-cours" className="scroll-reveal">
+                <div className="flex items-center gap-4 mb-8 pb-4 border-b border-outline-variant/15">
+                  <div className="h-12 w-12 rounded-2xl bg-secondary-container/25 text-secondary flex items-center justify-center">
+                    <span className="material-symbols-outlined text-2xl">play_circle</span>
                   </div>
                   <div>
-                    <h3 className="font-headline text-xl font-bold text-on-surface">Inscription rapide</h3>
-                    <p className="text-on-surface-variant text-sm">Choisissez un evenement future et laissez vos coordonnées.</p>
+                    <h3 className="font-headline text-xl lg:text-2xl font-bold text-on-surface">Événement en cours</h3>
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">Disponible aujourd'hui</p>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="event-name">Evenement</label>
-                    <select
-                      id="event-name"
-                      name="event-name"
-                      required
-                      defaultValue=""
-                      className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                    >
-                      <option value="" disabled>Sélectionner un evenement</option>
-                      {eventGroups.future.map((event) => (
-                        <option key={event.id} value={event.id}>{event.title}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="full-name">Nom complet</label>
-                      <input
-                        id="full-name"
-                        name="full-name"
-                        required
-                        type="text"
-                        className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                        placeholder="Votre nom"
+                {displayedCurrentEvents.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    {displayedCurrentEvents.map((event, i) => (
+                      <EventCard
+                        key={event.id}
+                        event={event}
+                        badge="En cours"
+                        badgeClass="bg-secondary-container/25 text-secondary"
+                        gradient="bg-gradient-to-b from-secondary-container to-amber-400"
+                        showSeats={false}
+                        delay={i * 0.08}
                       />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="phone-number">Telephone</label>
-                      <input
-                        id="phone-number"
-                        name="phone-number"
-                        required
-                        type="tel"
-                        className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                        placeholder="+228 ..."
-                      />
-                    </div>
+                    ))}
                   </div>
+                ) : (
+                  <p className="text-sm text-on-surface-variant">Aucun événement en cours pour le moment.</p>
+                )}
+              </div>
 
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="email-address">Email</label>
-                    <input
-                      id="email-address"
-                      name="email-address"
-                      required
-                      type="email"
-                      className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                      placeholder="votre@email.com"
-                    />
+              {/* ==== Événements passés ==== */}
+              <div id="evenements-past" className="scroll-reveal">
+                <div className="flex items-center gap-4 mb-8 pb-4 border-b border-outline-variant/15">
+                  <div className="h-12 w-12 rounded-2xl bg-slate-200 text-slate-600 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-2xl">history</span>
                   </div>
-
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="profile-type">Profil</label>
-                    <select
-                      id="profile-type"
-                      name="profile-type"
-                      required
-                      defaultValue=""
-                      className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                    >
-                      <option value="" disabled>Choisir votre profil</option>
-                      <option value="client">Client</option>
-                      <option value="partenaire">Partenaire</option>
-                      <option value="entreprise">Entreprise</option>
-                    </select>
+                    <h3 className="font-headline text-xl lg:text-2xl font-bold text-on-surface">Événements passés</h3>
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">Les 3 derniers programmes</p>
                   </div>
                 </div>
 
-                {registrationSent && (
-                  <p className="mt-5 rounded-xl bg-green-100 px-4 py-3 text-sm font-bold text-green-700" aria-live="polite">
-                    Inscription recue. Notre equipe vous contactera via {siteSettings.email} ou {siteSettings.phone}.
-                  </p>
+                {displayedPastEvents.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    {displayedPastEvents.map((event, i) => (
+                      <EventCard
+                        key={event.id}
+                        event={event}
+                        badge="Passé"
+                        badgeClass="bg-slate-200 text-slate-600"
+                        gradient="bg-gradient-to-b from-slate-400 to-slate-500"
+                        showSeats={false}
+                        delay={i * 0.08}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-on-surface-variant">Aucun événement passé à afficher.</p>
                 )}
-
-                {registrationError && (
-                  <p className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600" aria-live="polite">
-                    {registrationError}
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={eventGroups.future.length === 0 || isRegistering}
-                  className="mt-6 w-full bg-primary text-white px-6 py-4 rounded-xl font-bold text-sm hover:bg-primary-container transition-colors flex items-center justify-center gap-2"
-                >
-                  {isRegistering ? 'Enregistrement...' : "S'inscrire maintenant"}
-                  <span className="material-symbols-outlined text-base">arrow_forward</span>
-                </button>
-              </form>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="rounded-[2rem] border border-outline-variant/20 bg-surface-container-lowest p-10 text-center scroll-reveal">
+              <span className="material-symbols-outlined text-5xl text-primary mb-4">event_busy</span>
+              <p className="font-headline font-bold text-primary mb-2 text-lg">Aucun événement programmé pour le moment.</p>
+              <p className="text-sm text-on-surface-variant max-w-md mx-auto">Revenez bientôt pour découvrir les prochains meetings et conférences Enésense.</p>
+            </div>
+          )}
         </div>
       </section>
 
