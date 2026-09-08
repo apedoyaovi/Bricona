@@ -11,25 +11,25 @@ export const defaultSiteSettings = {
 
 export const defaultEvents = [
   {
-    id: 'digitaliser-atelier',
+    id: 'digitaliser-entreprise',
     type: 'Conference',
-    title: 'Digitaliser son atelier artisanal',
+    title: 'Digitaliser votre entreprise',
     date: '2026-05-18',
     time: '10:00 - 12:00',
     place: 'En ligne',
     seats: '42',
-    description: 'Une session pratique pour comprendre comment passer son atelier au digital.',
+    description: 'Une session pratique pour comprendre comment digitaliser votre activité.',
     published: true,
   },
   {
-    id: 'rencontre-artisans-clients',
+    id: 'optimiser-processus',
     type: 'Meeting',
-    title: 'Rencontre artisans & clients',
+    title: 'Optimiser vos processus métier',
     date: '2026-05-24',
     time: '15:00 - 17:30',
     place: 'Bricona Hub',
     seats: '18',
-    description: 'Un moment de mise en relation pour creer des opportunites concrètes.',
+    description: 'Un moment pour optimiser vos processus et gagner en efficacité.',
     published: true,
   },
   {

@@ -36,8 +36,8 @@ export default function MentionsLegales() {
           <Section title="Éditeur du Site">
             <div className="bg-surface-container-low p-6 rounded-xl">
               <p className="font-bold text-on-surface mb-1">Enésense</p>
-              <p>Digital Artisan Excellence</p>
-              <p className="mt-3"><strong className="text-on-surface">Adresse :</strong> Baguida bateauvi, Lomé-Togo</p>
+              <p>Digitalisation, automatisation et développement sur mesure pour entreprises.</p>
+              <p className="mt-3"><strong className="text-on-surface">Adresse :</strong> Colombs, France</p>
               <p><strong className="text-on-surface">Email :</strong> contact@bricona.net</p>
               <p><strong className="text-on-surface">Téléphone :</strong> +228 79340002</p>
             </div>
@@ -71,10 +71,10 @@ export default function MentionsLegales() {
 
           <Section title="Contact">
             <div className="p-6 bg-primary-fixed rounded-xl border border-primary/10">
-              <p className="font-bold text-on-surface">Enésense - Digital Artisan Excellence</p>
+              <p className="font-bold text-on-surface">Enésense - Digitalisation, automatisation et développement sur mesure</p>
               <p>📧 contact@bricona.net</p>
               <p>📱 +228 79340002</p>
-              <p>📍 Baguida bateauvi, Lomé-Togo</p>
+              <p>📍 Colombs, France</p>
             </div>
           </Section>
         </div>

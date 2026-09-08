@@ -21,7 +21,7 @@ const Services = () => {
   return (
     <main className="pt-[72px]">
       {/* Hero Section */}
-      <section className="relative h-[520px] flex items-center overflow-hidden">
+      <section className="relative min-h-[50vh] min-h-[520px] flex items-end overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             alt="Atelier moderne"
@@ -30,7 +30,7 @@ const Services = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary-container/40"></div>
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full pt-24 pb-12 md:pt-32 md:pb-20">
           <div className="max-w-2xl">
             <span className="inline-block text-secondary-fixed font-bold tracking-[0.1em] mb-4 text-xs">NOS SERVICES</span>
             <h1 className="font-headline text-3xl md:text-5xl font-extrabold text-white leading-tight tracking-tight mb-4">
@@ -42,9 +42,9 @@ const Services = () => {
                 En offrant une gamme complète de services numériques, nous sommes votre partenaire de confiance pour naviguer dans la transformation digitale avec succès:
               </p>
               <ul className="list-disc list-inside space-y-2">
-                <li><strong>Digitalisation (Accompagnement Digital et Développement Logiciel)</strong></li>
-                <li><strong>Automatisation</strong></li>
-                <li><strong>Mise en Relation des artisans et clients</strong></li>
+              <li><strong>Digitalisation (Accompagnement Digital et Développement Logiciel)</strong></li>
+              <li><strong>Automatisation</strong></li>
+              <li><strong>Développement de solutions sur mesure</strong></li>
               </ul>
             </div>
             <div className="flex gap-4n">
@@ -127,7 +127,7 @@ const Services = () => {
             <span className="text-primary font-bold tracking-[0.1em] text-xs">AUTOMATISATION</span>
             <h2 className="font-headline text-3xl lg:text-4xl font-extrabold text-on-surface mt-2 mb-6">Libérez votre potentiel créatif</h2>
             <p className="text-on-surface-variant text-lg mb-8 leading-relaxed">
-              Automatisez les tâches répétitives et concentrez-vous sur ce qui compte vraiment : votre savoir-faire artisanal.
+               Automatisez les tâches répétitives et concentrez-vous sur ce qui compte vraiment : votre cœur de métier.
             </p>
             <ul className="space-y-4 mb-8">
               <li className="flex items-start gap-4">
@@ -190,7 +190,7 @@ const Services = () => {
       </section>
 
       {/* Process Section */}
-      <section className="py-16 bg-surface-container-low">
+      <section id="methode" className="py-16 bg-surface-container-low">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="text-center mb-10">
             <span className="text-primary font-bold tracking-[0.1em] text-xs">NOTRE MÉTHODE</span>
@@ -200,12 +200,12 @@ const Services = () => {
             {/* Connector line */}
             <div className="absolute top-1/2 left-0 w-full h-0.5 bg-outline-variant/30 hidden md:block"></div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-10 relative z-10">
-              {[
-                { icon: 'chat_bubble', title: 'Consultation', desc: 'Analyse approfondie de vos besoins et de votre contexte artisan.' },
-                { icon: 'architecture', title: 'Planification', desc: "Conception d'une roadmap stratégique et technique personnalisée." },
-                { icon: 'code', title: 'Développement', desc: 'Mise en œuvre agile par nos artisans du code et du digital.' },
-                { icon: 'rocket_launch', title: 'Livraison', desc: 'Déploiement, formation et support continu pour votre succès.' },
-              ].map((step) => (
+               {[
+                 { icon: 'chat_bubble', title: 'Consultation', desc: 'Analyse approfondie de vos besoins et de votre contexte métier.' },
+                 { icon: 'architecture', title: 'Planification', desc: "Conception d'une roadmap stratégique et technique personnalisée." },
+                 { icon: 'code', title: 'Développement', desc: 'Mise en œuvre agile par nos experts du code et du digital.' },
+                 { icon: 'rocket_launch', title: 'Livraison', desc: 'Déploiement, formation et support continu pour votre succès.' },
+               ].map((step) => (
                 <div key={step.title} className="flex flex-col items-center text-center group">
                   <div className="w-12 h-12 rounded-full bg-surface-container-lowest shadow-sm ghost-border flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">
                     <span className="material-symbols-outlined text-xl">{step.icon}</span>

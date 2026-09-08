@@ -12,7 +12,7 @@ const Footer = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-8 py-12 max-w-7xl mx-auto font-body text-sm text-slate-500">
         <div className="space-y-4">
           <img src={logoImg} alt="Enésense" className="block h-8 w-auto md:h-9" />
-          <p className="leading-relaxed">Digital Artisan Excellence. Fusionner la tradition et la technologie.</p>
+          <p className="leading-relaxed">Digitalisation, automatisation et développement sur mesure pour entreprises.</p>
           <div className="flex gap-4">
             <span className="material-symbols-outlined text-primary cursor-pointer hover:opacity-100 opacity-80 transition-opacity">language</span>
             <span className="material-symbols-outlined text-primary cursor-pointer hover:opacity-100 opacity-80 transition-opacity">alternate_email</span>

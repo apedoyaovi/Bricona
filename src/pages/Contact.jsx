@@ -9,14 +9,14 @@ const faqItems = [
     q: 'Quel est le délai moyen pour obtenir un devis ?',
     a: "Pour la majorité des demandes, nous fournissons une estimation initiale sous 24 à 48 heures ouvrées. Les projets complexes nécessitant une expertise technique approfondie peuvent prendre jusqu'à 4 jours.",
   },
-  {
-    q: 'Travaillez-vous avec des particuliers ?',
-    a: "Oui, Enésense accompagne tant les professionnels pour leurs besoins d'infrastructure digitale que les particuliers recherchant des artisans d'exception pour des projets de rénovation ou de création.",
-  },
-  {
-    q: 'Comment garantissez-vous la qualité des artisans ?',
-    a: "Chaque artisan de notre réseau subit un audit rigoureux : vérification des certifications, analyse des travaux précédents et évaluation de la satisfaction client. Nous ne retenons que le top 5% des experts du marché.",
-  },
+    {
+      q: 'Travaillez-vous avec des particuliers ?',
+      a: "Oui, Enésense accompagne tant les professionnels pour leurs besoins d'infrastructure digitale que les particuliers recherchant des experts pour des projets de rénovation ou de création.",
+    },
+    {
+      q: 'Comment garantissez-vous la qualité de vos prestations ?',
+      a: "Chaque prestataire de notre réseau subit un audit rigoureux : vérification des certifications, analyse des travaux précédents et évaluation de la satisfaction client. Nous ne retenons que le top 5% des experts du marché.",
+    },
   {
     q: 'Proposez-vous des contrats de maintenance ?',
     a: "Absolument. Qu'il s'agisse de maintenance logicielle ou technique (bâtiment, installations), nous proposons des forfaits d'accompagnement sur le long terme pour assurer la pérennité de vos projets.",
@@ -102,9 +102,9 @@ const Contact = () => {
           </p>
           {/* <div className="flex gap-4 items-center">
             <div className="flex -space-x-3">
-              <img className="w-9 h-9 rounded-full border-2 border-surface" alt="Artisan 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq1HhhKxEdiuv6mVZO6JcoEWvVsguxC3B_Y67YTRkzK7iV0LH0HdO8JCHzsPfzYO6gtSUBIeEoPpLeKPyjcoQWOOSXCl0ErTZDxRn20t3bjJ-_6K8rG12r0pyPXi2ydAiuf4oc2RhqiHxr_MVX5KHBE1TnPZ1v_NK9J2PdQ1Lg9sWBIg_-9pXrsAp47KYtkde0vJCz9_yvr3qtd28L65xOHTucS4mLjnXyoXknZtv3GvDELUlxyOq8tQgJrl4ytcY6kpUmS6SrSfG4" />
-              <img className="w-9 h-9 rounded-full border-2 border-surface" alt="Artisan 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtLIkpUq5F0hS_p53fkFGOhM_lZJEE_j_VsMDH5-Qxm358Q-25zaUTyZITZzlM8SGQnJQH4dwvZWhph9wDo1FIyEybOkv8KzEiSy7SCoNZrYQGyDuoRbT_xRd_ZTM-6asR6d7LhKBr434iqjvB4ezrh56GspJkgk54ayLTM1cgt1Tww48fVhMguf9cE5jzsiESrNLC4iMD0xWMlpc8es4qMkfYClyhLVPkI_U5Qq3PJ11UgAbS7CbZUvsxTnklMLD4LOhihCQacpwl" />
-              <img className="w-9 h-9 rounded-full border-2 border-surface" alt="Artisan 3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKevC3FH5ItaSq016_AH0wPbwCj3LGlbWmT6FtJo2CbwqN1TMYElMx0r6vwIrGPbdDGG6N_N2wV9MhB-TtconXWjKdXRc_qVvtIQ_pQMjaior7qEAZkA2PEXv2UVwdzgKifeRL8xYH3wmnGbk41uhk3NOIxZb49PuD9ZkrDZTSd940XH3E8XYCE-Hw4vnNB8mAN7i7nfC-z_eQF9JaStJ-dwokLxpt6NL9BdOFy2hVAsvzNhfGfFHKvDecjX65xAPU_yaUTAfZO9vB" />
+              <img className="w-9 h-9 rounded-full border-2 border-surface" alt="Client 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq1HhhKxEdiuv6mVZO6JcoEWvVsguxC3B_Y67YTRkzK7iV0LH0HdO8JCHzsPfzYO6gtSUBIeEoPpLeKPyjcoQWOOSXCl0ErTZDxRn20t3bjJ-_6K8rG12r0pyPXi2ydAiuf4oc2RhqiHxr_MVX5KHBE1TnPZ1v_NK9J2PdQ1Lg9sWBIg_-9pXrsAp47KYtkde0vJCz9_yvr3qtd28L65xOHTucS4mLjnXyoXknZtv3GvDELUlxyOq8tQgJrl4ytcY6kpUmS6SrSfG4" />
+              <img className="w-9 h-9 rounded-full border-2 border-surface" alt="Client 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtLIkpUq5F0hS_p53fkFGOhM_lZJEE_j_VsMDH5-Qxm358Q-25zaUTyZITZzlM8SGQnJQH4dwvZWhph9wDo1FIyEybOkv8KzEiSy7SCoNZrYQGyDuoRbT_xRd_ZTM-6asR6d7LhKBr434iqjvB4ezrh56GspJkgk54ayLTM1cgt1Tww48fVhMguf9cE5jzsiESrNLC4iMD0xWMlpc8es4qMkfYClyhLVPkI_U5Qq3PJ11UgAbS7CbZUvsxTnklMLD4LOhihCQacpwl" />
+              <img className="w-9 h-9 rounded-full border-2 border-surface" alt="Client 3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKevC3FH5ItaSq016_AH0wPbwCj3LGlbWmT6FtJo2CbwqN1TMYElMx0r6vwIrGPbdDGG6N_N2wV9MhB-TtconXWjKdXRc_qVvtIQ_pQMjaior7qEAZkA2PEXv2UVwdzgKifeRL8xYH3wmnGbk41uhk3NOIxZb49PuD9ZkrDZTSd940XH3E8XYCE-Hw4vnNB8mAN7i7nfC-z_eQF9JaStJ-dwokLxpt6NL9BdOFy2hVAsvzNhfGfFHKvDecjX65xAPU_yaUTAfZO9vB" />
             </div>
             <div className="text-xs font-medium">
               <span className="text-primary">+500 projets réalisés avec passion</span>
@@ -154,7 +154,6 @@ const Contact = () => {
                   <select id="project-type" name="project-type" className="w-full bg-surface-container-high border-none rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-surface-tint transition-all text-on-surface-variant outline-none" required>
                     <option value="Digitalisation">Digitalisation</option>
                     <option value="Automatisation">Automatisation</option>
-                    <option value="Mise en relation artisan et client">Mise en relation artisan et client</option>
                     <option value="Developpement de logiciel sur mesure">Developpement de logiciel sur mesure</option>
                     <option value="Maintenance">Maintenance</option>
                   </select>

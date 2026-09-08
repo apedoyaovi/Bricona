@@ -32,7 +32,7 @@ const About = () => {
             <div className="w-[22rem] md:w-[24rem] lg:w-[26rem] aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl shadow-on-surface/5">
               <img
                 className="w-full h-full object-cover"
-                alt="Artisan mains précision"
+                alt="Expertise métier"
                 src={aboutHeroImg}
               />
             </div>
@@ -65,7 +65,7 @@ const About = () => {
               <div>
                 <span className="material-symbols-outlined text-secondary text-3xl mb-4 block">diversity_3</span>
                 <h3 className="text-xl font-bold font-headline mb-3">Human-centric</h3>
-                <p className="text-on-surface-variant leading-relaxed">Nous plaçons l'artisan au cœur de l'innovation. La technologie doit servir l'homme, jamais l'inverse.</p>
+                <p className="text-on-surface-variant leading-relaxed">Nous plaçons l'entreprise au cœur de l'innovation. La technologie doit servir l'homme, jamais l'inverse.</p>
               </div>
             </div> */}
             {/* Value 2 */}
@@ -190,7 +190,7 @@ const About = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
           <p className="text-[10px] tracking-[0.3em] font-bold text-outline uppercase mb-6">ILS NOUS FONT CONFIANCE</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-            {['ARTISAN.CO', 'TECH_STUDIO', 'FRANCE_BUILD', 'LUMINA', 'CRAFT_NEXT'].map((brand) => (
+            {['TECH_STUDIO', 'FRANCE_BUILD', 'LUMINA', 'CRAFT_NEXT', 'DIGI_CORP'].map((brand) => (
               <div key={brand} className="h-8 md:h-10 flex items-center font-black text-lg text-on-surface-variant select-none">{brand}</div>
             ))}
           </div>

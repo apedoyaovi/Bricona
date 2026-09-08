@@ -18,7 +18,7 @@ export default function Blog() {
     { id: 'all', name: 'Tous', count: 12 },
     { id: 'digitalisation', name: 'Digitalisation', count: 5 },
     { id: 'automatisation', name: 'Automatisation', count: 4 },
-    { id: 'mise-en-relation', name: 'Mise en Relation', count: 3 },
+    { id: 'developpement', name: 'Développement Sur-Mesure', count: 3 },
   ];
 
 
@@ -41,14 +41,14 @@ export default function Blog() {
             </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-5 leading-tight">
-              Excellence Artisanale &{' '}
+              Excellence &{' '}
               <span className="bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
                 Innovation Digitale
               </span>
             </h1>
 
             <p className="text-sm md:text-base text-gray-600 mb-8 leading-relaxed max-w-lg mx-auto">
-              Découvrez comment digitaliser votre savoir-faire artisanal, automatiser vos processus et développer votre audience.
+              Découvrez comment digitaliser votre activité, automatiser vos processus et développer des solutions sur mesure.
             </p>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function Blog() {
                 <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl"></div>
                 <h3 className="text-sm font-bold mb-2 relative z-10">Newsletter Enésense</h3>
                 <p className="text-gray-400 text-[10px] mb-6 relative z-10 leading-relaxed font-medium uppercase tracking-tight">
-                  Conseils mensuels pour transformer votre artisanat numériquement.
+                  Conseils mensuels pour accélérer votre transformation digitale.
                 </p>
                 <form className="space-y-3 relative z-10">
                   <input
@@ -170,7 +170,7 @@ export default function Blog() {
               <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                 <h3 className="text-xs font-bold text-gray-900 mb-4 uppercase tracking-widest">Tags Populaires</h3>
                 <div className="flex flex-wrap gap-1.5">
-                  {['Digitalisation', 'Automatisation', 'Mise en Relation', 'Artisanat Digital', 'Transformation', 'Innovation'].map(tag => (
+                  {['Digitalisation', 'Automatisation', 'Développement Sur-Mesure', 'Transformation', 'Innovation', 'Performance'].map(tag => (
                     <span key={tag} className="px-2 py-1 bg-gray-50 text-gray-400 text-[9px] font-bold uppercase rounded border border-gray-100 hover:text-blue-600 hover:border-blue-200 cursor-pointer transition-all">{tag}</span>
                   ))}
                 </div>
@@ -183,7 +183,7 @@ export default function Blog() {
       {/* CTA Section */}
       <CTASection
         title="Besoin d'une expertise pour votre transformation digitale ?"
-        description="Enésense accompagne les artisans dans leur digitalisation, automatisation et mise en relation avec les bons clients."
+        description="Enésense accompagne les entreprises dans leur digitalisation, automatisation et développement de solutions sur mesure."
         primaryBtnText="Contacter Enésense"
         secondaryBtnText="WhatsApp"
         secondaryBtnLink="https://wa.me/22879340002"

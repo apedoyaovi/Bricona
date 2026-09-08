@@ -78,7 +78,7 @@ export default function PolitiqueConfidentialite() {
 
           <Section title="Contact">
             <div className="p-6 bg-primary-fixed rounded-xl border border-primary/10">
-              <p className="font-bold text-on-surface">Enésense - Digital Artisan Excellence</p>
+              <p className="font-bold text-on-surface">Enésense - Digitalisation, automatisation et développement sur mesure</p>
               <p>📧 contact@bricona.net</p>
               <p>📱 +228 79340002</p>
               <p>📍 Baguida bateauvi, Lomé-Togo</p>

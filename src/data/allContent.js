@@ -105,8 +105,8 @@ export const projects = [
 export const blogPosts = [
     {
         id: 1,
-        title: "Digitalisation : Comment transformer votre artisanat en 2026",
-        excerpt: "Le guide complet pour les artisans souhaitant entrer dans l'ère numérique sans perdre leur essence.",
+        title: "Digitalisation : Comment transformer votre entreprise en 2026",
+        excerpt: "Le guide complet pour les entreprises souhaitant entrer dans l'ère numérique sans perdre leur essence.",
         category: "digitalisation",
         author: { name: "Bricona Team", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
         date: "15 Avril 2026",
@@ -115,9 +115,9 @@ export const blogPosts = [
         image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         link: "/blog/1",
         content: `
-      <p>La digitalisation n'est pas une menace pour les artisans, c'est une opportunité. En fusionnant l'excellence artisanale avec la technologie, vous multipliez vos clients et vos revenus.</p>
+      <p>La digitalisation n'est pas une menace pour les entreprises, c'est une opportunité. En fusionnant l'excellence opérationnelle avec la technologie, vous multipliez votre productivité et vos revenus.</p>
       <h3>1. Un Site Web, Votre Meilleur Commercial</h3>
-      <p>90% des clients recherchent les artisans en ligne. Sans présence digitale, vous êtes invisible. Un site vitrine attire des prospects 24h/24.</p>
+      <p>90% des clients recherchent les entreprises en ligne. Sans présence digitale, vous êtes invisible. Un site vitrine attire des prospects 24h/24.</p>
       <h3>2. Mettre en Avant Votre Expertise</h3>
       <p>Montrez votre savoir-faire à travers des galeries de réalisations, des témoignages clients et une histoire authentique. La confiance naît de la transparence.</p>
       <h3>3. Automatiser les Tâches Répétitives</h3>
@@ -126,8 +126,8 @@ export const blogPosts = [
     },
     {
         id: 2,
-        title: "Automatisation : Gagnez 12 heures par semaine dans votre atelier",
-        excerpt: "Les workflow intelligents qui libèrent du temps créatif pour se concentrer sur votre savoir-faire.",
+        title: "Automatisation : Gagnez 12 heures par semaine dans votre entreprise",
+        excerpt: "Les workflow intelligents qui libèrent du temps créatif pour se concentrer sur votre cœur de métier.",
         category: "automatisation",
         author: { name: "Bricona Team", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
         date: "10 Avril 2026",
@@ -145,9 +145,9 @@ export const blogPosts = [
     },
     {
         id: 3,
-        title: "Mise en Relation : Connectez-vous aux bons clients",
-        excerpt: "Comment notre plateforme crée le pont entre votre excellence artisanale et les clients qui la cherchent.",
-        category: "mise-en-relation",
+        title: "Développement Sur-Mesure : Des solutions adaptées à votre activité",
+        excerpt: "Comment notre équipe développe des solutions digitales sur mesure pour répondre à vos besoins spécifiques.",
+        category: "developpement",
         author: { name: "Bricona Team", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
         date: "05 Avril 2026",
         readTime: "8 min",
@@ -155,11 +155,11 @@ export const blogPosts = [
         image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         link: "/blog/3",
         content: `
-    <p>Trouver les bons clients est un défi constant pour les artisans. Enésense résout ce problème par une mise en relation intelligente et vérifiée.</p>
-      <h3>Une Plateforme de Confiance</h3>
-      <p>Chaque artisan est vérifié pour son expertise, chaque client pour son sérieux. Fini les devis perdus et les clients fantômes.</p>
+    <p>Chaque entreprise a des besoins uniques. Enésense résout ce problème par le développement de solutions sur mesure, parfaitement adaptées à votre activité.</p>
+      <h3>Une Approche Sur Mesure</h3>
+      <p>Chaque projet est étudié en détail pour proposer une solution qui répond précisément à vos enjeux. Fini les outils génériques qui ne correspondent pas à vos processus.</p>
       <h3>Growth Stratégique</h3>
-      <p>Accédez à un réseau d'entrepreneurs locaux prêts à travailler avec vous. Développez votre carnet de clients qualifiés sans effort de prospection.</p>
+      <p>Accédez à des outils qui fluidifient votre activité et renforcent votre compétitivité. Développez votre performance sans effort de gestion inutile.</p>
     `
     }
 ];

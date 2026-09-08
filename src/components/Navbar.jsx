@@ -13,13 +13,9 @@ const navLinks = [
 
 
 const servicesLinks = [
-
-  { to: '/services#digitalisation', label: 'Digitalisation' },
-
-  { to: '/services#automatisation', label: 'Automatisation' },
-
-  { to: '/services#mise-en-relation', label: 'Mise en relation', hidden: true },
-
+  { to: '/services#digitalisation', label: 'Digitalisation', description: 'Accompagnement digital et développement logiciel' },
+  { to: '/services#automatisation', label: 'Automatisation', description: 'Automatisation intelligente des processus métier' },
+  { to: '/services#methode', label: 'Développement sur mesure', description: 'Solutions logicielles sur mesure pour entreprises' },
 ];
 
 
@@ -96,17 +92,21 @@ const Navbar = () => {
                 Services
                 <span className="material-symbols-outlined text-sm">expand_more</span>
               </Link>
-              <div className="absolute left-0 top-full pt-3 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-all duration-200">
-                <div className="min-w-[220px] rounded-xl bg-white shadow-xl border border-slate-200 p-2">
-                  {servicesLinks.filter((item) => !item.hidden).map((item) => (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      className="block px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-800 transition-colors"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+              <div className="fixed left-0 top-[72px] w-screen opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-all duration-200 z-50">
+                <div className="max-w-7xl mx-auto px-6 md:px-8">
+                  <div className="rounded-xl bg-white shadow-xl border border-slate-200 p-2">
+                    <div className="flex flex-col">
+                      {servicesLinks.filter((item) => !item.hidden).map((item) => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          className="block px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-800 transition-colors"
+                        >
+                          {item.label} <span className="text-xs text-slate-400">({item.description})</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -211,10 +211,13 @@ const Navbar = () => {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="flex items-center gap-3 px-6 py-3 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-low hover:text-primary transition-all duration-200"
+                  className="flex flex-col px-6 py-3 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-low hover:text-primary transition-all duration-200"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                  {item.label}
+                  <span className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                    {item.label}
+                  </span>
+                  <span className="text-[11px] text-on-surface-variant mt-0.5 pl-[18px]">{item.description}</span>
                 </Link>
               ))}
             </div>

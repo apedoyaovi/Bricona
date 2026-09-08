@@ -40,7 +40,7 @@ export default function ConditionsUtilisation() {
           <Section title="Services Proposés">
             <p>Enésense propose les services suivants :</p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Digitalisation des processus artisanaux</li>
+              <li>Digitalisation des processus</li>
               <li>Automatisation par intelligence artificielle</li>
               <li>Développement logiciel sur-mesure</li>
               <li>Accompagnement et mentorat digital</li>
@@ -87,7 +87,7 @@ export default function ConditionsUtilisation() {
 
           <Section title="Contact">
             <div className="p-6 bg-primary-fixed rounded-xl border border-primary/10">
-              <p className="font-bold text-on-surface">Enésense - Digital Artisan Excellence</p>
+              <p className="font-bold text-on-surface">Enésense - Digitalisation, automatisation et développement sur mesure</p>
               <p>📧 contact@bricona.net</p>
               <p>📱 +33 1 45 67 89 00</p>
               <p>📍 42 Rue de l'Innovation, 75002 Paris</p>

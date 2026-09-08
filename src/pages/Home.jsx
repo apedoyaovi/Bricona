@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import heroImg from '../assets/Bricona hero 1.webp';
 import heroCardImg from '../assets/Bricona hero 2.webp';
 import ConfirmDialog from '../components/ConfirmDialog';
+import WelcomePopup from '../components/WelcomePopup';
 import {
   SITE_CONTENT_EVENT,
   addEventRegistration,
@@ -13,7 +14,7 @@ import {
   getSiteSettings,
 } from '../utils/siteContent';
 
-// const partners = ['CRAFTLOG', 'ARTISAN.PRO', 'FABRIK', 'DIGIWORKS', 'MANUFAKT', 'TECH-OR'];
+// const partners = ['CRAFTLOG', 'TECH_STUDIO', 'FABRIK', 'DIGIWORKS', 'MANUFAKT', 'TECH-OR'];
 const partners = ['devenez l\'un des premiers partenaires de Enésense digitale (contactez l\'équipe commerciale pour en savoir plus)'];
 
 const heroWords = ["Implémentation des systèmes piloté par l'IA", 'Digitalisation', 'Automatisation'];
@@ -43,7 +44,7 @@ const Home = () => {
       img: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=200&q=80',
     },
     {
-      quote: "Leur mise en relation est redoutable : des clients qualifiés, des devis signés plus vite, et un suivi clair en temps réel.",
+      quote: "Leur automatisation est redoutable : des processus optimisés, des devis signés plus vite, et un suivi clair en temps réel.",
       name: 'Luc Benyahia',
       role: 'Menuisier & Chef d’atelier',
       img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
@@ -173,6 +174,7 @@ const Home = () => {
           setConfirmDialog({ open: false, registration: null, formElement: null });
         }}
       />
+      <WelcomePopup />
 
       {/* ===== Hero ===== */}
       <section
@@ -227,22 +229,22 @@ const Home = () => {
             {/* <div className="mt-8 flex items-center gap-3 text-white/60">
               <div className="flex -space-x-2">
                 <img
-                  alt="Artisan 1"
+                  alt="Client 1"
                   className="w-8 h-8 rounded-full border-2 border-primary-container object-cover"
                   src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=100&q=80"
                 />
                 <img
-                  alt="Artisan 2"
+                  alt="Client 2"
                   className="w-8 h-8 rounded-full border-2 border-primary-container object-cover"
                   src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=100&q=80"
                 />
                 <img
-                  alt="Artisan 3"
+                  alt="Client 3"
                   className="w-8 h-8 rounded-full border-2 border-primary-container object-cover"
                   src="https://images.unsplash.com/photo-1524503033411-c9566986fc8f?auto=format&fit=crop&w=100&q=80"
                 />
               </div>
-              <p className="text-xs font-medium">+2,500 artisans nous font confiance pour la mise en relation</p>
+              <p className="text-xs font-medium">+2,500 entreprises nous font confiance</p>
             </div> */}
           </div>
 
@@ -392,7 +394,7 @@ const Home = () => {
             {[
               { value: '+500', label: 'Projets Livrés',  color: 'text-primary' },
               { value: '98%',  label: 'Satisfaction',    color: 'text-secondary-container' },
-              { value: '2.5k', label: 'Artisans Actifs', color: 'text-primary' },
+               { value: '2.5k', label: 'Entreprises accompagnées', color: 'text-primary' },
               { value: '24h',  label: 'Support Réactif', color: 'text-secondary-container' },
             ].map((stat, i) => (
               <div key={stat.label} className="scroll-reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
