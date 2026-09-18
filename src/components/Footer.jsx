@@ -9,7 +9,7 @@ const Footer = () => {
 
   return (
     <footer className="w-full border-t border-slate-200 bg-slate-50">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-8 py-12 max-w-7xl mx-auto font-body text-sm text-slate-500">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-8 py-12 max-w-7xl mx-auto font-body text-sm text-slate-500">
         <div className="space-y-4">
           <img src={logoImg} alt="Enésense" className="block h-8 w-auto md:h-9" />
           <p className="leading-relaxed">Digitalisation, automatisation et développement sur mesure pour entreprises.</p>
@@ -20,23 +20,26 @@ const Footer = () => {
           </div>
         </div>
         <div>
-          <h5 className="font-bold text-on-surface mb-6 uppercase tracking-[0.1em] text-[10px]">Solutions</h5>
-          <ul className="space-y-4">
-            <li><Link className="hover:text-blue-600 transition-colors" to="/services">Services</Link></li>
-            <li><Link className="hover:text-blue-600 transition-colors" to="/services">Digitalisation</Link></li>
-            <li><Link className="hover:text-blue-600 transition-colors" to="/services">Automatisation</Link></li>
+          <h5 className="font-bold text-on-surface mb-4 uppercase tracking-[0.05em] text-sm font-headline" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Expertises</h5>
+          <ul className="space-y-3">
+            <li><Link className="hover:text-blue-600 transition-colors" to="/expertises">Extension d'équipes</Link></li>
+            <li><Link className="hover:text-blue-600 transition-colors" to="/expertises">Studio Produit</Link></li>
+            <li><Link className="hover:text-blue-600 transition-colors" to="/expertises">Modernisation applicative</Link></li>
+            <li><Link className="hover:text-blue-600 transition-colors" to="/expertises">IA & Automatisation</Link></li>
           </ul>
         </div>
         <div>
-          <h5 className="font-bold text-on-surface mb-6 uppercase tracking-[0.1em] text-[10px]">Entreprise</h5>
-          <ul className="space-y-4">
+          <h5 className="font-bold text-on-surface mb-4 uppercase tracking-[0.05em] text-sm font-headline" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Entreprise</h5>
+          <ul className="space-y-3">
             <li><Link className="hover:text-blue-600 transition-colors" to="/about">À Propos</Link></li>
+            <li><Link className="hover:text-blue-600 transition-colors" to="/about">Équipe</Link></li>
             <li><Link className="hover:text-blue-600 transition-colors" to="/contact">Contact</Link></li>
+            <li><Link className="hover:text-blue-600 transition-colors" to="/about">Partenaires</Link></li>
           </ul>
         </div>
         <div>
-          <h5 className="font-bold text-on-surface mb-6 uppercase tracking-[0.1em] text-[10px]">Légal</h5>
-          <ul className="space-y-4">
+          <h5 className="font-bold text-on-surface mb-4 uppercase tracking-[0.05em] text-sm font-headline" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Légal</h5>
+          <ul className="space-y-3">
             <li><Link className="hover:text-blue-600 transition-colors" to="/mentions-legales">Mentions Légales</Link></li>
             <li><Link className="hover:text-blue-600 transition-colors" to="/conditions-utilisation">Conditions d'Utilisation</Link></li>
             <li><Link className="hover:text-blue-600 transition-colors" to="/politique-de-confidentialite">Confidentialité</Link></li>

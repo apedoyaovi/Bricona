@@ -6,9 +6,9 @@
   --color-inverse-on-surface: #eff1f3;
   --color-on-tertiary: #ffffff;
   --color-surface-dim: #d8dadc;
-  --color-primary-container: #0047ab;
+  --color-primary-container: #0B1D33;
   --color-secondary: #705d00;
-  --color-primary: #00327d;
+  --color-primary: #0B1D33;
   --color-error-container: #ffdad6;
   --color-on-primary: #ffffff;
   --color-surface-container-highest: #e0e3e5;
@@ -48,6 +48,40 @@
   --color-on-secondary-fixed-variant: #544600;
   --color-surface-bright: #f8f9fb;
   --color-on-secondary: #ffffff;
+
+  /* ─── Design tokens stitch_en_sense Home1 debut ─── */
+  /* ─── Design tokens Home1 (stitch_en_sense redesign) ─── */
+  --color-electric-blue: #F2B705;
+  --color-deep-navy: #0A0D14;
+  --color-amber-soft: #FEF3C7;
+  --color-amber-contrast: #D97706;
+  --color-success-emerald: #10B981;
+  /* Override primary tokens to match new design */
+  --color-h1-primary: #1e40af;
+  --color-h1-electric: #2563EB;
+  --color-h1-navy: #0F172A;
+  --color-navy-dark: #0B1D33;
+  --color-navy-soft: #E8F0F9;
+  --color-yellow: #F2B705;
+  --color-yellow-dark: #C99600;
+
+  /* Spacing tokens for Home1 */
+  --spacing-space-2xs: 0.25rem;
+  --spacing-space-xs: 0.5rem;
+  --spacing-space-sm: 0.75rem;
+  --spacing-space-md: 1rem;
+  --spacing-space-lg: 1.5rem;
+  --spacing-space-xl: 2rem;
+  --spacing-space-2xl: 3rem;
+  --spacing-space-3xl: 4.5rem;
+  --spacing-space-4xl: 6rem;
+  --spacing-container-max: 76rem;
+  --spacing-gutter-mobile: 1rem;
+  --spacing-gutter-desktop: 2rem;
+
+  /* Font for Home1 headlines */
+  --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+    /* ─── Design tokens stitch_en_sense Home1 fin ─── */
 
   --radius-DEFAULT: 0.25rem;
   --radius-lg: 0.5rem;

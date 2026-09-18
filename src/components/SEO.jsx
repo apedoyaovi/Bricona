@@ -11,26 +11,6 @@ const pageMetadata = {
       description: 'Enésense (Enésese, Enésence, Enesense) accompagne les entreprises dans leur transformation digitale : digitalisation, automatisation et développement de solutions sur mesure en France et au Togo.', 
       keywords: `${BRAND_VARIANTS}, digitalisation entreprise, automatisation processus, développement logiciel sur mesure, maintenance informatique, digitalisation PME, automatisation TPE, logiciel sur mesure Togo, digitalisation France, Enésense contact, devis digitalisation, solution digitale entreprise` 
     },
-    '/services': { 
-      title: 'Services | Enésense, digitalisation, automatisation et développement sur mesure', 
-      description: 'Découvrez les services Enésense : digitalisation, automatisation des processus et développement de solutions sur mesure pour les entreprises. Maintenance et accompagnement inclus.', 
-      keywords: `${BRAND_VARIANTS}, services digitaux, automatisation entreprise, digitalisation PME, développement logiciel sur mesure, maintenance informatique, digitalisation entreprise, automatisation processus métier, solution digitale entreprise` 
-    },
-    '/offres': { 
-      title: 'Offres digitales pour entreprises | Enésense', 
-      description: 'Choisissez une offre Enésense adaptée à vos objectifs de visibilité, de digitalisation et de croissance. Diagnostic, déploiement et pilotage pour transformer votre activité.', 
-      keywords: `${BRAND_VARIANTS}, offres digitales, solutions entreprises, visibilité en ligne, diagnostic digital, déploiement solution, pilotage activité, tarif digitalisation, devis automatisation` 
-    },
-    '/projets': { 
-      title: 'Projets | Enésense, réalisation digitale pour entreprises', 
-      description: 'Explorez les projets réalisés par Enésense : digitalisation, automatisation et développement de solutions sur mesure pour entreprises.', 
-      keywords: `${BRAND_VARIANTS}, projets digitaux, portfolio, réalisations digitales, cas clients digitalisation, projets automatisation, développement sur mesure` 
-    },
-    '/blog': { 
-      title: 'Blog | Conseils digitalisation, automatisation et développement sur mesure | Enésense', 
-      description: 'Conseils pratiques d\'Enésense pour digitaliser votre entreprise, automatiser vos processus et développer des solutions sur mesure.', 
-      keywords: `${BRAND_VARIANTS}, blog digitalisation, conseils entreprises, automatisation processus, développement logiciel, blog digital Togo, conseils digitalisation entreprise` 
-    },
     '/contact': { 
       title: 'Contact | Enésense - Digitalisation, Automatisation, Développement sur mesure', 
       description: 'Contactez Enésense pour parler de votre projet de digitalisation, d\'automatisation ou de développement de solution sur mesure. Devis gratuit sous 24h.', 
@@ -41,12 +21,35 @@ const pageMetadata = {
       description: 'Découvrez la mission d\'Enésense : faire grandir les entreprises grâce à des outils digitaux simples, utiles et accessibles. Digitalisation, automatisation et développement sur mesure.', 
       keywords: `${BRAND_VARIANTS}, à propos, entreprise digitale France, digitalisation entreprise, équipe digitalisation, mission Enésense` 
     },
+    '/solutions': { 
+      title: 'Solutions | Enésense - Nos produits numériques BRICONA', 
+      description: 'Enésense conçoit ses propres plateformes numériques, à commencer par BRICONA, dédiée au secteur du BTP. Des produits développés pour résoudre des problèmes réels.', 
+      keywords: `${BRAND_VARIANTS}, solutions numériques, BRICONA, plateforme BTP, produit numérique, développement logiciel produit` 
+    },
+    '/expertises': { 
+      title: 'Expertises — Enésense', 
+      description: "Extension d'équipes techniques, studio produit, modernisation applicative, IA & automatisation : les capacités d'ingénierie d'Enésense.", 
+      keywords: `${BRAND_VARIANTS}, expertises Enésense, extension d'équipes techniques, studio produit, modernisation applicative, IA automatisation, capacités d'ingénierie` 
+    },
+    '/solutions/bricona': { 
+      title: 'BRICONA — la plateforme numérique du BTP | Enésense', 
+      description: 'BRICONA est la plateforme numérique d\'Enésense dédiée au secteur du BTP : planification, suivi de chantier, documents et indicateurs.', 
+      keywords: `${BRAND_VARIANTS}, BRICONA, plateforme BTP, suivi chantier, gestion chantier, numérique BTP` 
+    },
+    '/solutions/selvy': { 
+      title: 'SELVY — le social commerce pour les marchands | Enésense', 
+      description: 'SELVY est la plateforme de social commerce d\'Enésense pensée pour les marchands d\'Afrique de l\'Ouest.', 
+      keywords: `${BRAND_VARIANTS}, SELVY, social commerce, marchands Afrique de l'Ouest, plateforme commerciale, vente en ligne` 
+    },
 };
 
 const getPageMetadata = (pathname) => {
     if (pageMetadata[pathname]) return pageMetadata[pathname];
-    if (pathname.startsWith('/projets/')) return { ...pageMetadata['/projets'], title: `Projet | ${SITE_NAME}` };
-    if (pathname.startsWith('/blog/')) return { ...pageMetadata['/blog'], title: `Article | ${SITE_NAME}` };
+    if (pathname.startsWith('/expertises/')) return { ...pageMetadata['/expertises'], title: `Expertise | ${SITE_NAME}` };
+    if (pathname.startsWith('/solutions/')) return { ...pageMetadata['/solutions'], title: `Solution | ${SITE_NAME}` };
+    if (pathname === '/solutions') return pageMetadata['/solutions'];
+    if (pathname === '/solutions/bricona') return pageMetadata['/solutions/bricona'];
+    if (pathname === '/solutions/selvy') return pageMetadata['/solutions/selvy'];
     return pageMetadata['/'];
 };
 

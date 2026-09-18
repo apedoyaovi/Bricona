@@ -1,947 +1,778 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import heroImg from '../assets/Bricona hero 1.webp';
-import heroCardImg from '../assets/Bricona hero 2.webp';
-import ConfirmDialog from '../components/ConfirmDialog';
-import WelcomePopup from '../components/WelcomePopup';
-import {
-  SITE_CONTENT_EVENT,
-  addEventRegistration,
-  getEventGroups,
-  formatEventDate,
-  getPublishedEvents,
-  getPublishedEventsFromSupabase,
-  getSiteSettings,
-} from '../utils/siteContent';
 
-// const partners = ['CRAFTLOG', 'TECH_STUDIO', 'FABRIK', 'DIGIWORKS', 'MANUFAKT', 'TECH-OR'];
-const partners = ['devenez l\'un des premiers partenaires de Enésense digitale (contactez l\'équipe commerciale pour en savoir plus)'];
-
-const heroWords = ["Implémentation des systèmes piloté par l'IA", 'Digitalisation', 'Automatisation'];
-const showHeroPhoto = false;//permet d'afficher ou non la photo de droite dans la partie hero
-const showKeyFigures = false;//permet d'afficher ou non la section des statistiques
-const showTestimonials = false;//permet d'afficher ou non la section des témoignages clients sur la page d'accueil
-
-const eventIcons = {
-  Conference: 'co_present',
-  Meeting: 'groups',
-  Atelier: 'event_available',
+/* ─── Design Tokens (matching stitch_en_sense redesign) ─── */
+const T = {
+  primary: '#1e40af',
+  electric: '#2563eb',
+  navy: '#0A0D14',
+  surface: '#f8f9ff',
+  surfaceContainerLow: '#eff4ff',
+  surfaceContainer: '#e5eeff',
+  surfaceContainerHigh: '#dce9ff',
+  surfaceBright: '#f8f9ff',
+  onSurface: '#0b1c30',
+  onSurfaceVariant: '#444653',
+  onPrimary: '#ffffff',
+  secondaryContainer: '#dae2fd',
+  primaryFixed: '#dde1ff',
+  onPrimaryFixedVariant: '#173bab',
+  amberSoft: '#FEF3C7',
+  amberContrast: '#D97706',
+  emerald: '#10B981',
+  outline: '#757684',
+  yellow: '#F2B705',
+  yellowDeep: '#C99600',
+  onNavySoft: '#AEB9C7',
+  navy2: '#132A45',
+  navy3: '#1E3C5F',
+  inkSoft: '#4B5563',
+  line: '#E4E4DE',
+  navyDeep: '#040f23',
+  navyText: '#f7f8fa',
+  navyMuted: '#b0b8c4',
 };
 
-const EventCard = ({ event, badge, badgeClass, gradient, showSeats, delay = 0 }) => (
-  <div
-    className="group relative rounded-[1.25rem] border border-outline-variant/15 bg-white p-6 shadow-sm hover:shadow-[0_20px_45px_-5px_rgba(0,50,125,0.12)] hover:-translate-y-1 transition-all duration-500"
-    style={{ transitionDelay: `${delay}s` }}
-  >
-    <div className={`absolute left-0 top-5 bottom-5 w-1 rounded-full ${gradient || 'bg-gradient-to-b from-secondary-container to-primary'}`}></div>
-    <div className="flex items-start justify-between gap-3 mb-4">
-      <div className="h-11 w-11 rounded-xl bg-primary-fixed text-primary flex items-center justify-center">
-        <span className="material-symbols-outlined text-xl">
-          {eventIcons[event.type] || 'event'}
-        </span>
-      </div>
-      <div className="flex flex-wrap justify-end gap-1.5">
-        <span className="rounded-full bg-primary-fixed/30 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-primary">
-          {event.type}
-        </span>
-        <span className={`rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] ${badgeClass}`}>
-          {badge}
-        </span>
-      </div>
-    </div>
+const fonts = {
+  jakarta: "'Plus Jakarta Sans', sans-serif",
+  inter: "'Inter', sans-serif",
+};
 
-    <h4 className="font-headline text-base font-bold text-primary leading-snug mb-3">{event.title}</h4>
-    <p className="text-xs text-on-surface-variant leading-relaxed mb-4">{event.description}</p>
-
-    <div className="space-y-1.5 text-xs text-on-surface-variant">
-      <p className="flex items-center gap-2">
-        <span className="material-symbols-outlined text-base text-primary">calendar_month</span>
-        <span>{formatEventDate(event.date)} - {event.time}</span>
-      </p>
-      <p className="flex items-center gap-2">
-        <span className="material-symbols-outlined text-base text-primary">location_on</span>
-        <span>{event.place}</span>
-      </p>
-      {showSeats && event.seats && (
-        <p className="flex items-center gap-2 font-bold text-primary">
-          <span className="material-symbols-outlined text-base">confirmation_number</span>
-          <span>{event.seats} places disponibles</span>
-        </p>
-      )}
-    </div>
-  </div>
-);
-
-const Home = () => {
-  const location = useLocation();
-  const featuredTestimonials = [
-    {
-      quote: "Enésense n'est pas juste un prestataire, c'est le moteur de notre transformation numérique. Notre chiffre d'affaires a doublé en un an.",
-      name: 'Jean-Marc Lefebvre',
-      role: 'Maître Forgeron & Innovateur',
-      img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC2OyJkYZiDFYO8DZTe8vulU-mCPqCj8TlkeOwKZH2QaNJDGOI2lkEE4N_RY5bJglkIVtFHb68tKNVmQ13CxTTB6-42bfjABr4VyzZJy8FmJaEy2TjLeHVpUJnJa4crWZeA6R_9S0j6pZDqzfd9yGyx--yUaudzvqYExMzOua59sR9b1rx0V3DOd65FZsqd-GxwKFhSSOyL2B2ACk2NFQKxMs4f5KPX1s6OmfT_5J-WRGSG73Pb1JPQTTwgmKs0mBtGjLfC0xJ7a3YF',
-    },
-    {
-      quote: "Grâce à l'automatisation, mon atelier gagne 12 heures par semaine. La qualité reste intacte, mais la charge mentale a disparu.",
-      name: 'Aïcha Traoré',
-      role: 'Maroquinière',
-      img: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=200&q=80',
-    },
-    {
-      quote: "Leur automatisation est redoutable : des processus optimisés, des devis signés plus vite, et un suivi clair en temps réel.",
-      name: 'Luc Benyahia',
-      role: 'Menuisier & Chef d’atelier',
-      img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
-    },
-  ];
-
-  const [wordIndex, setWordIndex] = useState(0);
-  const [subIndex, setSubIndex] = useState(0);
-  const [deleting, setDeleting] = useState(false);
-  const [testimonialIndex, setTestimonialIndex] = useState(0);
-  const [upcomingEvents, setUpcomingEvents] = useState(() => getPublishedEvents());
-  const [siteSettings, setSiteSettings] = useState(() => getSiteSettings());
-  const [registrationSent, setRegistrationSent] = useState(false);
-  const [registrationError, setRegistrationError] = useState('');
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [confirmDialog, setConfirmDialog] = useState({
-    open: false,
-    registration: null,
-    formElement: null,
-  });
-  const eventGroups = getEventGroups(upcomingEvents);
-  const displayedPastEvents = eventGroups.past.slice(0, 3);
-  const displayedCurrentEvents = eventGroups.current.slice(0, 1);
-  const displayedFutureEvents = eventGroups.future.slice(0, 3);
-  const hasVisibleEvents = displayedPastEvents.length > 0 || displayedCurrentEvents.length > 0 || displayedFutureEvents.length > 0;
-
-  useEffect(() => {
-    if (location.hash) {
-      const id = setTimeout(() => {
-        document
-          .getElementById(location.hash.substring(1))
-          ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-
-      return () => clearTimeout(id);
-    }
-  }, [location.hash]);
-
-  useEffect(() => {
-    const syncSiteContent = async () => {
-      setSiteSettings(getSiteSettings());
-
-      try {
-        setUpcomingEvents(await getPublishedEventsFromSupabase());
-      } catch {
-        setUpcomingEvents(getPublishedEvents());
-      }
-    };
-
-    syncSiteContent();
-    window.addEventListener(SITE_CONTENT_EVENT, syncSiteContent);
-    window.addEventListener('storage', syncSiteContent);
-
-    return () => {
-      window.removeEventListener(SITE_CONTENT_EVENT, syncSiteContent);
-      window.removeEventListener('storage', syncSiteContent);
-    };
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => { entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('active'); }); },
-      { threshold: 0.1 }
-    );
-    document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const currentWord = heroWords[wordIndex];
-    const isComplete = subIndex === currentWord.length;
-    const isEmpty = subIndex === 0;
-
-    const delay = deleting ? 45 : isComplete ? 1100 : 70;
-    const timeout = setTimeout(() => {
-      if (!deleting && !isComplete) {
-        setSubIndex((v) => v + 1);
-        return;
-      }
-      if (!deleting && isComplete) {
-        setDeleting(true);
-        return;
-      }
-      if (deleting && !isEmpty) {
-        setSubIndex((v) => v - 1);
-        return;
-      }
-      if (deleting && isEmpty) {
-        setDeleting(false);
-        setWordIndex((v) => (v + 1) % heroWords.length);
-      }
-    }, delay);
-
-    return () => clearTimeout(timeout);
-  }, [deleting, subIndex, wordIndex]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTestimonialIndex((v) => (v + 1) % featuredTestimonials.length);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [featuredTestimonials.length]);
-
+/* ─── HERO SECTION ─── */
+function HeroSection() {
   return (
-    <main className="pt-[72px]">
-      <ConfirmDialog
-        open={confirmDialog.open}
-        title="Confirmer l'inscription ?"
-        message="Votre inscription sera transmise a l equipe Enésense pour confirmer votre place a l evenement."
-        confirmLabel="S'inscrire"
-        onCancel={() => setConfirmDialog({ open: false, registration: null, formElement: null })}
-        onConfirm={async () => {
-          if (confirmDialog.registration) {
-            setIsRegistering(true);
-            setRegistrationError('');
-
-            try {
-              await addEventRegistration(confirmDialog.registration);
-              setRegistrationSent(true);
-              confirmDialog.formElement?.reset();
-            } catch {
-              setRegistrationError("Impossible d'enregistrer l'inscription pour le moment. Veuillez reessayer.");
-            } finally {
-              setIsRegistering(false);
-            }
-          }
-          setConfirmDialog({ open: false, registration: null, formElement: null });
-        }}
+    <section className="relative w-full overflow-hidden flex items-center min-h-screen mt-[72px] py-20 lg:py-24 group" style={{ background: T.navyDeep }}>
+      <img
+        src="/hero-architecture.jpg"
+        alt="Architecture numérique abstraite"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        style={{ opacity: 0.7 }}
       />
-      <WelcomePopup />
+      <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(to right, #040f23, rgba(4,15,35,0.9), rgba(4,15,35,0.3))' }} />
 
-      {/* ===== Hero ===== */}
-      <section
-        className="relative min-h-[55vh] flex items-center overflow-hidden hero-gradient bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(135deg, rgba(0,50,125,0.55) 0%, rgba(37,211,102,0.55) 100%), url(${heroImg})`,
-          backgroundPosition: '5% center',
-        }}
-      >
-        <div className="absolute inset-0 bg-primary/40"></div>
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-secondary-container rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-[-10%] left-[-5%] w-80 h-80 bg-primary-container rounded-full blur-[80px]"></div>
-        </div>
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8 w-full h-full relative">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full">
 
-        <div className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10 pt-28 md:pt-32 pb-20 md:pb-24">
+          {/* Left Column */}
+          <div className="lg:col-span-7 flex flex-col items-center lg:items-start gap-6">
 
-          {/* Left */}
-          <div className="lg:col-span-10 lg:col-start-2 animate-fade-up text-center flex flex-col items-center -translate-y-3 md:-translate-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
-              <p className="font-label editorial-caps text-white font-bold text-[10px] md:text-[11px]">Innovation &amp; Digitalisation Automatisée</p>
-            </div>
-
-            <h1 className="font-headline text-[2.15rem] lg:text-[3.4rem] font-extrabold tracking-tight text-white leading-[1.1] mb-4">
-              Enésense à l'Heure du <br />
-              <span className="text-secondary-container">Digital de Pointe.</span>
-            </h1>
-            <div className="mb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-secondary-container shadow-[0_0_12px_rgba(252,212,0,0.9)]"></span>
-                <p className="text-secondary-container font-bold text-lg md:text-xl tracking-wide h-7">
-                  {heroWords[wordIndex].slice(0, subIndex)}
-                  <span className="inline-block w-2 animate-pulse text-secondary-container">|</span>
-                </p>
-              </div>
-            </div>
-            <p className="text-[15px] md:text-base text-primary-fixed max-w-2xl mx-auto mb-7 leading-relaxed opacity-90">
-              Chez Enésense digitale nous concevons et déployons des solutions numériques sur mesure pour améliorer l'efficacité de vos équipes et augmenter votre portefeuille. 
+            {/* Eyebrow */}
+            <p style={{ fontFamily: fonts.inter, fontSize: '14px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: T.yellow }}>
+              Enésense
             </p>
 
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link to="/contact" className="bg-secondary-container text-on-secondary-container px-6 py-3 rounded-xl font-bold text-[15px] hover:shadow-[0_16px_40px_rgba(252,212,0,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2">
-                Prendre un rendez-vous
-                <span className="material-symbols-outlined text-base">phone</span>
-              </Link>
-              <Link to="/#conferences-meetings" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 rounded-xl font-semibold text-[15px] hover:bg-white/20 transition-all">
-                S'inscrire aux webinaires 
-              </Link>
-            </div>
+            {/* Heading */}
+            <h1 className="text-center lg:text-left" style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(42px, 7.5vw, 96px)', fontWeight: 700, lineHeight: 0.95, letterSpacing: '-0.03em', color: T.navyText, margin: 0, maxWidth: '100%', whiteSpace: 'nowrap' }}>
+              Build. Scale. Evolve.
+            </h1>
 
-            {/* <div className="mt-8 flex items-center gap-3 text-white/60">
-              <div className="flex -space-x-2">
-                <img
-                  alt="Client 1"
-                  className="w-8 h-8 rounded-full border-2 border-primary-container object-cover"
-                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=100&q=80"
-                />
-                <img
-                  alt="Client 2"
-                  className="w-8 h-8 rounded-full border-2 border-primary-container object-cover"
-                  src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=100&q=80"
-                />
-                <img
-                  alt="Client 3"
-                  className="w-8 h-8 rounded-full border-2 border-primary-container object-cover"
-                  src="https://images.unsplash.com/photo-1524503033411-c9566986fc8f?auto=format&fit=crop&w=100&q=80"
-                />
-              </div>
-              <p className="text-xs font-medium">+2,500 entreprises nous font confiance</p>
-            </div> */}
-          </div>
+            {/* Subtitle */}
+            <h2 style={{ fontFamily: fonts.inter, fontSize: '24px', fontWeight: 500, lineHeight: '34px', letterSpacing: '-0.005em', color: '#f7f8fa', maxWidth: '640px', margin: '0 auto', textAlign: 'left' }}>
+              Des équipes, des produits et des technologies pour transformer durablement votre environnement numérique.
+            </h2>
+            <p style={{ fontFamily: fonts.inter, fontSize: '17px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.005em', color: T.navyMuted, maxWidth: '540px', margin: '0 auto', textAlign: 'left' }}>
+              Enésense accompagne les entreprises dans la construction, l'évolution et la modernisation de leurs environnements numériques de l'ingénierie technique au développement de produits et à l'automatisation.
+            </p>
 
-          {/* Right — Photo */}
-          {showHeroPhoto && (
-          <div className="lg:col-span-5 relative animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <div className="relative w-full max-w-xs lg:max-w-sm mx-auto aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl group">
-              <img
-                alt="Modern Craftsmanship"
-                className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
-                src={heroCardImg}
-                loading="lazy"
-              />
-              {/* Top stat chip */}
-              <div className="absolute top-5 right-5 glass-card p-3 rounded-xl shadow-lg">
-                <div className="flex items-center gap-2">
-                  <div className="p-1.5 bg-secondary-container/20 rounded-lg">
-                    <span className="material-symbols-outlined text-secondary text-lg">trending_up</span>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-primary opacity-60">Croissance</p>
-                    <p className="text-sm font-black text-primary">+80%</p>
-                  </div>
-                </div>
-              </div>
-              {/* Bottom glass card */}
-              <div className="absolute bottom-5 left-5 right-5 glass-card p-4 rounded-2xl shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-white">
-                      <span className="material-symbols-outlined text-base">precision_manufacturing</span>
-                    </div>
-                    <div>
-                      <p className="font-bold text-primary text-sm">Entreprise Connecté et tâches automatisées</p>
-                      <p className="text-xs text-on-surface-variant">Monitoring 24/7</p>
-                    </div>
-                  </div>
-                  <div className="px-2 py-0.5 bg-green-100 text-green-700 text-[9px] font-bold rounded-full uppercase tracking-widest">Actif</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          )}
-
-        </div>
-      </section>
-
-      {/* ===== Partners Marquee ===== */}
-      <section className="py-6 bg-white border-b border-outline-variant/10">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
-          <div className="flex items-center gap-3 mb-2 text-xs md:text-sm font-bold uppercase tracking-[0.28em] text-on-surface-variant/70">
-            <span className="w-10 h-px bg-outline-variant/60"></span>
-            Devenez partenaire:(contactez nous pour en savoir plus)
-          </div>
-          {/* <div className="flex items-center gap-3 mb-2 text-xs md:text-sm font-bold uppercase tracking-[0.28em] text-on-surface-variant/70">
-            <span className="w-10 h-px bg-outline-variant/60"></span>
-            Ils nous font confiance
-          </div> */}
-          <div
-            className="overflow-hidden rounded-2xl bg-surface-container-lowest/70 border border-outline-variant/20 shadow-sm"
-            style={{ maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)' }}
-          >
-            <div className="flex items-center whitespace-nowrap animate-marquee py-5">
-              {[...partners, ...partners].map((name, i) => (
-                <span
-                  key={i}
-                  className="mx-6 inline-flex items-center gap-3"
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full pt-4">
+                <a
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg transition-all duration-200 active:translate-y-0.5 hover:scale-105"
+                  style={{ background: T.yellow, color: T.navyDeep, fontFamily: fonts.inter, fontSize: '14px', fontWeight: 600, textDecoration: 'none', boxShadow: '0 4px 14px rgba(242,183,5,0.3)' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
+                  onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-secondary-container/90"></span>
-                  <span className="px-4 py-1.5 rounded-full border border-outline-variant/30 bg-white/70 text-primary/90 font-black font-headline text-sm md:text-base tracking-[0.22em] uppercase shadow-[0_4px_14px_rgba(0,0,0,0.06)]">
-                    {name}
-                  </span>
-                </span>
-              ))}
+                  Discuter de votre projet
+                </a>
+                <a
+                  href="/expertises"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg border transition-all duration-200 active:translate-y-0.5 hover:scale-105"
+                  style={{ borderColor: T.navyMuted, color: T.navyText, fontFamily: fonts.inter, fontSize: '14px', fontWeight: 500, textDecoration: 'none' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = T.yellow; e.currentTarget.style.color = T.yellow; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = T.navyMuted; e.currentTarget.style.color = T.navyText; }}
+                >
+                  Nos expertises
+                </a>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* ===== Services ===== */}
-      <section className="py-16 bg-surface relative overflow-hidden">
-        <div className="absolute inset-0 opacity-40 pointer-events-none">
-          <div className="absolute -top-16 -right-10 w-72 h-72 bg-primary-fixed rounded-full blur-[90px]"></div>
-          <div className="absolute -bottom-20 -left-10 w-80 h-80 bg-secondary-container/20 rounded-full blur-[110px]"></div>
-        </div>
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="text-center mb-12 scroll-reveal active">
-            <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-1">Notre Expertise</p>
-            <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface">Solutions sur Mesure</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            {/* Card 1 */}
-            <div className="group p-7 rounded-2xl bg-white border border-outline-variant/10 hover:border-primary/30 hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.12)] transition-all duration-500 scroll-reveal active hover:-translate-y-1">
-              <div className="w-12 h-12 bg-primary-fixed rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300 group-hover:scale-105">
-                <span className="material-symbols-outlined text-xl">hub</span>
-              </div>
-              <h3 className="font-headline text-base font-bold mb-2 text-primary">implémentation des systèmes piloté par l'IA</h3>
-              <p className="text-on-surface-variant text-sm leading-relaxed mb-5">
-                Accédez à un réseau exclusif de partenaires certifiés. Notre technologie de matching garantit la synergie parfaite.
-              </p>
-              <Link className="text-primary font-bold flex items-center gap-1 text-sm group/link" to="/services">
-                Découvrir l'écosystème
-                <span className="material-symbols-outlined text-base transition-transform group-hover/link:translate-x-1">arrow_forward</span>
-              </Link>
-            </div>
-
-            {/* Card 2 — Featured */}
-            <div className="group p-7 rounded-2xl bg-primary text-white hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.25)] transition-all duration-500 scroll-reveal active hover:-translate-y-1" style={{ transitionDelay: '0.1s' }}>
-              <div className="w-12 h-12 bg-secondary-container rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform duration-300">
-                <span className="material-symbols-outlined text-on-secondary-container text-xl">devices</span>
-              </div>
-              <h3 className="font-headline text-base font-bold mb-2">Digitalisation</h3>
-              <p className="text-primary-fixed/80 text-sm leading-relaxed mb-5">
-                Propulsez votre atelier dans l'ère numérique. Nous créons des interfaces fluides qui simplifient votre gestion.
-              </p>
-              <Link className="text-secondary-container font-bold flex items-center gap-1 text-sm group/link" to="/services">
-                Optimiser ma structure
-                <span className="material-symbols-outlined text-base transition-transform group-hover/link:translate-x-1">arrow_forward</span>
-              </Link>
-            </div>
-
-            {/* Card 3 */}
-            <div className="group p-7 rounded-2xl bg-white border border-outline-variant/10 hover:border-primary/30 hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.12)] transition-all duration-500 scroll-reveal active hover:-translate-y-1" style={{ transitionDelay: '0.2s' }}>
-              <div className="w-12 h-12 bg-primary-fixed rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300 group-hover:scale-105">
-                <span className="material-symbols-outlined text-xl">auto_mode</span>
-              </div>
-              <h3 className="font-headline text-base font-bold mb-2 text-primary">Automatisation</h3>
-              <p className="text-on-surface-variant text-sm leading-relaxed mb-5">
-                Réduisez les tâches répétitives de 80%. Nos solutions IA vous permettent de vous concentrer sur votre travail.
-              </p>
-              <Link className="text-primary font-bold flex items-center gap-1 text-sm group/link" to="/services">
-                En savoir plus
-                <span className="material-symbols-outlined text-base transition-transform group-hover/link:translate-x-1">arrow_forward</span>
-              </Link>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Key Figures commented until real statistics are available ===== */}
-      {showKeyFigures && (
-      <section className="py-16 bg-surface-container-low">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[
-              { value: '+500', label: 'Projets Livrés',  color: 'text-primary' },
-              { value: '98%',  label: 'Satisfaction',    color: 'text-secondary-container' },
-               { value: '2.5k', label: 'Entreprises accompagnées', color: 'text-primary' },
-              { value: '24h',  label: 'Support Réactif', color: 'text-secondary-container' },
-            ].map((stat, i) => (
-              <div key={stat.label} className="scroll-reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
-                <div className={`text-4xl lg:text-5xl font-black font-headline mb-1 ${stat.color}`}>{stat.value}</div>
-                <p className="text-on-surface-variant font-bold tracking-tight uppercase text-[10px]">{stat.label}</p>
+/* ─── PARTNERS STRIP ─── */
+function PartnersStrip() {
+  const partners = [
+    { icon: 'auto_awesome', name: 'Selvy', color: T.onSurface },
+    { icon: 'construction', name: 'Bricona', color: T.primary },
+  ];
+  return (
+    <section className="w-full py-8" style={{ background: T.surfaceContainerLow, boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.04)' }}>
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <p style={{ fontFamily: fonts.inter, fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: T.onSurfaceVariant, margin: 0 }}>
+            Ils nous font confiance &amp; Partenaires technologiques :
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12" style={{ opacity: 0.8 }}>
+            {partners.map(({ icon, name, color }) => (
+              <div key={name} className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined" style={{ fontSize: '20px', color }}>{icon}</span>
+                <span style={{ fontFamily: fonts.jakarta, fontSize: '18px', fontWeight: 700, color: T.onSurface }}>{name}</span>
               </div>
             ))}
           </div>
         </div>
-      </section>
-      )}
-
-      {/* ===== Offres résumé ===== */}
-      <section id="offres-summary" className="py-16 bg-surface relative overflow-hidden scroll-mt-24">
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute -top-10 -left-10 w-96 h-96 bg-secondary-container rounded-full blur-[100px]"></div>
-          <div className="absolute -bottom-10 -right-10 w-80 h-80 bg-primary/20 rounded-full blur-[90px]"></div>
-        </div>
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
-          <div className="text-center mb-12 scroll-reveal active">
-            <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-1">Offres ENÉSENSE</p>
-            <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface mb-3">Nos offres essentielles</h2>
-            <p className="text-on-surface-variant text-sm max-w-2xl mx-auto leading-relaxed">
-              Un aperçu rapide de nos trois phases. Pour le détail complet et toutes les conditions, rendez-vous sur la page Offres.
-            </p>
-          </div>
-
-          <div className="grid gap-6 lg:grid-cols-3">
-            <div className="group rounded-[2rem] bg-white border border-outline-variant/10 p-7 shadow-sm hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.12)] transition-all scroll-reveal active">
-              <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-secondary-container text-white mb-4">
-                <span className="material-symbols-outlined">analytics</span>
-              </div>
-              <h3 className="font-headline text-lg font-bold text-primary mb-3">Phase 1 — Diagnostic</h3>
-              <p className="text-sm text-on-surface-variant leading-relaxed mb-4">
-                Audit de vos processus, recommandations priorisées et feuille de route claire.
-              </p>
-              <p className="text-sm font-bold text-primary mb-3">120 €</p>
-              <p className="text-xs text-on-surface-variant">Offert si contrat Déploiement signé sous 7 jours.</p>
-            </div>
-
-            <div className="group rounded-[2rem] bg-white border border-outline-variant/10 p-7 shadow-sm hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.12)] transition-all scroll-reveal active">
-              <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-primary text-white mb-4">
-                <span className="material-symbols-outlined">construction</span>
-              </div>
-              <h3 className="font-headline text-lg font-bold text-primary mb-3">Phase 2 — Déploiement</h3>
-              <p className="text-sm text-on-surface-variant leading-relaxed mb-4">
-                Conception et déploiement sur mesure des solutions adaptées à votre projet.
-              </p>
-              <p className="text-sm font-bold text-primary mb-3">Sur devis</p>
-              <p className="text-xs text-on-surface-variant">A partir de 1 300 € selon la complexité.</p>
-            </div>
-
-            <div className="group rounded-[2rem] bg-white border border-outline-variant/10 p-7 shadow-sm hover:shadow-[0_24px_50px_-10px_rgba(0,50,125,0.12)] transition-all scroll-reveal active">
-              <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-secondary-container text-white mb-4">
-                <span className="material-symbols-outlined">support_agent</span>
-              </div>
-              <h3 className="font-headline text-lg font-bold text-primary mb-3">Phase 3 — Pilotage</h3>
-              <p className="text-sm text-on-surface-variant leading-relaxed mb-4">
-                Suivi opérationnel, optimisation continue et support prioritaire pour vos outils.
-              </p>
-              <p className="text-sm font-bold text-primary mb-3">90 €/mois ou 75 €/mois</p>
-              <p className="text-xs text-on-surface-variant">90 €/mois ou 75 €/mois si abonnement annuel (sans frais cachés).</p>
-            </div>
-          </div>
-
-          <div className="mt-10 text-center scroll-reveal">
-            <p className="text-on-surface-variant text-sm mb-5">
-              Chaque phase peut être souscrite indépendamment, mais la Phase 1 est recommandée comme point de départ.
-            </p>
-            <Link to="/offres" className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-primary-container transition-all">
-              Voir la page Offres
-              <span className="material-symbols-outlined">arrow_forward</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Conferences & Meetings ===== */}
-      <section id="conferences-meetings" className="py-20 bg-gradient-to-br from-white via-surface-container-low/30 to-white scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          {/* ==== Section Header ==== */}
-          <div className="text-center mb-14 scroll-reveal">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-low mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
-              <span className="font-label editorial-caps text-primary font-bold text-[10px]">Conférences &amp; Meetings</span>
-            </div>
-            <h2 className="font-headline text-2xl lg:text-3xl font-extrabold text-on-surface mb-3">
-              Rencontrez l'expertise Enésense
-            </h2>
-            <p className="text-on-surface-variant text-sm max-w-2xl mx-auto leading-relaxed">
-              Prochains événements à venir, inscriptions aux sessions ouvertes,
-              suivez les rencontres en cours et revoyez les résumés des événements passés.
-            </p>
-          </div>
-
-          {hasVisibleEvents ? (
-            <div className="space-y-16">
-              {/* ==== Prochains événements + Inscription ==== */}
-              <div className="scroll-reveal">
-                <div className="flex items-center gap-4 mb-8 pb-4 border-b border-outline-variant/15">
-                  <div className="h-12 w-12 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-lg shadow-secondary-container/20">
-                    <span className="material-symbols-outlined text-2xl">event_upcoming</span>
-                  </div>
-                  <div>
-                    <h3 className="font-headline text-xl lg:text-2xl font-bold text-on-surface">Prochains événements</h3>
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">Inscription ouverte — Réservez votre place</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                  {/* Future events — col 1-7 */}
-                  <div className="lg:col-span-7 flex flex-col items-center justify-center text-center">
-                    {displayedFutureEvents.length > 0 ? (
-                      displayedFutureEvents.map((event, i) => (
-                        <EventCard
-                          key={event.id}
-                          event={event}
-                          badge="Futur"
-                          badgeClass="bg-primary-fixed text-primary"
-                          gradient="bg-gradient-to-b from-secondary-container to-primary"
-                          showSeats={true}
-                          delay={i * 0.08}
-                        />
-                      ))
-                    ) : (
-                      <div className="py-12">
-                        <span className="material-symbols-outlined text-5xl text-primary/20 mb-4">event_available</span>
-                        <p className="font-headline text-lg font-bold text-on-surface-variant mb-3">Aucun événement futur programmé</p>
-                        <p className="text-sm text-on-surface-variant/60 max-w-sm mx-auto mb-6">
-                          Consultez les événements en cours juste en dessous, ou parcourez les résumés des rencontres passées pour vous faire une idée.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                          <a
-                            href="#evenement-en-cours"
-                            className="inline-flex items-center justify-center gap-2 rounded-full bg-white border border-outline-variant/30 px-6 py-3 text-sm font-bold text-primary hover:bg-primary-fixed hover:text-primary transition-all hover:shadow-md"
-                          >
-                            <span className="material-symbols-outlined text-base">play_circle</span>
-                            Voir l'événement en cours
-                          </a>
-                          <a
-                            href="#evenements-past"
-                            className="inline-flex items-center justify-center gap-2 rounded-full bg-white border border-outline-variant/30 px-6 py-3 text-sm font-bold text-primary hover:bg-primary-fixed hover:text-primary transition-all hover:shadow-md"
-                          >
-                            <span className="material-symbols-outlined text-base">history</span>
-                            Événements passés
-                          </a>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  {/* Registration form — col 8-12 */}
-                  <div className="lg:col-span-5">
-                    <form
-                      className="rounded-[2rem] bg-white/60 backdrop-blur-xl border border-outline-variant/20 p-6 md:p-7 shadow-[0_24px_60px_rgba(0,50,125,0.10)]"
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                        const formData = new FormData(event.currentTarget);
-                        setConfirmDialog({
-                          open: true,
-                          formElement: event.currentTarget,
-                          registration: {
-                            eventId: formData.get('event-name'),
-                            fullName: formData.get('full-name'),
-                            phone: formData.get('phone-number'),
-                            email: formData.get('email-address'),
-                            profile: formData.get('profile-type'),
-                          },
-                        });
-                      }}
-                    >
-                      <div className="flex items-start gap-3 mb-6">
-                        <div className="h-12 w-12 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
-                          <span className="material-symbols-outlined">how_to_reg</span>
-                        </div>
-                        <div>
-                          <h3 className="font-headline text-xl font-bold text-on-surface">Inscription rapide</h3>
-                          <p className="text-on-surface-variant text-sm">Choisissez un événement futur et laissez vos coordonnées.</p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="event-name">Événement</label>
-                          <select
-                            id="event-name"
-                            name="event-name"
-                            required
-                            defaultValue=""
-                            className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                          >
-                            <option value="" disabled>Sélectionner un événement</option>
-                            {eventGroups.future.map((event) => (
-                              <option key={event.id} value={event.id}>{event.title}</option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="full-name">Nom complet</label>
-                            <input
-                              id="full-name"
-                              name="full-name"
-                              required
-                              type="text"
-                              className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                              placeholder="Votre nom"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="phone-number">Téléphone</label>
-                            <input
-                              id="phone-number"
-                              name="phone-number"
-                              required
-                              type="tel"
-                              className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                              placeholder="+228 ..."
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="email-address">Email</label>
-                          <input
-                            id="email-address"
-                            name="email-address"
-                            required
-                            type="email"
-                            className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                            placeholder="votre@email.com"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="profile-type">Profil</label>
-                          <select
-                            id="profile-type"
-                            name="profile-type"
-                            required
-                            defaultValue=""
-                            className="w-full rounded-xl border border-outline-variant/30 bg-white px-4 py-3 text-sm text-on-surface outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                          >
-                            <option value="" disabled>Choisir votre profil</option>
-                            <option value="client">Client</option>
-                            <option value="partenaire">Partenaire</option>
-                            <option value="entreprise">Entreprise</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      {registrationSent && (
-                        <p className="mt-5 rounded-xl bg-green-100 px-4 py-3 text-sm font-bold text-green-700" aria-live="polite">
-                          Inscription reçue. Notre équipe vous contactera via {siteSettings.email} ou {siteSettings.phone}.
-                        </p>
-                      )}
-
-                      {registrationError && (
-                        <p className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600" aria-live="polite">
-                          {registrationError}
-                        </p>
-                      )}
-
-                      <button
-                        type="submit"
-                        disabled={eventGroups.future.length === 0 || isRegistering}
-                        className="mt-6 w-full bg-secondary-container text-primary px-6 py-4 rounded-xl font-bold text-sm hover:bg-primary-fixed hover:shadow-[0_16px_40px_rgba(0,50,125,0.25)] transition-all flex items-center justify-center gap-2"
-                      >
-                        {isRegistering ? 'Enregistrement...' : "S'inscrire maintenant"}
-                        <span className="material-symbols-outlined text-base">arrow_forward</span>
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-
-              {/* ==== Événement en cours ==== */}
-              <div id="evenement-en-cours" className="scroll-reveal">
-                <div className="flex items-center gap-4 mb-8 pb-4 border-b border-outline-variant/15">
-                  <div className="h-12 w-12 rounded-2xl bg-secondary-container/25 text-secondary flex items-center justify-center">
-                    <span className="material-symbols-outlined text-2xl">play_circle</span>
-                  </div>
-                  <div>
-                    <h3 className="font-headline text-xl lg:text-2xl font-bold text-on-surface">Événement en cours</h3>
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">Disponible aujourd'hui</p>
-                  </div>
-                </div>
-
-                {displayedCurrentEvents.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {displayedCurrentEvents.map((event, i) => (
-                      <EventCard
-                        key={event.id}
-                        event={event}
-                        badge="En cours"
-                        badgeClass="bg-secondary-container/25 text-secondary"
-                        gradient="bg-gradient-to-b from-secondary-container to-amber-400"
-                        showSeats={false}
-                        delay={i * 0.08}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-on-surface-variant">Aucun événement en cours pour le moment.</p>
-                )}
-              </div>
-
-              {/* ==== Événements passés ==== */}
-              <div id="evenements-past" className="scroll-reveal">
-                <div className="flex items-center gap-4 mb-8 pb-4 border-b border-outline-variant/15">
-                  <div className="h-12 w-12 rounded-2xl bg-slate-200 text-slate-600 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-2xl">history</span>
-                  </div>
-                  <div>
-                    <h3 className="font-headline text-xl lg:text-2xl font-bold text-on-surface">Événements passés</h3>
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">Les 3 derniers programmes</p>
-                  </div>
-                </div>
-
-                {displayedPastEvents.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {displayedPastEvents.map((event, i) => (
-                      <EventCard
-                        key={event.id}
-                        event={event}
-                        badge="Passé"
-                        badgeClass="bg-slate-200 text-slate-600"
-                        gradient="bg-gradient-to-b from-slate-400 to-slate-500"
-                        showSeats={false}
-                        delay={i * 0.08}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-on-surface-variant">Aucun événement passé à afficher.</p>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="rounded-[2rem] border border-outline-variant/20 bg-surface-container-lowest p-10 text-center scroll-reveal">
-              <span className="material-symbols-outlined text-5xl text-primary mb-4">event_busy</span>
-              <p className="font-headline font-bold text-primary mb-2 text-lg">Aucun événement programmé pour le moment.</p>
-              <p className="text-sm text-on-surface-variant max-w-md mx-auto">Revenez bientôt pour découvrir les prochains meetings et conférences Enésense.</p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ===== Testimonials commented until real testimonials are available ===== */}
-      {showTestimonials && (
-      <section className="py-16 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="flex flex-col lg:flex-row gap-12 items-center">
-
-            {/* Left: mini cards */}
-            <div className="lg:w-1/2 scroll-reveal">
-              <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-3">Témoignages</p>
-              <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface mb-6">Ils façonnent le futur avec nous.</h2>
-              <div className="space-y-4">
-                <div className="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex gap-3 items-start">
-                  <div className="w-10 h-10 rounded-full bg-slate-200 shrink-0 overflow-hidden">
-                    <img alt="Marc Dupont" className="w-full h-full object-cover"
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2OyJkYZiDFYO8DZTe8vulU-mCPqCj8TlkeOwKZH2QaNJDGOI2lkEE4N_RY5bJglkIVtFHb68tKNVmQ13CxTTB6-42bfjABr4VyzZJy8FmJaEy2TjLeHVpUJnJa4crWZeA6R_9S0j6pZDqzfd9yGyx--yUaudzvqYExMzOua59sR9b1rx0V3DOd65FZsqd-GxwKFhSSOyL2B2ACk2NFQKxMs4f5KPX1s6OmfT_5J-WRGSG73Pb1JPQTTwgmKs0mBtGjLfC0xJ7a3YF" />
-                  </div>
-                  <div>
-                    <p className="text-on-surface text-sm font-medium italic mb-1">"L'interface de gestion a réduit mon temps administratif de moitié. Une révolution pour mon atelier."</p>
-                    <p className="text-primary font-bold text-xs">Marc Dupont — Ebéniste</p>
-                  </div>
-                </div>
-                <div className="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex gap-3 items-start">
-                  <div className="w-10 h-10 rounded-full shrink-0 bg-primary-fixed flex items-center justify-center text-primary font-bold text-sm">SL</div>
-                  <div>
-                    <p className="text-on-surface text-sm font-medium italic mb-1">"Un accompagnement humain avant tout, couplé à une expertise technique redoutable."</p>
-                    <p className="text-primary font-bold text-xs">Sophie Laurent — Céramiste</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: big quote */}
-            <div className="lg:w-1/2 scroll-reveal" style={{ transitionDelay: '0.2s' }}>
-              <div className="relative bg-primary rounded-[2rem] p-8 text-white overflow-hidden shadow-2xl">
-                <span className="material-symbols-outlined text-7xl text-white/10 absolute -top-3 -right-3">format_quote</span>
-                <div className="relative z-10">
-                  <div className="flex gap-1 mb-4 text-secondary-container">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i} className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    ))}
-                  </div>
-                  <p className="text-base font-headline font-medium leading-relaxed mb-6">
-                    "{featuredTestimonials[testimonialIndex].quote}"
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-white/20 p-0.5">
-                      <div className="w-full h-full rounded-xl overflow-hidden bg-slate-400">
-                        <img alt={featuredTestimonials[testimonialIndex].name} className="w-full h-full object-cover"
-                          src={featuredTestimonials[testimonialIndex].img} />
-                      </div>
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm">{featuredTestimonials[testimonialIndex].name}</p>
-                      <p className="text-primary-fixed opacity-70 text-xs">{featuredTestimonials[testimonialIndex].role}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-6 flex items-center justify-between">
-                  <div className="flex gap-2">
-                    {featuredTestimonials.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setTestimonialIndex(i)}
-                        className={`h-2.5 w-2.5 rounded-full transition-all ${i === testimonialIndex ? 'bg-secondary-container' : 'bg-white/30 hover:bg-white/50'}`}
-                        aria-label={`T?moignage ${i + 1}`}
-                      />
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setTestimonialIndex((v) => (v - 1 + featuredTestimonials.length) % featuredTestimonials.length)}
-                      className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center"
-                      aria-label="T?moignage pr?c?dent"
-                    >
-                      <span className="material-symbols-outlined text-base">chevron_left</span>
-                    </button>
-                    <button
-                      onClick={() => setTestimonialIndex((v) => (v + 1) % featuredTestimonials.length)}
-                      className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center"
-                      aria-label="T?moignage suivant"
-                    >
-                      <span className="material-symbols-outlined text-base">chevron_right</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-      )}
-
-      
-{/* ===== Partners Logos ===== */}
-      <section className="py-16 bg-surface-container-lowest border-t border-outline-variant/20">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="flex items-center gap-3 mb-6 text-xs md:text-sm font-bold uppercase tracking-[0.28em] text-on-surface-variant/70">
-            <span className="w-10 h-px bg-outline-variant/60"></span>
-            Partenariats ouverts:(contacter nous pour devenir partenaire)
-          </div>
-          {/* <div className="flex items-center gap-3 mb-6 text-xs md:text-sm font-bold uppercase tracking-[0.28em] text-on-surface-variant/70">
-            <span className="w-10 h-px bg-outline-variant/60"></span>
-            Nos Partenaires
-          </div> */}
-          <div
-            className="overflow-hidden rounded-2xl bg-white/70 border border-outline-variant/20 shadow-sm"
-            style={{ maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)' }}
-          >
-            <div className="flex items-center whitespace-nowrap animate-marquee py-6" style={{ animationDuration: '28s' }}>
-              {[...partners, ...partners].map((name, i) => (
-                <div key={i} className="mx-6 inline-flex items-center gap-4">
-                  {/*
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/90 to-primary-container/80 text-white font-black font-headline flex items-center justify-center shadow-[0_10px_25px_rgba(0,50,125,0.25)]">
-                    {name.replace(/[^A-Z]/g, '').slice(0, 2)}
-                  </div>
-                  */}
-                  <div className="px-4 py-2 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
-                    <span className="text-sm md:text-base font-black tracking-[0.22em] text-primary uppercase">{name}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Final CTA ===== */}
-      <section className="py-16 px-6 md:px-8">
-        <div className="max-w-7xl mx-auto rounded-[3rem] hero-gradient p-10 lg:p-16 text-center relative overflow-hidden shadow-2xl shadow-primary/30">
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-              <circle cx="20" cy="20" fill="white" r="15" />
-              <circle cx="80" cy="80" fill="#fcd400" r="20" />
-            </svg>
-          </div>
-          <h2 className="font-headline text-3xl lg:text-4xl font-extrabold text-white mb-5 leading-tight">
-            Façonnez votre <span className="text-secondary-container">futur digital</span>.
-          </h2>
-          <p className="text-primary-fixed text-sm max-w-xl mx-auto mb-8 opacity-90 leading-relaxed">
-            Une solution complète, de la vision à l'excellence opérationnelle.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link to="/contact" className="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold text-base hover:scale-105 transition-all shadow-lg">
-              Contactez l'équipe commerciale
-            </Link>
-            {/* <Link to="/services" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-base hover:bg-white/20 transition-all">
-              Visiter nos services
-            </Link> */}
-          </div>
-        </div>
-      </section>
-
-    </main>
+      </div>
+    </section>
   );
-};
+}
 
-export default Home;
+/* ─── EXPERTISE CARD ─── */
+function ExpertiseCard({ badge, badgeLabel, title, desc, image, href }) {
+  return (
+    <div className="bg-white overflow-hidden border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      <Link to={href} className="group flex h-full flex-col">
+        <div className="aspect-video w-full overflow-hidden">
+          <img src={image} alt={title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+        </div>
+        <div className="flex flex-1 flex-col p-8">
+          <div className="flex items-center gap-3">
+            <span style={{ fontFamily: fonts.inter, fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted }}>{badge}</span>
+            {badgeLabel && (
+              <span style={{ borderColor: T.yellow, color: T.navy, fontFamily: fonts.inter, fontSize: '11px', fontWeight: 500, border: `1px solid ${T.yellow}`, padding: '2px 8px', borderRadius: '4px' }}>{badgeLabel}</span>
+            )}
+          </div>
+          <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.15rem', fontWeight: 600, color: '#0B1D33', margin: '20px 0 16px' }}>{title}</h3>
+          <p style={{ fontFamily: fonts.inter, fontSize: '0.95rem', lineHeight: '1.55', color: T.navyMuted, margin: '0 0 24px', flex: '1 1 auto' }}>{desc}</p>
+          <span className="inline-flex items-center gap-2 text-sm font-medium transition-all duration-200 group-hover:gap-3" style={{ fontFamily: fonts.inter, marginTop: 'auto' }}>
+            <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px', color: '#0B1D33' }}>Découvrir</span>
+            <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </span>
+        </div>
+      </Link>
+    </div>
+  );
+}
+
+/* ─── EXPERTISE SECTION ─── */
+function ExpertiseSection() {
+  const cards = [
+    { badge: 'SCALE', title: "Extension d'équipes techniques", desc: "Renforcer vos équipes avec des ingénieurs spécialisés, intégrés à vos méthodes et à votre environnement technique.", image: '/pillar-scale.jpg', href: '/expertises/extension-equipes' },
+    { badge: 'BUILD', title: "Studio Produit", desc: "Concevoir et développer des produits numériques adaptés à vos usages réels.", image: '/pillar-build.jpg', href: '/expertises/studio-produit' },
+    { badge: 'EVOLVE', title: "Modernisation applicative", desc: "Reprendre en main, sécuriser et faire évoluer vos applications existantes.", image: '/pillar-evolve.jpg', href: '/expertises/modernisation-applicative' },
+    { badge: 'AUTOMATE', badgeLabel: 'Nouvelle expertise', title: "IA & Automatisation", desc: "Automatiser les processus et créer de nouveaux usages grâce à l'intelligence artificielle.", image: '/pillar-automate.jpg', href: '/expertises/ia-automatisation' },
+  ];
+
+  return (
+    <section id="expertises" className="w-full py-24 bg-white">
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+        <div className="max-w-3xl">
+          <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
+            Nos expertises
+          </p>
+          <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: '0 0 24px', maxWidth: '32ch' }}>
+            Des capacités techniques pour chaque étape de votre transformation.
+          </h2>
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
+            De l'augmentation de capacité au développement d'un nouveau produit, jusqu'à la modernisation d'un patrimoine applicatif existant, Enésense intervient là où l'ingénierie numérique devient un levier stratégique.
+          </p>
+          <div className="mt-10">
+            <Link
+              to="/expertises"
+              className="group inline-flex items-center gap-3 border px-7 py-4 text-sm font-medium transition-all duration-200 hover:shadow-md hover:border-yellow"
+              style={{ borderColor: T.navyMuted, color: '#0B1D33', fontFamily: fonts.inter }}
+            >
+              Découvrir nos expertises
+              <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+            </Link>
+          </div>
+        </div>
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8" style={{ border: `1px solid ${T.navyMuted}20`, background: `${T.navyMuted}20`, padding: '24px' }}>
+          {cards.map(c => <ExpertiseCard key={c.title} {...c} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── SOLUTIONS SECTION ─── */
+function SolutionsSection() {
+  return (
+    <section className="w-full py-24" style={{ background: T.navyDeep }}>
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+        <div className="max-w-3xl">
+          <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.yellow, marginBottom: '24px' }}>
+            Nos solutions
+          </p>
+          <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: T.navyText, margin: '0 0 24px', maxWidth: '32ch' }}>
+            Nous construisons aussi nos propres produits.
+          </h2>
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
+            Notre expertise ne se limite pas aux projets que nous réalisons pour nos clients. Enésense développe également ses propres plateformes et solutions numériques.
+          </p>
+        </div>
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h3 style={{ fontFamily: fonts.jakarta, fontSize: '2.5rem', fontWeight: 700, color: T.navyText, letterSpacing: '-0.02em' }}>BRICONA</h3>
+            <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', fontWeight: 500, color: T.yellow, marginTop: '16px' }}>
+              La plateforme numérique dédiée au secteur du BTP.
+            </p>
+            <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, marginTop: '24px' }}>
+              BRICONA traduit notre approche produit : partir d'un problème métier concret et construire une plateforme numérique capable d'y répondre à grande échelle.
+            </p>
+            <div className="mt-10 flex flex-wrap gap-4">
+              <a
+                href="/solutions/bricona"
+                className="group inline-flex items-center gap-3 border px-7 py-4 font-medium transition-all duration-200"
+                style={{ borderColor: T.navyMuted, color: T.navyText, fontFamily: fonts.inter, fontSize: '14px', textDecoration: 'none' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = T.yellow; e.currentTarget.style.color = T.yellow; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = T.navyMuted; e.currentTarget.style.color = T.navyText; }}
+              >
+                Découvrir BRICONA
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </a>
+              <Link
+                to="/solutions"
+                className="group inline-flex items-center gap-3 px-7 py-4 font-medium transition-all duration-200"
+                style={{ background: T.yellow, color: T.navyDeep, fontFamily: fonts.inter, fontSize: '14px', textDecoration: 'none' }}
+                onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
+                onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
+              >
+                Nos solutions
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </Link>
+            </div>
+          </div>
+          <img src="/bricona-product.jpg" alt="Interface de la plateforme BRICONA dédiée au secteur du BTP" loading="lazy" className="w-full border" style={{ borderColor: `${T.navyMuted}20` }} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── MODEL SECTION ─── */
+function ModelSection() {
+  const items = [
+    { title: 'Vos équipes', desc: 'Des ingénieurs capables de s\'intégrer à vos équipes, vos outils et vos rituels.' },
+    { title: 'Vos produits', desc: 'Une capacité de conception et de développement couvrant l\'ensemble du cycle produit.' },
+    { title: 'Votre patrimoine technologique', desc: 'Des applications et des données maîtrisées, sécurisées et conçues pour évoluer.' },
+  ];
+  return (
+    <section className="w-full py-24 bg-white">
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+        <div className="max-w-3xl">
+          <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
+            Notre modèle
+          </p>
+          <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: '0 0 24px', maxWidth: '32ch' }}>
+            Une ingénierie pensée pour s'intégrer à votre réalité.
+          </h2>
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
+            Chaque organisation possède son environnement technique, ses contraintes et ses méthodes de travail. Nous construisons nos interventions autour de cette réalité plutôt que d'imposer un modèle standardisé.
+          </p>
+        </div>
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {items.map(item => (
+            <div key={item.title} className="border-t-2" style={{ borderTopColor: T.yellow, paddingTop: '24px' }}>
+              <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.125rem', fontWeight: 600, color: '#0B1D33' }}>{item.title}</h3>
+              <p style={{ fontFamily: fonts.inter, fontSize: '1rem', lineHeight: '1.75', color: T.navyMuted, marginTop: '16px' }}>{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── EXIGENCE SECTION ─── */
+function ExigenceSection() {
+  const items = [
+    { badge: '01', title: 'Transparence', desc: 'Un suivi clair de l\'avancement, des priorités et des décisions.' },
+    { badge: '02', title: 'Qualité technique', desc: 'Des pratiques d\'ingénierie structurées et une attention constante portée à la qualité du code.' },
+    { badge: '03', title: 'Maîtrise', desc: 'Le client conserve la propriété de ses développements, de ses données et de ses actifs numériques.' },
+    { badge: '04', title: 'Protection', desc: 'Une gouvernance interne dédiée à la protection des données et à la conformité de nos opérations.' },
+  ];
+  return (
+    <section className="w-full py-24 bg-white">
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+        <div className="max-w-3xl">
+          <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
+            Notre exigence
+          </p>
+          <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: '0 0 24px', maxWidth: '32ch' }}>
+            Construire avec rigueur. Évoluer avec maîtrise.
+          </h2>
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
+            La qualité d'une solution numérique ne repose pas uniquement sur la technologie utilisée. Elle repose aussi sur la façon dont le projet est gouverné, développé et transmis.
+          </p>
+        </div>
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2" style={{ border: `1px solid ${T.navyMuted}20`, background: `${T.navyMuted}20` }}>
+          {items.map(item => (
+            <div key={item.title} className="h-full" style={{ padding: '32px' }}>
+              <span style={{ fontFamily: fonts.inter, fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted }}>
+                {item.badge}
+              </span>
+              <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.125rem', fontWeight: 600, color: '#0B1D33', marginTop: '20px' }}>{item.title}</h3>
+              <p style={{ fontFamily: fonts.inter, fontSize: '1rem', lineHeight: '1.75', color: T.navyMuted, marginTop: '16px' }}>{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── PERSPECTIVES SECTION ─── */
+function PerspectivesSection() {
+  const items = [
+    { badge: 'Transformation', title: 'Reprendre une application existante sans interrompre le service', desc: 'Ce que l\'audit technique doit révéler avant toute intervention.', href: '/perspectives/reprendre-une-application-existante' },
+    { badge: 'Ingénierie', title: 'Ce qui distingue une extension d\'équipe réussie d\'un simple renfort temporaire', desc: 'Pourquoi l\'intégration compte autant que la compétence technique.', href: '/perspectives/extension-equipe-reussie' },
+    { badge: 'Produit', title: 'Concevoir un produit avant de le vendre', desc: 'Ce que nos propres plateformes nous apprennent sur le développement produit.', href: '/perspectives/concevoir-un-produit-avant-de-le-vendre' },
+  ];
+  return (
+    <section className="w-full py-24 bg-white">
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+        <div className="max-w-3xl">
+          <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
+            Perspectives
+          </p>
+          <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: '0 0 24px', maxWidth: '32ch' }}>
+            Comprendre la technologie. Anticiper ses évolutions.
+          </h2>
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
+            Nos équipes partagent leurs réflexions sur l'ingénierie logicielle, les produits numériques et les transformations technologiques qui façonnent les entreprises.
+          </p>
+        </div>
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {items.map(item => (
+            <div key={item.title} className="flex h-full flex-col">
+              <span style={{ fontFamily: fonts.inter, fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted }}>
+                {item.badge}
+              </span>
+              <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.125rem', fontWeight: 600, color: '#0B1D33', marginTop: '16px', lineHeight: 1.4 }}>{item.title}</h3>
+              <p style={{ fontFamily: fonts.inter, fontSize: '1rem', lineHeight: '1.75', color: T.navyMuted, marginTop: '16px', flex: '1 1 auto' }}>{item.desc}</p>
+              <div className="mt-6">
+                <a
+                  href={item.href}
+                  className="group inline-flex items-center gap-2 text-sm font-medium transition-colors"
+                  style={{ color: '#0B1D33', fontFamily: fonts.inter }}
+                  onMouseEnter={e => (e.currentTarget.style.color = T.yellow)}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#0B1D33')}
+                >
+                  <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>Lire</span>
+                  <span className="transition-transform group-hover:translate-x-1">→</span>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── PHASE CARD ─── */
+function PhaseCard({ badge, badgeStyle, step, stepColor, title, desc, price, priceUnit, priceNote, priceNoteColor, deliverables, ctaLabel, ctaStyle, ctaHoverBg, featured }) {
+  const [ctaHovered, setCtaHovered] = useState(false);
+  return (
+    <div
+      className="relative rounded-2xl p-8 flex flex-col justify-between"
+      style={{ background: '#ffffff', boxShadow: featured ? '0 12px 40px rgba(30,64,175,0.14)' : '0 2px 12px rgba(0,0,0,0.06)', transform: featured ? 'translateY(-8px)' : 'none' }}
+    >
+      {featured && (
+        <div className="absolute top-0 left-0 right-0 h-1.5 rounded-t-2xl" style={{ background: `linear-gradient(90deg, ${T.yellow}, ${T.yellowDeep}, ${T.yellow})` }} />
+      )}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="px-3 py-1 rounded-full" style={{ ...badgeStyle, fontFamily: fonts.inter, fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            {badge}
+          </span>
+          <span style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 500, color: stepColor }}>{step}</span>
+        </div>
+        <div>
+          <h3 style={{ fontFamily: fonts.jakarta, fontSize: '22px', fontWeight: 700, color: T.onSurface, margin: '0 0 8px' }}>{title}</h3>
+          <p style={{ fontFamily: fonts.inter, fontSize: '13px', lineHeight: '20px', color: T.onSurfaceVariant, margin: 0 }}>{desc}</p>
+        </div>
+        <div className="py-3">
+          <div className="flex items-baseline gap-1">
+            <span style={{ fontFamily: fonts.jakarta, fontSize: '36px', fontWeight: 700, color: T.onSurface }}>{price}</span>
+            {priceUnit && <span style={{ fontFamily: fonts.inter, fontSize: '13px', color: T.onSurfaceVariant }}>{priceUnit}</span>}
+          </div>
+          <p style={{ fontFamily: fonts.inter, fontSize: '12px', color: priceNoteColor, margin: '4px 0 0', fontWeight: 500 }}>{priceNote}</p>
+        </div>
+        <div className="space-y-2.5 pt-1">
+          {deliverables.map(d => (
+            <div key={d} className="flex items-start gap-2.5">
+              <span className="material-symbols-outlined" style={{ fontSize: '18px', color: T.yellow, marginTop: '2px' }}>verified</span>
+              <span style={{ fontFamily: fonts.inter, fontSize: '13px', color: T.onSurface }}>{d}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="pt-8">
+        <a
+          href="#"
+          className="w-full inline-flex items-center justify-center px-5 py-3 rounded-lg transition-all duration-200"
+          style={{ ...ctaStyle, background: ctaHovered ? ctaHoverBg : ctaStyle.background, fontFamily: fonts.inter, fontSize: '14px', fontWeight: 600, textDecoration: 'none', boxShadow: featured ? '0 4px 14px rgba(242,183,5,0.2)' : 'none' }}
+          onMouseEnter={() => setCtaHovered(true)}
+          onMouseLeave={() => setCtaHovered(false)}
+        >
+          {ctaLabel}
+        </a>
+      </div>
+    </div>
+  );
+}
+
+
+/* ─── STATEMENT SECTION ─── */
+function StatementSection() {
+  return (
+    <section className="w-full py-[110px] text-center" style={{ background: '#FFFFFF', borderBottom: `1px solid ${T.line}` }}>
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+        <div style={{ fontSize: '0.82rem', letterSpacing: '0.06em', textTransform: 'uppercase', color: T.yellowDeep, fontWeight: 600, marginBottom: '24px', fontFamily: fonts.inter }}>
+          Notre principe
+        </div>
+        <h2 style={{ fontSize: 'clamp(1.55rem, 3vw, 2.1rem)', color: '#0B1D33', maxWidth: '26ch', margin: '0 auto', fontWeight: 500, lineHeight: 1.3, fontFamily: fonts.jakarta }}>
+          Nous appliquons à nos propres produits la même exigence d'ingénierie que nous mettons au service de nos clients.
+        </h2>
+      </div>
+    </section>
+  );
+}
+
+/* ─── PRODUCT CARD ─── */
+function ProductCard({ name, coverType, title, desc, links }) {
+  const [hovered, setHovered] = useState(false);
+
+  const coverStyles = {
+    selvy: `linear-gradient(135deg, ${T.navy2}, #0B1D33 60%)`,
+    bricona: `linear-gradient(135deg, #0B1D33, ${T.navy2} 60%)`,
+  };
+
+  const beforeStyles = {
+    selvy: {
+      position: 'absolute', inset: 0,
+      background: 'radial-gradient(circle at 82% 20%, rgba(242,183,5,0.3), transparent 50%)',
+    },
+    bricona: {
+      position: 'absolute', inset: 0,
+      background: 'repeating-linear-gradient(45deg, rgba(242,183,5,0.08) 0 10px, transparent 10px 20px)',
+    },
+  };
+
+  return (
+    <div
+      className="border overflow-hidden transition-all duration-300"
+      style={{ borderColor: hovered ? T.yellow : T.navy3 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div
+        style={{
+          height: '220px',
+          position: 'relative',
+          overflow: 'hidden',
+          background: coverStyles[coverType],
+          transform: hovered ? 'scale(1.035)' : 'scale(1)',
+          transition: 'transform .5s cubic-bezier(.2,.7,.2,1)',
+        }}
+      >
+        {beforeStyles[coverType] && <div style={beforeStyles[coverType]} />}
+        <span style={{
+          position: 'absolute',
+          left: '24px',
+          bottom: '-14px',
+          fontFamily: fonts.jakarta,
+          fontWeight: 700,
+          fontSize: '4.4rem',
+          color: 'rgba(255,255,255,0.09)',
+          letterSpacing: '-0.02em',
+        }}>{name}</span>
+      </div>
+      <div style={{ padding: '26px 26px 30px' }}>
+        <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.18rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '10px' }}>{title}</h3>
+        <p style={{ color: T.onNavySoft, fontSize: '0.96rem', lineHeight: '1.55', marginBottom: '18px', fontFamily: fonts.inter }}>{desc}</p>
+        <div style={{ display: 'flex', gap: '22px' }}>
+          {links.map(link => (link.to ? (
+            <Link
+              key={link.label}
+              to={link.to}
+              style={{
+                fontSize: '0.86rem',
+                fontWeight: 500,
+                color: link.muted ? T.onNavySoft : T.yellow,
+                borderBottom: `1px solid ${link.muted ? T.navy3 : T.yellow}`,
+                paddingBottom: '2px',
+                fontFamily: fonts.inter,
+                textDecoration: 'none',
+              }}
+              onMouseEnter={e => {
+                if (!link.muted) {
+                  e.currentTarget.style.color = '#FFFFFF';
+                  e.currentTarget.style.borderBottomColor = '#FFFFFF';
+                }
+              }}
+              onMouseLeave={e => {
+                if (!link.muted) {
+                  e.currentTarget.style.color = T.yellow;
+                  e.currentTarget.style.borderBottomColor = T.yellow;
+                }
+              }}
+            >
+              {link.label}
+            </Link>
+          ) : (
+            <a
+              key={link.label}
+              href={link.href}
+              style={{
+                fontSize: '0.86rem',
+                fontWeight: 500,
+                color: link.muted ? T.onNavySoft : T.yellow,
+                borderBottom: `1px solid ${link.muted ? T.navy3 : T.yellow}`,
+                paddingBottom: '2px',
+                fontFamily: fonts.inter,
+              }}
+              onMouseEnter={e => {
+                if (link.muted) {
+                  e.currentTarget.style.color = '#FFFFFF';
+                  e.currentTarget.style.borderBottomColor = '#FFFFFF';
+                }
+              }}
+              onMouseLeave={e => {
+                if (link.muted) {
+                  e.currentTarget.style.color = T.onNavySoft;
+                  e.currentTarget.style.borderBottomColor = T.navy3;
+                }
+              }}
+            >
+              {link.label}
+            </a>
+          )))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── PRODUCTS SECTION ─── */
+function ProductsSection() {
+  const products = [
+    {
+      name: 'Selvy',
+      coverType: 'selvy',
+      title: 'Selvy',
+      desc: "Plateforme de social commerce pensée pour les marchands d'Afrique de l'Ouest.",
+      links: [
+        { label: 'Découvrir', to: '/solutions/selvy', muted: false },
+        { label: 'Documentation (PDF)', href: '#', muted: true },
+      ],
+    },
+    {
+      name: 'Bricona',
+      coverType: 'bricona',
+      title: 'Bricona',
+      desc: 'Plateforme de mise en relation pour les métiers du BTP.',
+      links: [
+        { label: 'Découvrir', to: '/solutions/bricona', muted: false },
+        { label: 'Documentation (PDF)', href: '#', muted: true },
+      ],
+    },
+  ];
+
+  return (
+    <section id="produits" className="w-full py-[100px]" style={{ background: '#0B1D33', borderBottom: 'none' }}>
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+        <div className="flex justify-between items-end gap-[30px] mb-[46px] flex-wrap">
+          <div>
+            <div style={{ fontSize: '0.84rem', color: T.yellow, fontWeight: 500, marginBottom: '14px', fontFamily: fonts.inter }}>
+              Ce que nous construisons
+            </div>
+            <h2 style={{ fontSize: '1.85rem', color: '#FFFFFF', maxWidth: '16ch', fontFamily: fonts.jakarta, fontWeight: 600, letterSpacing: '-0.01em', lineHeight: 1.14, margin: 0 }}>
+              Nos produits numériques
+            </h2>
+          </div>
+          <p style={{ color: T.onNavySoft, fontSize: '0.98rem', maxWidth: '36ch', fontFamily: fonts.inter, lineHeight: '1.55' }}>
+            Nous concevons nos propres produits numériques — c'est notre manière de rester au contact des enjeux techniques réels avant de les recommander à nos clients.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-[28px]">
+          {products.map(p => <ProductCard key={p.name} {...p} />)}
+        </div>
+        <p style={{ marginTop: '32px', color: T.onNavySoft, fontSize: '0.95rem', fontFamily: fonts.inter, lineHeight: '1.55' }}>
+          D'autres produits rejoignent progressivement cet écosystème. <Link to="/solutions" style={{ color: T.yellow, borderBottom: `1px solid ${T.yellow}`, paddingBottom: '1px', fontFamily: fonts.inter, textDecoration: 'none' }}>Découvrir nos produits</Link>
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* ─── FOOTER ─── */
+function Home1Footer() {
+  const cols = [
+    { title: 'Solutions', links: ["IA & Automatisation", 'Digitalisation', 'SaaS & Plateformes', 'Automatisation des processus'] },
+    { title: 'Offres', links: ['Phase 1 Diagnostic', 'Phase 2 Déploiement', 'Phase 3 Pilotage'] },
+    { title: 'Entreprise', links: ['À propos', 'Équipe', 'Contact', 'Partenaires'] },
+    { title: 'Légal', links: ['Mentions légales', 'Politique de confidentialité', "Conditions d'utilisation"] },
+  ];
+  return (
+    <footer style={{ background: T.surfaceContainerLow }}>
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pt-16 pb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 pb-10">
+          <div className="lg:col-span-2 space-y-4">
+            <span style={{ fontFamily: fonts.jakarta, fontSize: '18px', fontWeight: 700, color: T.onSurface }}>
+              Enésense<span style={{ color: '#0B1D33' }}>Digital</span>
+            </span>
+            <p style={{ fontFamily: fonts.inter, fontSize: '15px', lineHeight: '24px', color: T.onSurfaceVariant, maxWidth: '300px', margin: '8px 0 0' }}>
+              Conseil, digitalisation de pointe et automatisation sur mesure pour propulser les entreprises dans l'ère numérique.
+            </p>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mt-4" style={{ background: T.amberSoft, color: T.amberContrast }}>
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: T.amberContrast }} />
+              <span style={{ fontFamily: fonts.inter, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Excellence Opérationnelle</span>
+            </div>
+          </div>
+          {cols.map(col => (
+            <div key={col.title}>
+              <h4 style={{ fontFamily: fonts.jakarta, fontSize: '14px', fontWeight: 700, color: T.onSurface, margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{col.title}</h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }} className="space-y-3">
+                {col.links.map(l => (
+                  <li key={l}>
+                    <a href="#" style={{ fontFamily: fonts.inter, fontSize: '14px', color: T.onSurfaceVariant, textDecoration: 'none' }}
+                      onMouseEnter={e => (e.currentTarget.style.color = T.onSurface)}
+                      onMouseLeave={e => (e.currentTarget.style.color = T.onSurfaceVariant)}
+                    >{l}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3" style={{ borderTop: '1px solid #e2e8f0' }}>
+          <p style={{ fontFamily: fonts.inter, fontSize: '13px', color: T.onSurfaceVariant, margin: 0 }}>© 2025 Enésense. Tous droits réservés. Basé à Colombnes, France.</p>
+          <p style={{ fontFamily: fonts.inter, fontSize: '11px', color: T.outline, margin: 0 }}>Infrastructure Bricona RGPD</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+
+/* ─── TEAM / GOUVERNANCE SECTION ─── */
+// function TeamSection() {
+//   const team = [
+//     {
+//       group: 'Direction',
+//       members: [
+//         { role: 'Fondateur', name: 'Jean-Baptiste Segbe' },
+//         { role: 'Co-fondateur — Responsable commercial', name: 'Roger D\'Almeida' },
+//         { role: 'Co-fondateur — R Com', name: 'Jonathan Kevin Ayite' },
+//       ],
+//     },
+//     {
+//       group: 'Opérations',
+//       members: [
+//         { role: 'Responsable Projet', name: 'Apedo Yaovi' },
+//         { role: 'DPO', name: 'Abdoul Sonhouin' },
+//       ],
+//     },
+//   ];
+//   return (
+//     <section className="w-full py-24" style={{ background: T.surface, borderBottom: `1px solid ${T.line}` }}>
+//       <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+//         <div style={{ fontSize: '0.84rem', color: T.yellowDeep, fontWeight: 500, marginBottom: '14px', fontFamily: fonts.inter }}>
+//           Gouvernance
+//         </div>
+//         <h2 style={{ fontSize: '1.85rem', color: '#0B1D33', maxWidth: '16ch', fontFamily: fonts.jakarta, fontWeight: 600, letterSpacing: '-0.01em', lineHeight: 1.14, margin: 0 }}>
+//           Notre organisation
+//         </h2>
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-12">
+//           {team.map((g) => (
+//             <div key={g.group}>
+//               <div style={{ fontSize: '0.82rem', color: T.yellowDeep, fontWeight: 500, marginBottom: '22px', fontFamily: fonts.inter, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+//                 {g.group}
+//               </div>
+//               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+//                 {g.members.map((m) => (
+//                   <div key={m.name} style={{ display: 'flex', justifyContent: 'space-between', gap: '16px', borderBottom: `1px solid ${T.line}`, paddingBottom: '16px' }}>
+//                     <span style={{ color: T.inkSoft, fontSize: '0.9rem', fontFamily: fonts.inter }}>{m.role}</span>
+//                     <span style={{ fontWeight: 500, color: '#0B1D33', fontFamily: fonts.jakarta }}>{m.name}</span>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//         <a href="#" style={{ fontSize: '0.92rem', fontWeight: 500, color: '#0B1D33', borderBottom: `1px solid ${T.yellow}`, paddingBottom: '2px', fontFamily: fonts.inter, marginTop: '38px', display: 'inline-block' }}>
+//           Découvrir Le Groupe
+//         </a>
+//       </div>
+//     </section>
+//   );
+// }
+
+
+/* ─── FINAL CONTACT SECTION ─── */
+function FinalContactSection() {
+  return (
+    <section id="contact" className="w-full py-[110px]" style={{ background: '#0B1D33', position: 'relative', overflow: 'hidden' }}>
+      <div className="pointer-events-none absolute bottom-[-200px] left-[-140px] w-[560px] h-[560px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(242,183,5,0.22), transparent 68%)' }} />
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8 relative">
+        <div className="max-w-2xl text-center sm:text-left">
+          <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700, letterSpacing: '-0.025em', color: '#ffffff', margin: '0 0 16px' }}>
+            Vous avez un projet de transformation digitale ?
+          </h2>
+          <p style={{ fontFamily: fonts.inter, fontSize: '17px', lineHeight: '28px', color: T.onNavySoft, margin: 0 }}>
+            Parlons-en. Décrivez-nous votre contexte, nous revenons vers vous avec un interlocuteur adapté à votre besoin.
+          </p>
+        </div>
+        <a href="#" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl transition-all duration-200 active:translate-y-0.5 mt-10"
+          style={{ background: T.yellow, color: '#0B1D33', fontFamily: fonts.inter, fontSize: '14px', fontWeight: 600, textDecoration: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.2)' }}
+          onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
+          onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>mail</span>
+          <span>Parlons-en</span>
+        </a>
+      </div>
+    </section>
+  );
+}
+
+
+/* ─── ROOT EXPORT ─── */
+export default function Home() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.substring(1);
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      }
+    }
+  }, [location]);
+
+  return (
+    <div style={{ fontFamily: fonts.inter, background: T.surface }}>
+      <main>
+        <HeroSection />
+        <PartnersStrip />
+        <ExpertiseSection />
+        <SolutionsSection />
+        <ModelSection />
+        <ProductsSection />
+        <ExigenceSection />
+        <PerspectivesSection />
+        <StatementSection />
+        {/* <TeamSection /> */}
+        <FinalContactSection />
+      </main>
+    </div>
+  );
+}

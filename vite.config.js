@@ -54,13 +54,6 @@ export default defineConfig({
           'ui-vendor': ['lucide-react'],
           'recaptcha-vendor': ['react-google-recaptcha'],
           'analytics-vendor': ['@vercel/analytics'],
-          // Séparer les gros composants
-          'pages-vendor': [
-            './src/pages/Home.jsx',
-            './src/pages/Services.jsx',
-            './src/pages/About.jsx',
-            './src/pages/Contact.jsx'
-          ]
         },
         // Format du nom des chunks pour meilleure gestion du cache
         chunkFileNames: 'js/[name].[hash].js',

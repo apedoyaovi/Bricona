@@ -5,10 +5,15 @@ import {
   formatPhoneHref,
   formatWhatsappHref,
   getSiteSettings,
+  getSiteSettingsAsync,
 } from '../utils/siteContent';
 
 const FloatingButtons = () => {
   const [settings, setSettings] = useState(() => getSiteSettings());
+
+  useEffect(() => {
+    getSiteSettingsAsync().then(setSettings).catch(() => setSettings(getSiteSettings()));
+  }, []);
 
   useEffect(() => {
     const syncSettings = () => setSettings(getSiteSettings());

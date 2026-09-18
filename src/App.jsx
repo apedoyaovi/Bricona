@@ -2,7 +2,6 @@ import './App.css'
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, lazy, Suspense } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import FloatingButtons from './components/FloatingButtons';
 import CookieConsent from './components/CookieConsent';
 import SEO from './components/SEO';
 
@@ -32,21 +31,18 @@ function ScrollToTop() {
 
 // Lazy loading des pages
 const Home = lazy(() => import('./pages/Home'));
-const Services = lazy(() => import('./pages/Services'));
-const Offers = lazy(() => import('./pages/Offres'));
-const Projets = lazy(() => import('./pages/Projets'));
-const ProjetDetail = lazy(() => import('./pages/ProjetDetail'));
-const Blog = lazy(() => import('./pages/Blog'));
-const BlogPost = lazy(() => import('./pages/BlogPost'));
+const Expertises = lazy(() => import('./pages/Expertises'));
+const ExpertiseDetail = lazy(() => import('./pages/ExpertiseDetail'));
+const Solutions = lazy(() => import('./pages/Solutions'));
+const SolutionDetail = lazy(() => import('./pages/SolutionDetail'));
+const SelvyDetail = lazy(() => import('./pages/SelvyDetail'));
 const Contact = lazy(() => import('./pages/Contact'));
 const About = lazy(() => import('./pages/About'));
 const MentionsLegales = lazy(() => import('./pages/MentionsLegales'));
 const PolitiqueConfidentialite = lazy(() => import('./pages/PolitiqueConfidentialite'));
 const PolitiqueCookies = lazy(() => import('./pages/PolitiqueCookies'));
 const ConditionsUtilisation = lazy(() => import('./pages/ConditionsUtilisation'));
-const AdminEvenements = lazy(() => import('./pages/AdminEvenements'));
-const AdminInscriptions = lazy(() => import('./pages/AdminInscriptions'));
-const AdminMessages = lazy(() => import('./pages/AdminMessages'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const PageNonTrouvee = lazy(() => import('./pages/PageNonTrouvee.jsx'));
 
 function App() {
@@ -59,27 +55,23 @@ function App() {
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/offres" element={<Offers />} />
-            <Route path="/projets" element={<Projets />} />
-            <Route path="/projets/:id" element={<ProjetDetail />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:id" element={<BlogPost />} />
+            <Route path="/expertises" element={<Expertises />} />
+            <Route path="/expertises/:id" element={<ExpertiseDetail />} />
+            <Route path="/solutions" element={<Solutions />} />
+            <Route path="/solutions/bricona" element={<SolutionDetail />} />
+            <Route path="/solutions/selvy" element={<SelvyDetail />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
             <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
             <Route path="/politique-cookies" element={<PolitiqueCookies />} />
             <Route path="/conditions-utilisation" element={<ConditionsUtilisation />} />
             <Route path="/mentions-legales" element={<MentionsLegales />} />
-            <Route path="/admin-evenements" element={<AdminEvenements />} />
-            <Route path="/admin-inscriptions" element={<AdminInscriptions />} />
-            <Route path="/admin-messages" element={<AdminMessages />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="*" element={<PageNonTrouvee />} />
           </Routes>
         </Suspense>
       </main>
       <Footer />
-      <FloatingButtons />
       <CookieConsent />
       <Analytics />
     </div>
