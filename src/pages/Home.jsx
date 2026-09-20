@@ -41,7 +41,7 @@ const fonts = {
 /* ─── HERO SECTION ─── */
 function HeroSection() {
   return (
-    <section className="relative w-full overflow-hidden flex items-center min-h-screen mt-[72px] py-20 lg:py-24 group" style={{ background: T.navyDeep }}>
+    <section className="relative w-full overflow-hidden flex items-start lg:items-center min-h-screen mt-[72px] py-12 lg:py-24 group" style={{ background: T.navyDeep }}>
       <img
         src="/hero-architecture.jpg"
         alt="Architecture numérique abstraite"
@@ -62,8 +62,8 @@ function HeroSection() {
             </p>
 
             {/* Heading */}
-            <h1 className="text-center lg:text-left" style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(42px, 7.5vw, 96px)', fontWeight: 700, lineHeight: 0.95, letterSpacing: '-0.03em', color: T.navyText, margin: 0, maxWidth: '100%', whiteSpace: 'nowrap' }}>
-              Build. Scale. Evolve.
+            <h1 className="text-center lg:text-left" style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(28px, 5vw, 78px)', fontWeight: 700, lineHeight: 0.95, letterSpacing: '-0.03em', color: T.navyText, margin: 0, maxWidth: '100%' }}>
+              Build. Scale. Evolve. Automate.
             </h1>
 
             {/* Subtitle */}
