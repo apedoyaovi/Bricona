@@ -31,8 +31,8 @@ const Footer = () => {
         <div>
           <h5 className="font-bold text-on-surface mb-4 uppercase tracking-[0.05em] text-sm font-headline" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Entreprise</h5>
           <ul className="space-y-3">
-            <li><Link className="hover:text-blue-600 transition-colors" to="/about">À Propos</Link></li>
-            <li><Link className="hover:text-blue-600 transition-colors" to="/about">Équipe</Link></li>
+            <li><Link className="hidden" to="/about">À Propos</Link></li>
+            <li><Link className="hidden" to="/about">Équipe</Link></li>
             <li><Link className="hover:text-blue-600 transition-colors" to="/contact">Contact</Link></li>
             <li><Link className="hover:text-blue-600 transition-colors" to="/about">Partenaires</Link></li>
           </ul>

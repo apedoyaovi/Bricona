@@ -5,7 +5,7 @@ import logoImg from '../assets/Logo.png';
 const navLinks = [
   { to: '/', label: 'Accueil' },
   { to: '/#expertises', label: 'Expertises', anchor: 'expertises' },
-  { to: '/about', label: 'À Propos' },
+  { to: '/about', label: 'À Propos', hidden: true },
   { to: '/solutions', label: 'Solutions' },
 ];
 
@@ -132,7 +132,7 @@ const Navbar = () => {
             <div className="relative hidden md:block group">
               <Link
                 to="/solutions/bricona"
-                className="text-slate-600 hover:text-yellow hover:border-b-2 hover:border-yellow pb-1 transition-all duration-300 inline-flex items-center gap-1"
+                className="text-slate-600 hover:text-yellow hover:border-b-2 hover:border-yellow pb-1 transition-all duration-300 inline-flex items-center gap-1 text-sm"
               >
                 Découvrir
                 <span className="material-symbols-outlined text-sm">expand_more</span>
@@ -238,9 +238,9 @@ const Navbar = () => {
         <div className="border-t border-outline-variant/20">
           <button
             onClick={() => setDiscoverOpen(!discoverOpen)}
-            className="w-full flex items-center justify-between px-4 py-3.5 text-left text-sm font-medium text-on-surface-variant hover:bg-surface-container-low transition-all duration-200"
+            className="w-full flex items-center justify-between px-4 py-3.5 text-left font-medium text-on-surface-variant hover:bg-surface-container-low transition-all duration-200"
           >
-            <span className="tracking-widest uppercase text-xs font-bold">Découvrir</span>
+            <span className="font-medium">Découvrir</span>
             <span className="material-symbols-outlined text-sm transition-transform duration-200" style={{ transform: discoverOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
               expand_more
             </span>
