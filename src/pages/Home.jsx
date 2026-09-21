@@ -188,6 +188,141 @@ function HeroCubeBackground() {
 }
 
 /* ─── HERO SECTION ─── */
+function HeroRightStage() {
+  const terms = [
+    {
+      icon: (
+        <svg viewBox="0 0 120 120">
+          <rect x="10" y="20" width="100" height="80" rx="4" />
+          <line x1="10" y1="38" x2="110" y2="38" />
+          <circle cx="20" cy="29" r="2.2" />
+          <line x1="24" y1="55" x2="96" y2="55" />
+          <line x1="24" y1="68" x2="80" y2="68" />
+          <line x1="24" y1="81" x2="60" y2="81" />
+        </svg>
+      ),
+      label: 'Création de site web',
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 120 120">
+          <rect x="30" y="10" width="60" height="100" rx="8" />
+          <line x1="30" y1="90" x2="90" y2="90" />
+          <rect x="40" y="30" width="16" height="16" rx="3" />
+          <rect x="64" y="30" width="16" height="16" rx="3" />
+          <rect x="40" y="54" width="16" height="16" rx="3" />
+          <rect x="64" y="54" width="16" height="16" rx="3" />
+        </svg>
+      ),
+      label: "Création d'application",
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 120 120">
+          <circle cx="18" cy="60" r="10" />
+          <circle cx="60" cy="60" r="10" />
+          <circle cx="102" cy="60" r="10" />
+          <line x1="28" y1="60" x2="48" y2="60" />
+          <line x1="70" y1="60" x2="90" y2="60" />
+          <path d="M44 55 L48 60 L44 65" />
+          <path d="M86 55 L90 60 L86 65" />
+        </svg>
+      ),
+      label: 'Automatisation',
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 120 120">
+          <rect x="15" y="15" width="90" height="90" />
+          <line x1="15" y1="105" x2="105" y2="15" />
+          <line x1="15" y1="15" x2="15" y2="25" />
+          <line x1="105" y1="15" x2="95" y2="15" />
+          <line x1="15" y1="105" x2="25" y2="105" />
+          <line x1="105" y1="105" x2="105" y2="95" />
+        </svg>
+      ),
+      label: "Votre environnement numérique sur mesure",
+    },
+  ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const CYCLE_MS = 3400;
+    const interval = setInterval(() => {
+      setActiveIndex(prev => (prev + 1) % terms.length);
+    }, CYCLE_MS);
+    return () => clearInterval(interval);
+  }, [terms.length]);
+
+  return (
+    <div className="hidden lg:flex flex-col items-end justify-center h-full relative" style={{ minHeight: '420px' }}>
+      <style>{`
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+        @keyframes slideDownCenterRight {
+          0% { transform: translateY(-40px) translateX(0); opacity: 0; }
+          45% { transform: translateY(0) translateX(0); opacity: 1; }
+          75% { transform: translateY(0) translateX(40px); opacity: 1; }
+          100% { transform: translateY(0) translateX(60px); opacity: 0; }
+        }
+        .right-term {
+          position: absolute;
+          right: 0;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          opacity: 0;
+          pointer-events: none;
+        }
+        .right-term.active {
+          animation: slideDownCenterRight 3.4s cubic-bezier(.4,0,.2,1) forwards;
+        }
+        .right-term .icon-wrap svg * {
+          fill: none;
+          stroke: #8FB0FF;
+          stroke-width: 3;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-dasharray: 500;
+          stroke-dashoffset: 500;
+        }
+        .right-term.active .icon-wrap svg * {
+          animation: draw 0.9s cubic-bezier(.4,0,.2,1) forwards;
+        }
+        .right-term.active .icon-wrap svg *:nth-child(2) { animation-delay: 0.08s; }
+        .right-term.active .icon-wrap svg *:nth-child(3) { animation-delay: 0.16s; }
+        .right-term.active .icon-wrap svg *:nth-child(4) { animation-delay: 0.24s; }
+        .right-term.active .icon-wrap svg *:nth-child(5) { animation-delay: 0.32s; }
+        .right-term.active .icon-wrap svg *:nth-child(6) { animation-delay: 0.4s; }
+        .right-term.active .icon-wrap svg *:nth-child(7) { animation-delay: 0.48s; }
+        .right-term h1 {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-weight: 650;
+          letter-spacing: -0.01em;
+          font-size: clamp(1.1rem, 1.6vw, 1.45rem);
+          line-height: 1.15;
+          color: #F5F6F8;
+          margin: 0;
+          max-width: 14ch;
+          text-align: right;
+        }
+      `}</style>
+      {terms.map((term, idx) => (
+        <div
+          key={idx}
+          className={`right-term ${idx === activeIndex ? 'active' : ''}`}
+          style={{ top: `${idx * 80}px` }}
+        >
+          <div className="icon-wrap" style={{ width: '56px', height: '56px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {term.icon}
+          </div>
+          <h1>{term.label}</h1>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function HeroSection() {
   return (
     <section className="relative w-full overflow-hidden flex items-start lg:items-center min-h-screen mt-[72px] py-12 lg:py-24 group" style={{ background: T.navyDeep }}>
@@ -245,6 +380,11 @@ function HeroSection() {
                   Nos expertises
                 </a>
             </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="lg:col-span-5 flex items-center justify-center">
+            <HeroRightStage />
           </div>
         </div>
       </div>
