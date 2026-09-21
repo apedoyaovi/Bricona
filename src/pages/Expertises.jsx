@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const T = {
@@ -11,6 +12,105 @@ const fonts = {
   jakarta: "'Plus Jakarta Sans', sans-serif",
   inter: "'Inter', sans-serif",
 };
+
+/* ─── EXPERTISES HERO BACKGROUND ─── */
+function ExpertisesHeroBackground() {
+  const particles = [
+    { x: 10, y: 20, size: 4, dur: 18, delay: 0 },
+    { x: 25, y: 60, size: 6, dur: 22, delay: -3 },
+    { x: 45, y: 40, size: 3, dur: 15, delay: -6 },
+    { x: 65, y: 80, size: 5, dur: 20, delay: -9 },
+    { x: 80, y: 30, size: 4, dur: 24, delay: -12 },
+    { x: 90, y: 70, size: 6, dur: 19, delay: -15 },
+    { x: 15, y: 85, size: 3, dur: 21, delay: -2 },
+    { x: 55, y: 15, size: 5, dur: 17, delay: -7 },
+    { x: 75, y: 55, size: 4, dur: 23, delay: -11 },
+    { x: 35, y: 75, size: 6, dur: 16, delay: -4 },
+    { x: 95, y: 45, size: 3, dur: 25, delay: -13 },
+    { x: 5, y: 50, size: 5, dur: 20, delay: -8 },
+  ];
+
+  const rings = [
+    { x: 20, y: 30, size: 60, dur: 12, delay: 0 },
+    { x: 70, y: 60, size: 80, dur: 15, delay: -4 },
+    { x: 40, y: 80, size: 50, dur: 18, delay: -8 },
+    { x: 85, y: 20, size: 70, dur: 14, delay: -2 },
+  ];
+
+  return (
+    <div className="stage" style={{ position: 'absolute', inset: 0, zIndex: 1, overflow: 'hidden' }}>
+      <style>{`
+        @keyframes floatUp {
+          0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.7; }
+          90% { opacity: 0.7; }
+          100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes pulseRing {
+          0% { transform: scale(0.8); opacity: 0; }
+          50% { opacity: 0.4; }
+          100% { transform: scale(1.5); opacity: 0; }
+        }
+        .particle {
+          position: absolute;
+          width: var(--size, 4px);
+          height: var(--size, 4px);
+          background: #F0A93B;
+          border-radius: 50%;
+          left: var(--x, 50%);
+          top: var(--y, 50%);
+          box-shadow: 0 0 10px 2px rgba(240,169,59,0.4);
+          animation: floatUp var(--dur, 15s) linear infinite;
+          animation-delay: var(--delay, 0s);
+          opacity: 0;
+        }
+        .ring {
+          position: absolute;
+          width: var(--size, 60px);
+          height: var(--size, 60px);
+          border: 1px solid rgba(240,169,59,0.25);
+          border-radius: 50%;
+          left: var(--x, 50%);
+          top: var(--y, 50%);
+          animation: pulseRing var(--dur, 12s) ease-in-out infinite;
+          animation-delay: var(--delay, 0s);
+          opacity: 0;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .particle, .ring { animation: none; opacity: 0.3; }
+        }
+      `}</style>
+      
+      {particles.map((p, i) => (
+        <div
+          key={i}
+          className="particle"
+          style={{
+            '--x': `${p.x}%`,
+            '--y': `${p.y}%`,
+            '--size': `${p.size}px`,
+            '--dur': `${p.dur}s`,
+            '--delay': `${p.delay}s`,
+          }}
+        />
+      ))}
+      
+      {rings.map((r, i) => (
+        <div
+          key={i}
+          className="ring"
+          style={{
+            '--x': `${r.x}%`,
+            '--y': `${r.y}%`,
+            '--size': `${r.size}px`,
+            '--dur': `${r.dur}s`,
+            '--delay': `${r.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
 const expertises = [
   {
@@ -123,7 +223,8 @@ export default function Expertises() {
           style={{ opacity: 0.55 }}
         />
         <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(to right, #040f23, rgba(4,15,35,0.92), rgba(4,15,35,0.45))' }} />
-        <div className="relative mx-auto max-w-7xl pl-4 md:pl-16 lg:pl-24">
+        <ExpertisesHeroBackground />
+        <div className="relative mx-auto max-w-7xl pl-4 md:pl-16 lg:pl-24" style={{ zIndex: 3 }}>
           <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.yellow, margin: '0 0 24px' }}>
             Nos expertises
           </p>

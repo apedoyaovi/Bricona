@@ -38,6 +38,155 @@ const fonts = {
   inter: "'Inter', sans-serif",
 };
 
+/* ─── HERO CUBE BACKGROUND ─── */
+function HeroCubeBackground() {
+  const cubes = [
+    { s: 80, x: 20, dur: 12, spin: 20, delay: 0 },
+    { s: 130, x: 120, dur: 13, spin: 21, delay: -1.08 },
+    { s: 100, x: 270, dur: 14, spin: 22, delay: -2.33 },
+    { s: 160, x: 390, dur: 15, spin: 23, delay: -3.75 },
+    { s: 90, x: 570, dur: 16, spin: 24, delay: -5.33 },
+    { s: 180, x: 680, dur: 17, spin: 25, delay: -7.08 },
+    { s: 120, x: 880, dur: 18, spin: 26, delay: -9 },
+    { s: 150, x: 1020, dur: 19, spin: 27, delay: -11.08 },
+    { s: 110, x: 1190, dur: 20, spin: 28, delay: -13.33 },
+    { s: 200, x: 1320, dur: 21, spin: 29, delay: -15.75 },
+    { s: 140, x: 1540, dur: 22, spin: 30, delay: -18.33 },
+    { s: 170, x: 1700, dur: 23, spin: 31, delay: -21.08 },
+  ];
+
+  const lines = [
+    { x: '60%', h: 120, dur: 8, delay: 0, dot: true },
+    { x: '71%', h: 200, dur: 11, delay: -4, dot: false },
+    { x: '88%', h: 90, dur: 6.5, delay: -2, dot: true },
+    { x: '95%', h: 260, dur: 14, delay: -9, dot: false },
+    { x: '80%', h: 150, dur: 9.5, delay: -6.5, dot: true },
+    { x: '55%', h: 110, dur: 7.5, delay: -3.5, dot: false },
+    { x: '99%', h: 130, dur: 10, delay: -1, dot: true },
+  ];
+
+  return (
+    <div className="stage" style={{ position: 'absolute', inset: 0, zIndex: 1, overflow: 'hidden' }}>
+      <style>{`
+        @keyframes fallLoop {
+          0% { top: -40%; opacity: 0; }
+          8% { opacity: 1; }
+          85% { opacity: 1; }
+          100% { top: 140%; opacity: 0; }
+        }
+        @keyframes spinSlow {
+          from { transform: rotateX(-22deg) rotateY(-34deg); }
+          to { transform: rotateX(-22deg) rotateY(326deg); }
+        }
+        .cube-scene {
+          position: absolute;
+          width: var(--s, 220px);
+          height: var(--s, 220px);
+          top: -40%;
+          right: var(--x, 60px);
+          perspective: 1000px;
+          animation: fallLoop var(--dur, 14s) linear infinite;
+          animation-delay: var(--delay, 0s);
+          opacity: 0;
+        }
+        .cube {
+          position: absolute;
+          inset: 0;
+          transform-style: preserve-3d;
+          transform: rotateX(-22deg) rotateY(-34deg);
+          animation: spinSlow var(--spin, 26s) linear infinite;
+          animation-delay: var(--delay, 0s);
+        }
+        .cube .face {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(155deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015) 70%);
+          border: 1px solid rgba(255,255,255,0.16);
+          backface-visibility: visible;
+        }
+        .cube .front { transform: translateZ(calc(var(--s, 220px) / 2)); }
+        .cube .back { transform: rotateY(180deg) translateZ(calc(var(--s, 220px) / 2)); }
+        .cube .right { transform: rotateY(90deg) translateZ(calc(var(--s, 220px) / 2)); border-color: rgba(255,255,255,0.30); background: linear-gradient(155deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02)); }
+        .cube .left { transform: rotateY(-90deg) translateZ(calc(var(--s, 220px) / 2)); }
+        .cube .top { transform: rotateX(90deg) translateZ(calc(var(--s, 220px) / 2)); background: linear-gradient(155deg, rgba(255,255,255,0.14), rgba(255,255,255,0.03)); border-color: rgba(255,255,255,0.30); }
+        .cube .bottom { transform: rotateX(-90deg) translateZ(calc(var(--s, 220px) / 2)); }
+        
+        .line {
+          position: absolute;
+          bottom: -20%;
+          left: var(--x, 50%);
+          width: 1px;
+          height: var(--h, 140px);
+          background: linear-gradient(to top, transparent, #F0A93B 35%, #F0A93B 65%, transparent);
+          opacity: 0;
+          animation: riseLoop var(--dur, 9s) linear infinite;
+          animation-delay: var(--delay, 0s);
+        }
+        .line.dot::after {
+          content: "";
+          position: absolute;
+          top: -3px;
+          left: 50%;
+          width: 6px;
+          height: 6px;
+          background: #F0A93B;
+          border-radius: 50%;
+          transform: translateX(-50%);
+          box-shadow: 0 0 8px 1px rgba(240,169,59,0.6);
+        }
+        @keyframes riseLoop {
+          0% { bottom: -20%; opacity: 0; }
+          10% { opacity: 0.9; }
+          88% { opacity: 0.9; }
+          100% { bottom: 120%; opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .cube, .line { animation: none; opacity: 0.5; }
+        }
+        @media (max-width: 768px) {
+          .stage { opacity: 0.6; }
+        }
+      `}</style>
+      
+      {cubes.map((cube, i) => (
+        <div
+          key={i}
+          className="cube-scene"
+          style={{
+            '--s': `${cube.s}px`,
+            '--x': `${cube.x}px`,
+            '--dur': `${cube.dur}s`,
+            '--spin': `${cube.spin}s`,
+            '--delay': `${cube.delay}s`,
+          }}
+        >
+          <div className="cube">
+            <div className="face front"></div>
+            <div className="face back"></div>
+            <div className="face left"></div>
+            <div className="face right"></div>
+            <div className="face top"></div>
+            <div className="face bottom"></div>
+          </div>
+        </div>
+      ))}
+      
+      {lines.map((line, i) => (
+        <div
+          key={`line-${i}`}
+          className={`line ${line.dot ? 'dot' : ''}`}
+          style={{
+            '--x': line.x,
+            '--h': `${line.h}px`,
+            '--dur': `${line.dur}s`,
+            '--delay': `${line.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ─── HERO SECTION ─── */
 function HeroSection() {
   return (
@@ -49,8 +198,9 @@ function HeroSection() {
         style={{ opacity: 0.7 }}
       />
       <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(to right, #040f23, rgba(4,15,35,0.9), rgba(4,15,35,0.3))' }} />
+      <HeroCubeBackground />
 
-      <div className="max-w-screen-xl mx-auto px-4 lg:px-8 w-full h-full relative">
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8 w-full h-full relative" style={{ zIndex: 3 }}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full">
 
           {/* Left Column */}
@@ -68,7 +218,7 @@ function HeroSection() {
 
             {/* Subtitle */}
             <h2 style={{ fontFamily: fonts.inter, fontSize: '24px', fontWeight: 500, lineHeight: '34px', letterSpacing: '-0.005em', color: '#f7f8fa', maxWidth: '640px', margin: '0 auto', textAlign: 'left' }}>
-              Des équipes, des produits et des technologies pour transformer durablement votre environnement numérique.
+              Transformer durablement votre environnement numérique avec enésense.
             </h2>
             <p style={{ fontFamily: fonts.inter, fontSize: '17px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.005em', color: T.navyMuted, maxWidth: '540px', margin: '0 auto', textAlign: 'left' }}>
               Enésense accompagne les entreprises dans la construction, l'évolution et la modernisation de leurs environnements numériques de l'ingénierie technique au développement de produits et à l'automatisation.
