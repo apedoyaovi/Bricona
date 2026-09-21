@@ -256,7 +256,7 @@ function HeroRightStage() {
   }, [terms.length]);
 
   return (
-    <div className="hidden lg:flex flex-col items-end justify-center h-full relative" style={{ minHeight: '420px' }}>
+    <div className="flex flex-col items-end justify-center h-full relative w-full gap-4" style={{ minHeight: '420px' }}>
       <style>{`
         @keyframes draw { to { stroke-dashoffset: 0; } }
         @keyframes slideDownCenterRight {
@@ -264,6 +264,12 @@ function HeroRightStage() {
           45% { transform: translateY(0) translateX(0); opacity: 1; }
           75% { transform: translateY(0) translateX(40px); opacity: 1; }
           100% { transform: translateY(0) translateX(60px); opacity: 0; }
+        }
+        @keyframes mobileFadeIn {
+          0% { opacity: 0; transform: translateY(10px); }
+          20% { opacity: 1; transform: translateY(0); }
+          80% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(-10px); }
         }
         .right-term {
           position: absolute;
@@ -305,6 +311,15 @@ function HeroRightStage() {
           margin: 0;
           max-width: 14ch;
           text-align: right;
+        }
+        @media (max-width: 1023px) {
+          .right-term {
+            position: relative;
+            right: auto;
+            top: auto !important;
+            justify-content: center;
+            animation: mobileFadeIn 3.4s cubic-bezier(.4,0,.2,1) forwards;
+          }
         }
       `}</style>
       {terms.map((term, idx) => (
