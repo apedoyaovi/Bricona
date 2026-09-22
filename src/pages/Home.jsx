@@ -368,10 +368,10 @@ function HeroSection() {
 
             {/* Subtitle */}
             <h2 style={{ fontFamily: fonts.inter, fontSize: '24px', fontWeight: 500, lineHeight: '34px', letterSpacing: '-0.005em', color: '#f7f8fa', maxWidth: '640px', margin: '0 auto', textAlign: 'left' }}>
-              Transformer durablement votre environnement numérique avec enésense.
+              Votre projet numérique commence ici.
             </h2>
             <p style={{ fontFamily: fonts.inter, fontSize: '17px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.005em', color: T.navyMuted, maxWidth: '540px', margin: '0 auto', textAlign: 'left' }}>
-              Enésense accompagne les entreprises dans la construction, l'évolution et la modernisation de leurs environnements numériques de l'ingénierie technique au développement de produits et à l'automatisation.
+              Site web, application, plateforme métier, automatisation ou projet d'entreprise : nous concevons et développons les technologies dont vous avez besoin.
             </p>
 
             {/* CTA Buttons */}
