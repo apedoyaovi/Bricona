@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const T = {
@@ -37,6 +38,16 @@ const fonts = {
 };
 
 export default function Solutions() {
+  const briconaSlides = ['/bricona 1.png', '/bricona 2.png', '/bricona 3.png'];
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % briconaSlides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   const approachItems = [
     { title: 'Partir du terrain', desc: 'Chaque produit naît d\'un problème métier observé, pas d\'une intuition technologique.' },
     { title: 'Construire pour l\'exploitation', desc: 'Supervision, reprise sur incident, coûts d\'exécution : ces sujets existent dès les premières versions.' },
@@ -92,7 +103,36 @@ export default function Solutions() {
                 </Link>
               </div>
             </div>
-            <img src="/bricona-product.jpg" alt="Tableau de bord de la plateforme BRICONA" className="w-full border" style={{ borderColor: `${T.navyMuted}20` }} />
+            <div className="relative overflow-hidden border aspect-video" style={{ borderColor: `${T.navyMuted}20` }}>
+              {briconaSlides.map((src, idx) => (
+                <img
+                  key={src}
+                  src={src}
+                  alt={`BRICONA - vue ${idx + 1}`}
+                  loading="lazy"
+                  className="w-full h-full object-contain transition-opacity duration-700"
+                  style={{
+                    position: idx === currentSlide ? 'relative' : 'absolute',
+                    inset: 0,
+                    opacity: idx === currentSlide ? 1 : 0,
+                    background: '#0A0D14',
+                  }}
+                />
+              ))}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {briconaSlides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className="h-2 rounded-full transition-all duration-300"
+                    style={{
+                      width: idx === currentSlide ? '24px' : '8px',
+                      background: idx === currentSlide ? T.yellow : 'rgba(255,255,255,0.3)',
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
