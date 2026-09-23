@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const T = {
@@ -27,6 +28,16 @@ const capabilities = [
 ];
 
 export default function SelvyDetail() {
+  const selvySlides = ['/selvy 1-1.png', '/selvy 1-2.png', '/selvy 2-1.png', '/selvy 2-2.png', '/selvy 3-1.png', '/selvy 3-2.png'];
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % selvySlides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div style={{ fontFamily: fonts.inter, background: '#ffffff' }}>
       <section className="pt-40 pb-24 md:pt-48 md:pb-32" style={{ background: T.navyDeep, color: T.navyText }}>
@@ -64,6 +75,31 @@ export default function SelvyDetail() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="relative min-h-[420px] overflow-hidden border" style={{ borderColor: `${T.navyMuted}20`, background: `linear-gradient(135deg, ${T.navy2}, ${T.navyDeep} 65%, ${T.navy3})` }}>
             <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full" style={{ background: 'rgba(242,183,5,0.16)', filter: 'blur(50px)' }} />
+            <div className="relative w-full h-full min-h-[420px]">
+              {selvySlides.map((src, idx) => (
+                <img
+                  key={src}
+                  src={src}
+                  alt={`SELVY - vue ${idx + 1}`}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-contain transition-opacity duration-700"
+                  style={{ opacity: idx === currentSlide ? 1 : 0 }}
+                />
+              ))}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {selvySlides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className="h-2 rounded-full transition-all duration-300"
+                    style={{
+                      width: idx === currentSlide ? '20px' : '8px',
+                      background: idx === currentSlide ? T.yellow : 'rgba(255,255,255,0.3)',
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
             <div className="relative flex h-full min-h-[420px] flex-col justify-between p-8 md:p-14">
               <div>
                 <p style={{ fontFamily: fonts.inter, fontSize: '12px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: T.yellow }}>

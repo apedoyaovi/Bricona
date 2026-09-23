@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 /* ─── Design Tokens (matching stitch_en_sense redesign) ─── */
@@ -188,159 +188,70 @@ function HeroCubeBackground() {
 }
 
 /* ─── HERO SECTION ─── */
-function HeroRightStage() {
-  const terms = [
-    {
-      icon: (
-        <svg viewBox="0 0 120 120">
-          <rect x="10" y="20" width="100" height="80" rx="4" />
-          <line x1="10" y1="38" x2="110" y2="38" />
-          <circle cx="20" cy="29" r="2.2" />
-          <line x1="24" y1="55" x2="96" y2="55" />
-          <line x1="24" y1="68" x2="80" y2="68" />
-          <line x1="24" y1="81" x2="60" y2="81" />
-        </svg>
-      ),
-      label: 'Création de site web',
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 120 120">
-          <rect x="30" y="10" width="60" height="100" rx="8" />
-          <line x1="30" y1="90" x2="90" y2="90" />
-          <rect x="40" y="30" width="16" height="16" rx="3" />
-          <rect x="64" y="30" width="16" height="16" rx="3" />
-          <rect x="40" y="54" width="16" height="16" rx="3" />
-          <rect x="64" y="54" width="16" height="16" rx="3" />
-        </svg>
-      ),
-      label: "Création d'application",
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 120 120">
-          <circle cx="18" cy="60" r="10" />
-          <circle cx="60" cy="60" r="10" />
-          <circle cx="102" cy="60" r="10" />
-          <line x1="28" y1="60" x2="48" y2="60" />
-          <line x1="70" y1="60" x2="90" y2="60" />
-          <path d="M44 55 L48 60 L44 65" />
-          <path d="M86 55 L90 60 L86 65" />
-        </svg>
-      ),
-      label: 'Automatisation',
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 120 120">
-          <rect x="15" y="15" width="90" height="90" />
-          <line x1="15" y1="105" x2="105" y2="15" />
-          <line x1="15" y1="15" x2="15" y2="25" />
-          <line x1="105" y1="15" x2="95" y2="15" />
-          <line x1="15" y1="105" x2="25" y2="105" />
-          <line x1="105" y1="105" x2="105" y2="95" />
-        </svg>
-      ),
-      label: "Votre environnement numérique sur mesure",
-    },
-  ];
-
-  const [activeIndex, setActiveIndex] = useState(0);
+function HeroSection() {
+  const [visible, setVisible] = useState(false);
+  const [phase, setPhase] = useState('entry');
+  const [pulsingCard, setPulsingCard] = useState(-1);
+  const [hoveredCard, setHoveredCard] = useState(-1);
+  const activeRef = useRef(true);
+  const timersRef = useRef([]);
 
   useEffect(() => {
-    const CYCLE_MS = 3400;
-    const interval = setInterval(() => {
-      setActiveIndex(prev => (prev + 1) % terms.length);
-    }, CYCLE_MS);
-    return () => clearInterval(interval);
-  }, [terms.length]);
+    const node = document.getElementById('hero-section-anchor');
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0.35 }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    activeRef.current = true;
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+
+    if (!visible) {
+      setPhase('entry');
+      setPulsingCard(-1);
+      return;
+    }
+
+    setPhase('entry');
+    setPulsingCard(-1);
+
+    const startBellTimer = setTimeout(() => {
+      if (!activeRef.current) return;
+      setPhase('bell');
+
+      let current = 0;
+      const pulse = () => {
+        if (!activeRef.current) return;
+        setPulsingCard(current);
+        const resetTimer = setTimeout(() => {
+          if (activeRef.current) setPulsingCard(-1);
+        }, 300);
+        timersRef.current.push(resetTimer);
+        current = (current + 1) % 4;
+        const nextTimer = setTimeout(pulse, 1000);
+        timersRef.current.push(nextTimer);
+      };
+
+      pulse();
+    }, 4000);
+
+    timersRef.current.push(startBellTimer);
+
+    return () => {
+      activeRef.current = false;
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    };
+  }, [visible]);
 
   return (
-    <div className="flex flex-col items-end justify-center h-full relative w-full gap-4" style={{ minHeight: '420px' }}>
-      <style>{`
-        @keyframes draw { to { stroke-dashoffset: 0; } }
-        @keyframes slideDownCenterRight {
-          0% { transform: translateY(-40px) translateX(0); opacity: 0; }
-          45% { transform: translateY(0) translateX(0); opacity: 1; }
-          75% { transform: translateY(0) translateX(40px); opacity: 1; }
-          100% { transform: translateY(0) translateX(60px); opacity: 0; }
-        }
-        @keyframes mobileFadeIn {
-          0% { opacity: 0; transform: translateY(10px); }
-          20% { opacity: 1; transform: translateY(0); }
-          80% { opacity: 1; transform: translateY(0); }
-          100% { opacity: 0; transform: translateY(-10px); }
-        }
-        .right-term {
-          position: absolute;
-          right: 0;
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          opacity: 0;
-          pointer-events: none;
-        }
-        .right-term.active {
-          animation: slideDownCenterRight 3.4s cubic-bezier(.4,0,.2,1) forwards;
-        }
-        .right-term .icon-wrap svg * {
-          fill: none;
-          stroke: #8FB0FF;
-          stroke-width: 3;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-          stroke-dasharray: 500;
-          stroke-dashoffset: 500;
-        }
-        .right-term.active .icon-wrap svg * {
-          animation: draw 0.9s cubic-bezier(.4,0,.2,1) forwards;
-        }
-        .right-term.active .icon-wrap svg *:nth-child(2) { animation-delay: 0.08s; }
-        .right-term.active .icon-wrap svg *:nth-child(3) { animation-delay: 0.16s; }
-        .right-term.active .icon-wrap svg *:nth-child(4) { animation-delay: 0.24s; }
-        .right-term.active .icon-wrap svg *:nth-child(5) { animation-delay: 0.32s; }
-        .right-term.active .icon-wrap svg *:nth-child(6) { animation-delay: 0.4s; }
-        .right-term.active .icon-wrap svg *:nth-child(7) { animation-delay: 0.48s; }
-        .right-term h1 {
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          font-weight: 650;
-          letter-spacing: -0.01em;
-          font-size: clamp(1.1rem, 1.6vw, 1.45rem);
-          line-height: 1.15;
-          color: #F5F6F8;
-          margin: 0;
-          max-width: 14ch;
-          text-align: right;
-        }
-        @media (max-width: 1023px) {
-          .right-term {
-            position: relative;
-            right: auto;
-            top: auto !important;
-            justify-content: center;
-            animation: mobileFadeIn 3.4s cubic-bezier(.4,0,.2,1) forwards;
-          }
-        }
-      `}</style>
-      {terms.map((term, idx) => (
-        <div
-          key={idx}
-          className={`right-term ${idx === activeIndex ? 'active' : ''}`}
-          style={{ top: `${idx * 80}px` }}
-        >
-          <div className="icon-wrap" style={{ width: '56px', height: '56px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {term.icon}
-          </div>
-          <h1>{term.label}</h1>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function HeroSection() {
-  return (
-    <section className="relative w-full overflow-hidden flex items-start lg:items-center min-h-screen mt-[72px] py-12 lg:py-24 group" style={{ background: T.navyDeep }}>
+    <section id="hero-section-anchor" className="relative w-full flex items-start lg:items-center min-h-screen mt-[72px] py-12 lg:py-24 group" style={{ background: T.navyDeep }}>
       <img
         src="/hero-architecture.jpg"
         alt="Architecture numérique abstraite"
@@ -354,7 +265,7 @@ function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full">
 
           {/* Left Column */}
-          <div className="lg:col-span-7 flex flex-col items-center lg:items-start gap-6">
+           <div className="lg:col-span-7 flex flex-col items-center lg:items-start gap-6" style={{ overflow: 'visible' }}>
 
             {/* Eyebrow */}
             <p style={{ fontFamily: fonts.inter, fontSize: '14px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: T.yellow }}>
@@ -362,8 +273,8 @@ function HeroSection() {
             </p>
 
             {/* Heading */}
-            <h1 className="text-center lg:text-left" style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(28px, 5vw, 78px)', fontWeight: 700, lineHeight: 0.95, letterSpacing: '-0.03em', color: T.navyText, margin: 0, maxWidth: '100%' }}>
-              Build. Scale. Evolve. Automate.
+            <h1 className="text-center lg:text-left whitespace-normal lg:whitespace-nowrap" style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(32px, 6vw, 82px)', fontWeight: 700, lineHeight: 0.95, letterSpacing: '-0.03em', color: T.navyText, margin: 0, overflow: 'visible' }}>
+              Build. Scale. Evolve.<br />Automate.
             </h1>
 
             {/* Subtitle */}
@@ -373,6 +284,15 @@ function HeroSection() {
             <p style={{ fontFamily: fonts.inter, fontSize: '17px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.005em', color: T.navyMuted, maxWidth: '540px', margin: '0 auto', textAlign: 'left' }}>
               Site web, application, plateforme métier, automatisation ou projet d'entreprise : nous concevons et développons les technologies dont vous avez besoin.
             </p>
+
+            {/* Hero Tags */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              {['Site web', 'Application', 'Plateforme métier', 'Automatisation', 'Projet d\'entreprise'].map(tag => (
+                <span key={tag} style={{ fontFamily: fonts.inter, fontSize: '12px', fontWeight: 500, color: T.navyText, border: `1px solid ${T.navyMuted}`, padding: '6px 12px', borderRadius: '2px', background: 'rgba(255,255,255,0.05)' }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full pt-4">
@@ -398,8 +318,45 @@ function HeroSection() {
           </div>
 
           {/* Right Column */}
-          <div className="lg:col-span-5 flex items-center justify-center">
-            <HeroRightStage />
+          <div className="lg:col-span-5 flex items-center justify-end">
+            <div className="w-full max-w-md ml-auto space-y-4">
+              {[
+                { title: 'Création de site web', desc: 'Site vitrine, contenu ou e-commerce sur mesure.' },
+                { title: "Création d'application", desc: 'Mobile ou web, pensée autour de vos utilisateurs.' },
+                { title: 'Automatisation', desc: 'Processus qui se déclenchent tout seuls.' },
+                { title: 'Environnement numérique', desc: 'Votre stack complète, maîtrisée et évolutive.' },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="border backdrop-blur-sm p-5 flex items-start gap-4"
+                  onMouseEnter={() => setHoveredCard(idx)}
+                  onMouseLeave={() => setHoveredCard(-1)}
+                  style={{
+                    opacity: visible ? 1 : 0,
+                    transform: !visible
+                      ? 'translateX(40px) scale(0.92)'
+                      : pulsingCard === idx
+                        ? 'scale(1.04)'
+                        : hoveredCard === idx
+                          ? 'translateY(-2px) scale(1.01)'
+                          : 'translateX(0) scale(1)',
+                    borderColor: pulsingCard === idx ? T.yellow : (hoveredCard === idx ? T.yellow : 'rgba(255,255,255,0.1)'),
+                    background: hoveredCard === idx ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)',
+                    transition: !visible
+                      ? 'none'
+                      : phase === 'entry'
+                        ? `opacity 500ms ease ${idx * 1000}ms, transform 500ms ease ${idx * 1000}ms, border-color 500ms ease ${idx * 1000}ms, background 500ms ease ${idx * 1000}ms`
+                        : `transform 300ms ease, border-color 300ms ease, background 300ms ease`,
+                  }}
+                >
+                  <span className="material-symbols-outlined mt-0.5" style={{ color: T.yellow, fontSize: '22px' }}>check_circle</span>
+                  <div>
+                    <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1rem', fontWeight: 700, color: T.navyText, margin: '0 0 4px' }}>{item.title}</h3>
+                    <p style={{ fontFamily: fonts.inter, fontSize: '0.88rem', lineHeight: '1.5', color: T.navyMuted, margin: 0 }}>{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -428,6 +385,55 @@ function PartnersStrip() {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── PROJECTS SECTION ─── */
+function ProjectsSection() {
+  const projects = [
+    { number: '01', title: 'Site web', desc: 'Site vitrine, site de contenu ou site e-commerce, conçu sur mesure et facile à faire vivre.' },
+    { number: '02', title: 'Application', desc: 'Une application mobile ou web pensée autour de vos utilisateurs et de leurs usages réels.' },
+    { number: '03', title: 'Plateforme métier', desc: 'Un outil interne qui remplace les fichiers, les ressaisies et les tableurs partagés.' },
+    { number: '04', title: 'Automatisation', desc: 'Vos tâches répétitives transformées en processus qui se déclenchent tout seuls.' },
+    { number: '05', title: 'Intelligence artificielle', desc: 'Poser une question, obtenir une réponse fiable à partir de vos propres documents et données.' },
+  ];
+  return (
+    <section className="w-full py-24 bg-white">
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+        <div className="max-w-3xl">
+          <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
+            Vos projets
+          </p>
+          <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: '0 0 24px', maxWidth: '32ch' }}>
+            Vous voulez construire quelque chose ?
+          </h2>
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, margin: 0 }}>
+            Nous pouvons partir d'une idée, d'un besoin métier ou d'un produit qui existe déjà.
+          </p>
+        </div>
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          {projects.map(p => (
+            <div key={p.number} className="h-full border border-slate-200 bg-white flex flex-col transition-all duration-300 hover:border-yellow hover:shadow-xl hover:-translate-y-1">
+              <div className="p-8 flex flex-col h-full">
+                <span style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.1em', color: T.yellowDeep, display: 'inline-block', marginBottom: '8px' }}>{p.number}</span>
+                <div style={{ width: '24px', height: '2px', background: T.yellow, marginBottom: '16px' }} />
+                <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.15rem', fontWeight: 700, color: '#0B1D33', margin: '0 0 12px' }}>{p.title}</h3>
+                <p style={{ fontFamily: fonts.inter, fontSize: '0.95rem', lineHeight: '1.65', color: T.navyMuted, margin: 0, flex: '1 1 auto' }}>{p.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-16 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.0625rem', lineHeight: 1.7, color: T.navyMuted, maxWidth: '28rem' }}>
+            Vous ne savez pas encore de quoi vous avez besoin ?
+          </p>
+          <Link to="/contact" className="group inline-flex items-center gap-2 text-sm font-medium transition-colors" style={{ fontFamily: fonts.inter, color: '#0B1D33' }}>
+            <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>Expliquez-nous votre projet</span>
+            <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </Link>
         </div>
       </div>
     </section>
@@ -504,6 +510,20 @@ function ExpertiseSection() {
 
 /* ─── SOLUTIONS SECTION ─── */
 function SolutionsSection() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [
+    { src: '/bricona 1.png', alt: 'BRICONA - vue 1' },
+    { src: '/bricona 2.png', alt: 'BRICONA - vue 2' },
+    { src: '/bricona 3.png', alt: 'BRICONA - vue 3' },
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % slides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
   return (
     <section className="w-full py-24" style={{ background: T.navyDeep }}>
       <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
@@ -550,7 +570,36 @@ function SolutionsSection() {
               </Link>
             </div>
           </div>
-          <img src="/bricona-product.jpg" alt="Interface de la plateforme BRICONA dédiée au secteur du BTP" loading="lazy" className="w-full border" style={{ borderColor: `${T.navyMuted}20` }} />
+          <div className="relative overflow-hidden border aspect-video" style={{ borderColor: `${T.navyMuted}20` }}>
+            {slides.map((slide, idx) => (
+              <img
+                key={slide.src}
+                src={slide.src}
+                alt={slide.alt}
+                loading="lazy"
+                className="w-full h-full object-contain transition-opacity duration-700"
+                style={{
+                  position: idx === currentSlide ? 'relative' : 'absolute',
+                  inset: 0,
+                  opacity: idx === currentSlide ? 1 : 0,
+                  background: '#0A0D14',
+                }}
+              />
+            ))}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              {slides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className="h-2 rounded-full transition-all duration-300"
+                  style={{
+                    width: idx === currentSlide ? '24px' : '8px',
+                    background: idx === currentSlide ? T.yellow : 'rgba(255,255,255,0.3)',
+                  }}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -749,8 +798,19 @@ function StatementSection() {
 }
 
 /* ─── PRODUCT CARD ─── */
-function ProductCard({ name, coverType, title, desc, links }) {
+function ProductCard({ name, coverType, title, desc, links, images }) {
   const [hovered, setHovered] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = images || [];
+  const isBricona = coverType === 'bricona';
+
+  useEffect(() => {
+    if (slides.length === 0) return;
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % slides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
 
   const coverStyles = {
     selvy: `linear-gradient(135deg, ${T.navy2}, #0B1D33 60%)`,
@@ -775,28 +835,64 @@ function ProductCard({ name, coverType, title, desc, links }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div
-        style={{
-          height: '220px',
-          position: 'relative',
-          overflow: 'hidden',
-          background: coverStyles[coverType],
-          transform: hovered ? 'scale(1.035)' : 'scale(1)',
-          transition: 'transform .5s cubic-bezier(.2,.7,.2,1)',
-        }}
-      >
-        {beforeStyles[coverType] && <div style={beforeStyles[coverType]} />}
-        <span style={{
-          position: 'absolute',
-          left: '24px',
-          bottom: '-14px',
-          fontFamily: fonts.jakarta,
-          fontWeight: 700,
-          fontSize: '4.4rem',
-          color: 'rgba(255,255,255,0.09)',
-          letterSpacing: '-0.02em',
-        }}>{name}</span>
-      </div>
+        {slides.length > 0 ? (
+        <div className="relative w-full overflow-hidden" style={{ height: '220px', background: '#0A0D14' }}>
+          {slides.map((src, idx) => (
+            <img
+              key={src}
+              src={src}
+              alt={`${name} - vue ${idx + 1}`}
+              loading="lazy"
+              className="w-full h-full object-contain transition-opacity duration-700"
+              style={{
+                position: idx === currentSlide ? 'relative' : 'absolute',
+                inset: 0,
+                opacity: idx === currentSlide ? 1 : 0,
+              }}
+            />
+          ))}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setCurrentSlide(idx);
+                }}
+                className="h-2 rounded-full transition-all duration-300"
+                style={{
+                  width: idx === currentSlide ? '20px' : '8px',
+                  background: idx === currentSlide ? T.yellow : 'rgba(255,255,255,0.3)',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div
+          style={{
+            height: '220px',
+            position: 'relative',
+            overflow: 'hidden',
+            background: coverStyles[coverType],
+            transform: hovered ? 'scale(1.035)' : 'scale(1)',
+            transition: 'transform .5s cubic-bezier(.2,.7,.2,1)',
+          }}
+        >
+          {beforeStyles[coverType] && <div style={beforeStyles[coverType]} />}
+          <span style={{
+            position: 'absolute',
+            left: '24px',
+            bottom: '-14px',
+            fontFamily: fonts.jakarta,
+            fontWeight: 700,
+            fontSize: '4.4rem',
+            color: 'rgba(255,255,255,0.09)',
+            letterSpacing: '-0.02em',
+          }}>{name}</span>
+        </div>
+      )}
       <div style={{ padding: '26px 26px 30px' }}>
         <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.18rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '10px' }}>{title}</h3>
         <p style={{ color: T.onNavySoft, fontSize: '0.96rem', lineHeight: '1.55', marginBottom: '18px', fontFamily: fonts.inter }}>{desc}</p>
@@ -871,6 +967,7 @@ function ProductsSection() {
       coverType: 'selvy',
       title: 'Selvy',
       desc: "Plateforme de social commerce pensée pour les marchands d'Afrique de l'Ouest.",
+      images: ['/selvy 1-1.png', '/selvy 1-2.png', '/selvy 2-1.png', '/selvy 2-2.png', '/selvy 3-1.png', '/selvy 3-2.png'],
       links: [
         { label: 'Découvrir', to: '/solutions/selvy', muted: false },
         { label: 'Documentation (PDF)', href: '#', muted: true },
@@ -881,6 +978,7 @@ function ProductsSection() {
       coverType: 'bricona',
       title: 'Bricona',
       desc: 'Plateforme de mise en relation pour les métiers du BTP.',
+      images: ['/bricona 1.png', '/bricona 2.png', '/bricona 3.png'],
       links: [
         { label: 'Découvrir', to: '/solutions/bricona', muted: false },
         { label: 'Documentation (PDF)', href: '#', muted: true },
@@ -1068,6 +1166,7 @@ export default function Home() {
       <main>
         <HeroSection />
         <PartnersStrip />
+        <ProjectsSection />
         <ExpertiseSection />
         <SolutionsSection />
         <ModelSection />

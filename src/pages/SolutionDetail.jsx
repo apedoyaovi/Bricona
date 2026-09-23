@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const T = {
@@ -81,7 +82,52 @@ export default function SolutionDetail() {
       {/* Image */}
       <section className="py-20 md:py-24">
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
-          <img src="/bricona-product.jpg" alt="Interface de BRICONA : tableau de bord de suivi de chantiers" className="w-full border" style={{ borderColor: `${T.navyMuted}20` }} />
+          {(() => {
+            const slides = [
+              { src: '/bricona 1.png', alt: 'BRICONA - vue 1' },
+              { src: '/bricona 2.png', alt: 'BRICONA - vue 2' },
+              { src: '/bricona 3.png', alt: 'BRICONA - vue 3' },
+            ];
+            const [currentSlide, setCurrentSlide] = useState(0);
+            useEffect(() => {
+              const timer = setInterval(() => {
+                setCurrentSlide(prev => (prev + 1) % slides.length);
+              }, 4000);
+              return () => clearInterval(timer);
+            }, [slides.length]);
+            return (
+              <div className="relative overflow-hidden border aspect-video" style={{ borderColor: `${T.navyMuted}20` }}>
+                {slides.map((slide, idx) => (
+                  <img
+                    key={slide.src}
+                    src={slide.src}
+                    alt={slide.alt}
+                    loading="lazy"
+                    className="w-full h-full object-contain transition-opacity duration-700"
+                    style={{
+                      position: idx === currentSlide ? 'relative' : 'absolute',
+                      inset: 0,
+                      opacity: idx === currentSlide ? 1 : 0,
+                      background: '#0A0D14',
+                    }}
+                  />
+                ))}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                  {slides.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentSlide(idx)}
+                      className="h-2 rounded-full transition-all duration-300"
+                      style={{
+                        width: idx === currentSlide ? '24px' : '8px',
+                        background: idx === currentSlide ? T.yellow : 'rgba(255,255,255,0.3)',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </section>
 
