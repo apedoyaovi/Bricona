@@ -281,9 +281,9 @@ function HeroSection() {
             <h2 style={{ fontFamily: fonts.inter, fontSize: '24px', fontWeight: 500, lineHeight: '34px', letterSpacing: '-0.005em', color: '#f7f8fa', maxWidth: '640px', textAlign: 'left' }}>
               Votre projet numérique commence ici.
             </h2>
-            <p style={{ fontFamily: fonts.inter, fontSize: '17px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.005em', color: T.navyMuted, maxWidth: '540px', textAlign: 'left' }}>
+            {/* <p style={{ fontFamily: fonts.inter, fontSize: '17px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.005em', color: T.navyMuted, maxWidth: '540px', textAlign: 'left' }}>
               Site web, application, plateforme métier, automatisation ou projet d'entreprise : nous concevons et développons les technologies dont vous avez besoin.
-            </p>
+            </p> */}
 
             {/* Hero Tags */}
             <div className="flex flex-wrap gap-2 pt-2">
