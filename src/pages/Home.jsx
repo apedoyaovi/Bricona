@@ -470,10 +470,10 @@ function ExpertiseCard({ badge, badgeLabel, title, desc, image, href }) {
 /* ─── EXPERTISE SECTION ─── */
 function ExpertiseSection() {
   const cards = [
-    { badge: 'SCALE', title: "Extension d'équipes techniques", desc: "Renforcer vos équipes avec des ingénieurs spécialisés, intégrés à vos méthodes et à votre environnement technique.", image: '/pillar-scale.jpg', href: '/expertises/extension-equipes' },
+    { badge: 'SCALE', title: "Extension d'équipes techniques", desc: "Renforcer vos équipes avec des ingénieurs spécialisés, intégrés à vos méthodes et à votre environnement technique.", image: '/equipe.png', href: '/expertises/extension-equipes' },
     { badge: 'BUILD', title: "Studio Produit", desc: "Concevoir et développer des produits numériques adaptés à vos usages réels.", image: '/pillar-build.jpg', href: '/expertises/studio-produit' },
     { badge: 'EVOLVE', title: "Modernisation applicative", desc: "Reprendre en main, sécuriser et faire évoluer vos applications existantes.", image: '/pillar-evolve.jpg', href: '/expertises/modernisation-applicative' },
-    { badge: 'AUTOMATE', badgeLabel: 'Nouvelle expertise', title: "IA & Automatisation", desc: "Automatiser les processus et créer de nouveaux usages grâce à l'intelligence artificielle.", image: '/pillar-automate.jpg', href: '/expertises/ia-automatisation' },
+    { badge: 'AUTOMATE', badgeLabel: 'Nouvelle expertise', title: "IA & Automatisation", desc: "Automatiser les processus et créer de nouveaux usages grâce à l'intelligence artificielle.", image: '/automate.png', href: '/expertises/ia-automatisation' },
   ];
 
   return (
