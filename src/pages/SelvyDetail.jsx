@@ -28,7 +28,7 @@ const capabilities = [
 ];
 
 export default function SelvyDetail() {
-  const selvySlides = ['/selvy 1-1.png', '/selvy 1-2.png', '/selvy 2-1.png', '/selvy 2-2.png', '/selvy 3-1.png', '/selvy 3-2.png'];
+  const selvySlides = ['/selvy.jfif', '/selvy 1-1.png', '/selvy 1-2.png', '/selvy 2-1.png', '/selvy 2-2.png', '/selvy 3-1.png', '/selvy 3-2.png'];
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {

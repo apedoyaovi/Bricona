@@ -38,7 +38,7 @@ const fonts = {
 };
 
 export default function Solutions() {
-  const briconaSlides = ['/bricona 1.png', '/bricona 2.png', '/bricona 3.png'];
+  const briconaSlides = ['/bricona.jfif', '/bricona 1.png', '/bricona 2.png', '/bricona 3.png'];
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {

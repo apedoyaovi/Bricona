@@ -441,12 +441,58 @@ function ProjectsSection() {
 }
 
 /* ─── EXPERTISE CARD ─── */
-function ExpertiseCard({ badge, badgeLabel, title, desc, image, href }) {
+function ExpertiseCard({ badge, badgeLabel, title, desc, image, images, href }) {
+  const slides = images || (image ? [image] : []);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % slides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
   return (
     <div className="bg-white overflow-hidden border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <Link to={href} className="group flex h-full flex-col">
-        <div className="aspect-video w-full overflow-hidden">
-          <img src={image} alt={title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+        <div className="aspect-video w-full overflow-hidden relative" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+          {slides.map((src, idx) => (
+            <img
+              key={src}
+              src={src}
+              alt={`${title} - vue ${idx + 1}`}
+              loading="lazy"
+              className="h-full w-full object-cover transition-opacity duration-700"
+              style={{
+                position: slides.length > 1 ? (idx === currentSlide ? 'relative' : 'absolute') : 'relative',
+                inset: 0,
+                opacity: idx === currentSlide ? 1 : 0,
+                transform: isHovered && slides.length === 1 ? 'scale(1.03)' : 'scale(1)',
+                transition: slides.length === 1 ? 'transform 700ms ease' : 'opacity 700ms ease',
+              }}
+            />
+          ))}
+          {slides.length > 1 && (
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+              {slides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setCurrentSlide(idx);
+                  }}
+                  className="h-2 rounded-full transition-all duration-300"
+                  style={{
+                    width: idx === currentSlide ? '18px' : '7px',
+                    background: idx === currentSlide ? '#F2B705' : 'rgba(255,255,255,0.35)',
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex flex-1 flex-col p-8">
           <div className="flex items-center gap-3">
@@ -471,8 +517,8 @@ function ExpertiseCard({ badge, badgeLabel, title, desc, image, href }) {
 function ExpertiseSection() {
   const cards = [
     { badge: 'SCALE', title: "Extension d'équipes techniques", desc: "Renforcer vos équipes avec des ingénieurs spécialisés, intégrés à vos méthodes et à votre environnement technique.", image: '/equipe.png', href: '/expertises/extension-equipes' },
-    { badge: 'BUILD', title: "Studio Produit", desc: "Concevoir et développer des produits numériques adaptés à vos usages réels.", image: '/pillar-build.jpg', href: '/expertises/studio-produit' },
-    { badge: 'EVOLVE', title: "Modernisation applicative", desc: "Reprendre en main, sécuriser et faire évoluer vos applications existantes.", image: '/pillar-evolve.jpg', href: '/expertises/modernisation-applicative' },
+    { badge: 'BUILD', title: "Studio Produit", desc: "Concevoir et développer des produits numériques adaptés à vos usages réels.", images: ['/studio 1.jpg', '/studio 2.jfif'], href: '/expertises/studio-produit' },
+    { badge: 'EVOLVE', title: "Modernisation applicative", desc: "Reprendre en main, sécuriser et faire évoluer vos applications existantes.", image: '/modernisation.jpg', href: '/expertises/modernisation-applicative' },
     { badge: 'AUTOMATE', badgeLabel: 'Nouvelle expertise', title: "IA & Automatisation", desc: "Automatiser les processus et créer de nouveaux usages grâce à l'intelligence artificielle.", image: '/automate.png', href: '/expertises/ia-automatisation' },
   ];
 
@@ -512,9 +558,10 @@ function ExpertiseSection() {
 function SolutionsSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
-    { src: '/bricona 1.png', alt: 'BRICONA - vue 1' },
-    { src: '/bricona 2.png', alt: 'BRICONA - vue 2' },
-    { src: '/bricona 3.png', alt: 'BRICONA - vue 3' },
+    { src: '/bricona.jfif', alt: 'BRICONA - vue 1' },
+    { src: '/bricona 1.png', alt: 'BRICONA - vue 2' },
+    { src: '/bricona 2.png', alt: 'BRICONA - vue 3' },
+    { src: '/bricona 3.png', alt: 'BRICONA - vue 4' },
   ];
 
   useEffect(() => {
@@ -967,7 +1014,7 @@ function ProductsSection() {
       coverType: 'selvy',
       title: 'Selvy',
       desc: "Plateforme de social commerce pensée pour les marchands d'Afrique de l'Ouest.",
-      images: ['/selvy 1-1.png', '/selvy 1-2.png', '/selvy 2-1.png', '/selvy 2-2.png', '/selvy 3-1.png', '/selvy 3-2.png'],
+      images: ['/selvy.jfif', '/selvy 1-1.png', '/selvy 1-2.png', '/selvy 2-1.png', '/selvy 2-2.png', '/selvy 3-1.png', '/selvy 3-2.png'],
       links: [
         { label: 'Découvrir', to: '/solutions/selvy', muted: false },
         { label: 'Documentation (PDF)', href: '#', muted: true },
@@ -978,7 +1025,7 @@ function ProductsSection() {
       coverType: 'bricona',
       title: 'Bricona',
       desc: 'Plateforme de mise en relation pour les métiers du BTP.',
-      images: ['/bricona 1.png', '/bricona 2.png', '/bricona 3.png'],
+      images: ['/bricona.jfif', '/bricona 1.png', '/bricona 2.png', '/bricona 3.png'],
       links: [
         { label: 'Découvrir', to: '/solutions/bricona', muted: false },
         { label: 'Documentation (PDF)', href: '#', muted: true },

@@ -84,9 +84,10 @@ export default function SolutionDetail() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           {(() => {
             const slides = [
-              { src: '/bricona 1.png', alt: 'BRICONA - vue 1' },
-              { src: '/bricona 2.png', alt: 'BRICONA - vue 2' },
-              { src: '/bricona 3.png', alt: 'BRICONA - vue 3' },
+              { src: '/bricona.jfif', alt: 'BRICONA - vue 1' },
+              { src: '/bricona 1.png', alt: 'BRICONA - vue 2' },
+              { src: '/bricona 2.png', alt: 'BRICONA - vue 3' },
+              { src: '/bricona 3.png', alt: 'BRICONA - vue 4' },
             ];
             const [currentSlide, setCurrentSlide] = useState(0);
             useEffect(() => {
