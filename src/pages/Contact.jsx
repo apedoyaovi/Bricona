@@ -170,7 +170,7 @@ const Contact = () => {
               </div>
               <div className="grid md:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="email">Email professionnel</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="email">Email</label>
                   <input id="email" name="email" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} placeholder="email@entreprise.com" type="email" required />
                 </div>
                 <div className="space-y-2">
@@ -186,6 +186,7 @@ const Contact = () => {
                   <option value="Nouveau produit" style={{ background: '#0A0D14', color: '#f7f8fa' }}>Nouveau produit</option>
                   <option value="Modernisation applicative" style={{ background: '#0A0D14', color: '#f7f8fa' }}>Modernisation applicative</option>
                   <option value="IA & automatisation" style={{ background: '#0A0D14', color: '#f7f8fa' }}>IA & automatisation</option>
+                  <option value="Création de site internet/appli" style={{ background: '#0A0D14', color: '#f7f8fa' }}>Création de site internet/appli</option>
                   <option value="Autre" style={{ background: '#0A0D14', color: '#f7f8fa' }}>Autre</option>
                 </select>
               </div>
@@ -250,7 +251,7 @@ const Contact = () => {
             </div>
 
             {/* Social Networks */}
-            <div className="rounded-2xl p-6" style={{ background: 'linear-gradient(135deg, rgba(242,183,5,0.08), rgba(4,15,35,0.92))', border: '1px solid rgba(242,183,5,0.25)' }}>
+            <div className="rounded-2xl p-6" style={{ background: 'rgba(4,15,35,0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
               <p className="text-xs font-bold uppercase mb-5 tracking-[0.2em] text-center" style={{ fontFamily: fonts.inter, color: T.yellow }}>Suivez nous sur</p>
               <div className="flex justify-center items-center gap-5">
                 <a href="https://web.facebook.com/profile.php?id=61586741540007" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="group relative w-14 h-14 flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110 hover:shadow-lg" style={{ background: 'rgba(242,183,5,0.15)', border: '1px solid rgba(242,183,5,0.4)' }}>
