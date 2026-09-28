@@ -678,7 +678,7 @@ function ModelSection() {
           {items.map(item => (
             <div key={item.title} className="border-t-2" style={{ borderTopColor: T.yellow, paddingTop: '24px' }}>
               <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.125rem', fontWeight: 600, color: '#0B1D33' }}>{item.title}</h3>
-              <p style={{ fontFamily: fonts.inter, fontSize: '1rem', lineHeight: '1.75', color: T.navyMuted, marginTop: '16px' }}>{item.desc}</p>
+              <p style={{ fontFamily: fonts.inter, fontSize: '1rem', lineHeight: '1.75', color: '#374151', marginTop: '16px' }}>{item.desc}</p>
             </div>
           ))}
         </div>
