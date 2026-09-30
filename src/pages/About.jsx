@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../utils/LanguageContext';
 
 const T = {
   primary: '#1e40af',
@@ -37,6 +38,7 @@ const fonts = {
 };
 
 const About = () => {
+  const { t } = useLanguage();
   return (
     <main className="pt-16">
       {/* Hero Section */}
@@ -46,13 +48,13 @@ const About = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7 flex flex-col items-center lg:items-start gap-6">
               <span className="font-label text-xs font-bold tracking-widest uppercase mb-4 block" style={{ fontFamily: fonts.jakarta, color: T.yellow }}>
-                Le Groupe
+                {t('Le Groupe', 'The Group')}
               </span>
               <h1 className="text-center lg:text-left" style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(32px, 5vw, 60px)', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.03em', color: T.navyText, margin: 0, maxWidth: '100%' }}>
-                Un groupe technologique construit autour de l'ingénierie numérique.
+                {t("Un groupe technologique construit autour de l'ingénierie numérique.", 'A technology group built around digital engineering.')}
               </h1>
               <h2 style={{ fontFamily: fonts.inter, fontSize: '18px', fontWeight: 400, lineHeight: '28px', letterSpacing: '-0.005em', color: T.navyMuted, maxWidth: '560px', margin: '0 auto', textAlign: 'left' }}>
-                Enésense réunit des expertises techniques, des équipes d'ingénierie et des produits numériques pour accompagner les entreprises dans leurs transformations technologiques.
+                {t("Enésense réunit des expertises techniques, des équipes d'ingénierie et des produits numériques pour accompagner les entreprises dans leurs transformations technologiques.", 'Enésense brings together technical expertise, engineering teams and digital products to support businesses through technological change.')}
               </h2>
             </div>
           </div>
@@ -70,7 +72,7 @@ const About = () => {
                     <img
                       loading="lazy"
                       className="w-full h-full object-cover grayscale brightness-75 contrast-125"
-                      alt="Globe digital"
+                      alt={t('Globe digital', 'Digital globe')}
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbn9ylsv65eEFC1SY4oWrZTvuF6xRO76Ej09AaQfhczMZ35MA7_tiSn2m3fJLNFMJTL2cFB1BaQew5-za0IQD16OAIa_ktr8Kxwjn5o-zL2hTO2Yy8qfdrzyKVQvtRrpTGYqUz5jpkNqsv26g1pgBFhV-4kvwN1uQ9jImeldaK7EkrjQcpohmQy79Hq8hiZWoRjb21nK4AcYVsvUu72aE4i0lSiKbCwGmbLEMdw0HDGLStGv4ZrIlSjgTAtqCpackwn0xbgbUojY-9"
                     />
                   </div>
@@ -79,9 +81,9 @@ const About = () => {
             </div>
             <div>
               <span className="text-secondary-fixed font-bold tracking-[0.3em] text-xs font-label">HORIZON 2030</span>
-              <h2 className="text-2xl lg:text-3xl font-extrabold font-headline text-on-primary mt-6 mb-4 leading-tight">Enésense digitale, un Nouveau Standard Mondial.</h2>
+              <h2 className="text-2xl lg:text-3xl font-extrabold font-headline text-on-primary mt-6 mb-4 leading-tight">{t('Enésense digitale, un Nouveau Standard Mondial.', 'Enésense Digital: A New Global Standard.')}</h2>
               <p className="text-on-primary/70 text-sm leading-relaxed mb-8">
-                Dans 10 ans, chaque entreprise disposera d'un écosystème digital intelligent qui n'effacera pas son travail, mais le libérera des contraintes administratives et logistiques. Enésense construit ce socle.
+                {t("Dans 10 ans, chaque entreprise disposera d'un écosystème digital intelligent qui n'effacera pas son travail, mais le libérera des contraintes administratives et logistiques. Enésense construit ce socle.", 'In ten years, every business will have an intelligent digital ecosystem that does not replace its work, but frees it from administrative and logistical constraints. Enésense is building that foundation.')}
               </p>
               <ul className="space-y-4">
                 <li className="flex items-start gap-4">
@@ -89,8 +91,8 @@ const About = () => {
                     <span className="material-symbols-outlined text-[14px] text-on-secondary">check</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-on-primary">Digitalisation et Automatisation Intuitive</h4>
-                    <p className="text-xs text-on-primary/60">Gestion intelligente des flux de travail par IA.</p>
+                    <h4 className="font-bold text-on-primary">{t('Digitalisation et Automatisation Intuitive', 'Intuitive Digital Transformation and Automation')}</h4>
+                    <p className="text-xs text-on-primary/60">{t('Gestion intelligente des flux de travail par IA.', 'Intelligent AI-powered workflow management.')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
@@ -98,8 +100,8 @@ const About = () => {
                     <span className="material-symbols-outlined text-[14px] text-on-secondary">check</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-on-primary">Réseaux de Talent Décentralisés</h4>
-                    <p className="text-xs text-on-primary/60">Collaboration globale sans frontières physiques.</p>
+                    <h4 className="font-bold text-on-primary">{t('Réseaux de Talent Décentralisés', 'Distributed Talent Networks')}</h4>
+                    <p className="text-xs text-on-primary/60">{t('Collaboration globale sans frontières physiques.', 'Global collaboration without physical borders.')}</p>
                   </div>
                 </li>
               </ul>

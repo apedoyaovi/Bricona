@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../utils/LanguageContext';
 
 const T = {
   primary: '#1e40af',
@@ -38,6 +39,7 @@ const fonts = {
 };
 
 export default function Solutions() {
+  const { t } = useLanguage();
   const briconaSlides = ['/bricona.jfif', '/bricona 1.png', '/bricona 2.png', '/bricona 3.png'];
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -49,9 +51,9 @@ export default function Solutions() {
   }, []);
 
   const approachItems = [
-    { title: 'Partir du terrain', desc: 'Chaque produit naît d\'un problème métier observé, pas d\'une intuition technologique.' },
-    { title: 'Construire pour l\'exploitation', desc: 'Supervision, reprise sur incident, coûts d\'exécution : ces sujets existent dès les premières versions.' },
-    { title: 'Mesurer l\'usage', desc: 'Les fonctionnalités se valident sur des usages réels, pas sur des hypothèses.' },
+    { title: t('Partir du terrain', 'Start with real-world needs'), desc: t("Chaque produit naît d'un problème métier observé, pas d'une intuition technologique.", 'Every product starts with an observed business problem, not a technology hunch.') },
+    { title: t("Construire pour l'exploitation", 'Build for operations'), desc: t("Supervision, reprise sur incident, coûts d'exécution : ces sujets existent dès les premières versions.", 'Monitoring, incident recovery and operating costs matter from the earliest releases.') },
+    { title: t("Mesurer l'usage", 'Measure usage'), desc: t('Les fonctionnalités se valident sur des usages réels, pas sur des hypothèses.', 'Features are validated against real usage, not assumptions.') },
   ];
 
   return (
@@ -61,13 +63,13 @@ export default function Solutions() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="max-w-2xl">
             <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
-              Nos solutions
+              {t('Nos solutions', 'Our solutions')}
             </p>
             <h1 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.75rem, 4vw, 3rem)', fontWeight: 700, lineHeight: 1.05, color: T.navyText, margin: '0 0 24px' }}>
-              Des produits numériques conçus pour résoudre des problèmes réels.
+              {t('Des produits numériques conçus pour résoudre des problèmes réels.', 'Digital products built to solve real problems.')}
             </h1>
             <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, margin: '0 0 40px', maxWidth: '42rem' }}>
-              Enésense ne se limite pas aux projets réalisés pour ses clients. Le Groupe conçoit, développe et exploite ses propres plateformes.
+              {t('Enésense ne se limite pas aux projets réalisés pour ses clients. Le Groupe conçoit, développe et exploite ses propres plateformes.', 'Enésense does more than deliver client projects. The Group designs, builds and operates its own platforms.')}
             </p>
           </div>
         </div>
@@ -78,17 +80,17 @@ export default function Solutions() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="mb-4">
             <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted }}>
-              Produit principal
+              {t('Produit principal', 'Featured product')}
             </p>
           </div>
           <div className="grid gap-12 md:grid-cols-2 md:items-center">
             <div>
               <h2 style={{ fontFamily: fonts.jakarta, fontSize: '2.5rem', fontWeight: 700, color: '#0B1D33', lineHeight: 1.1, margin: '16px 0' }}>BRICONA</h2>
               <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', fontWeight: 500, color: T.yellow, marginTop: '12px' }}>
-                La plateforme numérique dédiée au secteur du BTP.
+                {t('La plateforme numérique dédiée au secteur du BTP.', 'The digital platform built for the construction industry.')}
               </p>
               <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, marginTop: '24px' }}>
-                BRICONA structure et fluidifie les échanges entre les acteurs d'un chantier : planification, suivi d'avancement, documents, indicateurs. Une réponse construite à partir d'un besoin métier concret.
+                {t("BRICONA structure et fluidifie les échanges entre les acteurs d'un chantier : planification, suivi d'avancement, documents, indicateurs. Une réponse construite à partir d'un besoin métier concret.", 'BRICONA streamlines collaboration across construction projects with planning, progress tracking, documents and metrics, built around a real business need.')}
               </p>
               <div className="mt-8">
                 <Link
@@ -98,7 +100,7 @@ export default function Solutions() {
                   onMouseEnter={e => { e.currentTarget.style.borderColor = T.yellow; e.currentTarget.style.color = T.yellow; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = T.navyMuted; e.currentTarget.style.color = '#0B1D33'; }}
                 >
-                  Découvrir BRICONA
+                  {t('Découvrir BRICONA', 'Discover BRICONA')}
                   <span className="transition-transform group-hover:translate-x-1">→</span>
                 </Link>
               </div>
@@ -108,7 +110,7 @@ export default function Solutions() {
                 <img
                   key={src}
                   src={src}
-                  alt={`BRICONA - vue ${idx + 1}`}
+                  alt={`${t('BRICONA - vue', 'BRICONA - view')} ${idx + 1}`}
                   loading="lazy"
                   className="w-full h-full object-contain transition-opacity duration-700"
                   style={{
@@ -141,7 +143,7 @@ export default function Solutions() {
       <section className="py-20 md:py-24" style={{ background: T.surface }}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.85rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0, marginBottom: '24px' }}>
-            Construire parce qu'un problème mérite une meilleure solution.
+            {t("Construire parce qu'un problème mérite une meilleure solution.", 'Build because a problem deserves a better solution.')}
           </h2>
           <div className="grid gap-12 md:grid-cols-3">
             {approachItems.map((item, i) => (
@@ -160,10 +162,10 @@ export default function Solutions() {
       <section className="py-20 md:py-24">
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.85rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0, marginBottom: '24px' }}>
-            D'autres plateformes sont en cours de construction.
+            {t("D'autres plateformes sont en cours de construction.", 'More platforms are in development.')}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, maxWidth: '42rem' }}>
-            Nos prochains produits suivent la même logique : un secteur, un problème récurrent, une plateforme conçue pour être exploitée à grande échelle. Ils seront présentés ici dès leur mise à disposition.
+            {t('Nos prochains produits suivent la même logique : un secteur, un problème récurrent, une plateforme conçue pour être exploitée à grande échelle. Ils seront présentés ici dès leur mise à disposition.', 'Our upcoming products follow the same approach: one industry, one recurring problem, and a platform designed to scale. They will appear here when available.')}
           </p>
         </div>
       </section>
@@ -174,10 +176,10 @@ export default function Solutions() {
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: 0, marginBottom: '24px' }}>
-                Un projet numérique à construire ou à faire évoluer ?
+                {t('Un projet numérique à construire ou à faire évoluer ?', 'A digital project to build or improve?')}
               </h2>
               <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
-                Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.
+                {t('Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.', 'Tell us about your context and goals, and what we could build together.')}
               </p>
             </div>
             <Link
@@ -187,7 +189,7 @@ export default function Solutions() {
               onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
               onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
             >
-              Parler à Enésense
+              {t('Parler à Enésense', 'Talk to Enésense')}
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
           </div>

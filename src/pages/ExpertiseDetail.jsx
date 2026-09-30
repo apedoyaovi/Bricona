@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../utils/LanguageContext';
 
 const T = {
   primary: '#1e40af',
@@ -44,25 +45,61 @@ const allExpertises = [
   { slug: 'ia-automatisation', badge: 'AUTOMATE', badgeLabel: 'Nouvelle expertise', title: 'IA & Automatisation', heading: 'Transformer les tâches répétitives en capacités nouvelles.', description: 'L\'automatisation n\'a de valeur que lorsqu\'elle s\'appuie sur des processus compris et des données maîtrisées. Nous partons de vos flux réels pour identifier ce qui peut être orchestré, assisté ou automatisé.', whenItems: ['Des traitements manuels répétitifs, coûteux et sources d\'erreurs.', 'Des volumes documentaires à qualifier ou à extraire.', 'Des systèmes à faire communiquer entre eux.', 'Un usage d\'IA à cadrer avec des garanties de fiabilité.'], deliversItems: ['Analyse des processus et identification des gains', 'Orchestration et intégration entre systèmes', 'Cas d\'usage IA évalués sur des critères mesurables', 'Mise en production avec supervision et garde-fous'] },
 ];
 
-export default function ExpertiseDetail() {
-  const { id } = useParams();
-  const expertise = allExpertises.find(e => e.slug === id);
+const englishExpertises = {
+  'extension-equipes': {
+    title: 'Technical team extension',
+    heading: 'Strengthen your teams without adding organizational overhead.',
+    description: 'We integrate engineers into your existing teams, using the same tools, rituals and quality standards. Our goal is not to supply profiles, but to sustainably increase your delivery capacity.',
+    whenItems: ['A product roadmap constrained by team capacity.', 'A rare technical skill needed for a defined period.', 'A peak in activity to absorb without compromising quality.', 'An internal team to structure and help mature.'],
+    deliversItems: ['Engineers integrated into your ceremonies and delivery pipeline', 'Shared code reviews and engineering practices', 'Regular tracking of contributions and commitments', 'Ongoing knowledge transfer to your internal teams'],
+  },
+  'studio-produit': {
+    title: 'Product Studio',
+    heading: 'From idea to product.',
+    description: 'We cover the full product lifecycle: framing, architecture, design, development, launch and iteration. Every technical decision is grounded in real, measurable usage.',
+    whenItems: ['A business need that no existing tool addresses properly.', 'A product to launch with a credible, scalable first release.', 'An internal platform to design for multiple entities.', 'A prototype to turn into a production-ready product.'],
+    deliversItems: ['Functional framing and target architecture', 'Iterative development with regular releases', 'Automated integration and deployment pipeline', 'Technical documentation and ownership transfer'],
+  },
+  'modernisation-applicative': {
+    title: 'Application modernization',
+    heading: 'Evolve what exists without compromising what works.',
+    description: 'Taking over a live application calls for a method: understand before replacing, secure before accelerating and break things down before rebuilding. We work incrementally, without service disruption.',
+    whenItems: ['A critical application that is difficult to evolve.', 'Technical debt slowing every new feature.', 'A departing team or provider to replace.', 'An infrastructure or technology migration to manage.'],
+    deliversItems: ['Technical audit and map of the existing system', 'Sequenced and prioritized modernization plan', 'Security, testing and restored delivery pipeline', 'Incremental redesign in controlled scopes'],
+  },
+  'ia-automatisation': {
+    title: 'AI & Automation',
+    badgeLabel: 'New expertise',
+    heading: 'Turn repetitive tasks into new capabilities.',
+    description: 'Automation creates value only when it is grounded in understood processes and well-managed data. We start with your real workflows to identify what can be orchestrated, assisted or automated.',
+    whenItems: ['Repetitive manual work that is costly and error-prone.', 'Large volumes of documents to classify or extract data from.', 'Systems that need to communicate with one another.', 'An AI use case that needs clear reliability safeguards.'],
+    deliversItems: ['Process analysis and opportunity identification', 'Orchestration and integration across systems', 'AI use cases assessed against measurable criteria', 'Production deployment with monitoring and safeguards'],
+  },
+};
 
-  if (!expertise) {
+export default function ExpertiseDetail() {
+  const { language, t } = useLanguage();
+  const { id } = useParams();
+  const sourceExpertise = allExpertises.find(e => e.slug === id);
+
+  if (!sourceExpertise) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center" style={{ background: T.surface }}>
         <div className="text-center">
           <h1 style={{ fontFamily: fonts.jakarta, fontSize: '2rem', fontWeight: 700, color: '#0B1D33' }}>
-            Expertise introuvable
+            {t('Expertise introuvable', 'Expertise not found')}
           </h1>
           <Link to="/" className="inline-block mt-6" style={{ color: T.yellow, fontFamily: fonts.inter, fontWeight: 500 }}>
-            Retour à l'accueil
+            {t("Retour à l'accueil", 'Back to home')}
           </Link>
         </div>
       </div>
     );
   }
 
+  const expertise = language === 'en'
+    ? { ...sourceExpertise, ...englishExpertises[sourceExpertise.slug] }
+    : sourceExpertise;
   const otherExpertises = allExpertises.filter(e => e.slug !== id);
 
   return (
@@ -88,7 +125,7 @@ export default function ExpertiseDetail() {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = T.yellow; e.currentTarget.style.color = T.yellow; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = T.navyMuted; e.currentTarget.style.color = T.navyText; }}
               >
-                Parler à Enésense
+                {t('Parler à Enésense', 'Talk to Enésense')}
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
@@ -102,7 +139,7 @@ export default function ExpertiseDetail() {
           <div className="grid gap-12 md:grid-cols-2">
             <div>
               <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.5rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0 }}>
-                Quand nous intervenons
+                {t('Quand nous intervenons', 'When we step in')}
               </h2>
               <ul className="mt-8 space-y-0" style={{ fontFamily: fonts.inter }}>
                 {expertise.whenItems.map((item, i) => (
@@ -115,7 +152,7 @@ export default function ExpertiseDetail() {
             </div>
             <div>
               <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.5rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0 }}>
-                Ce que nous livrons
+                {t('Ce que nous livrons', 'What we deliver')}
               </h2>
               <ul className="mt-8 space-y-0" style={{ fontFamily: fonts.inter }}>
                 {expertise.deliversItems.map((item, i) => (
@@ -135,7 +172,7 @@ export default function ExpertiseDetail() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="max-w-3xl">
             <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
-              Autres expertises
+              {t('Autres expertises', 'Other expertise')}
             </p>
           </div>
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-3" style={{ border: `1px solid ${T.navyMuted}20`, background: `${T.navyMuted}10` }}>
@@ -149,10 +186,10 @@ export default function ExpertiseDetail() {
                   {exp.badge}
                 </span>
                 <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.125rem', fontWeight: 600, color: '#0B1D33', margin: '16px 0' }}>
-                  {exp.title}
+                  {language === 'en' ? englishExpertises[exp.slug].title : exp.title}
                 </h3>
                 <span className="inline-flex items-center gap-2 text-sm font-medium" style={{ fontFamily: fonts.inter, marginTop: 'auto' }}>
-                  <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px', color: '#0B1D33' }}>Découvrir</span>
+                  <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px', color: '#0B1D33' }}>{t('Découvrir', 'Discover')}</span>
                   <span className="transition-transform group-hover:translate-x-1">→</span>
                 </span>
               </Link>
@@ -167,10 +204,10 @@ export default function ExpertiseDetail() {
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: 0, marginBottom: '24px' }}>
-                Un projet numérique à construire ou à faire évoluer ?
+                {t('Un projet numérique à construire ou à faire évoluer ?', 'A digital project to build or improve?')}
               </h2>
               <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
-                Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.
+                {t('Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.', 'Tell us about your context and goals, and what we could build together.')}
               </p>
             </div>
             <Link
@@ -180,7 +217,7 @@ export default function ExpertiseDetail() {
               onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
               onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
             >
-              Parler à Enésense
+              {t('Parler à Enésense', 'Talk to Enésense')}
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
           </div>

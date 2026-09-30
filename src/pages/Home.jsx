@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useLanguage } from '../utils/LanguageContext';
 
 /* ─── Design Tokens (matching stitch_en_sense redesign) ─── */
 const T = {
@@ -189,6 +190,7 @@ function HeroCubeBackground() {
 
 /* ─── HERO SECTION ─── */
 function HeroSection() {
+  const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
   const [phase, setPhase] = useState('entry');
   const [pulsingCard, setPulsingCard] = useState(-1);
@@ -254,7 +256,7 @@ function HeroSection() {
     <section id="hero-section-anchor" className="relative w-full flex items-start lg:items-center min-h-screen mt-[72px] py-12 lg:py-24 group" style={{ background: T.navyDeep }}>
       <img
         src="/hero-architecture.jpg"
-        alt="Architecture numérique abstraite"
+        alt={t('Architecture numérique abstraite', 'Abstract digital architecture')}
         className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         style={{ opacity: 0.7 }}
       />
@@ -279,7 +281,7 @@ function HeroSection() {
 
             {/* Subtitle */}
             <h2 style={{ fontFamily: fonts.inter, fontSize: '24px', fontWeight: 500, lineHeight: '34px', letterSpacing: '-0.005em', color: '#f7f8fa', maxWidth: '640px', textAlign: 'left' }}>
-              Votre projet numérique commence ici.
+              {t('Votre projet numérique commence ici.', 'Your digital project starts here.')}
             </h2>
             {/* <p style={{ fontFamily: fonts.inter, fontSize: '17px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.005em', color: T.navyMuted, maxWidth: '540px', textAlign: 'left' }}>
               Site web, application, plateforme métier, automatisation ou projet d'entreprise : nous concevons et développons les technologies dont vous avez besoin.
@@ -287,7 +289,7 @@ function HeroSection() {
 
             {/* Hero Tags */}
             <div className="flex flex-wrap gap-2 pt-2">
-              {['Site web', 'Application', 'Plateforme métier', 'Automatisation', 'Projet d\'entreprise'].map(tag => (
+              {[t('Site web', 'Website'), t('Application', 'Application'), t('Plateforme métier', 'Business platform'), t('Automatisation', 'Automation'), t("Projet d'entreprise", 'Business project')].map(tag => (
                 <span key={tag} style={{ fontFamily: fonts.inter, fontSize: '12px', fontWeight: 500, color: T.navyText, border: `1px solid ${T.navyMuted}`, padding: '6px 12px', borderRadius: '2px', background: 'rgba(255,255,255,0.05)' }}>
                   {tag}
                 </span>
@@ -303,7 +305,7 @@ function HeroSection() {
                   onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
                   onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
                 >
-                  Discuter de votre projet
+                  {t('Discuter de votre projet', 'Discuss your project')}
                 </a>
                 <a
                   href="/expertises"
@@ -312,7 +314,7 @@ function HeroSection() {
                   onMouseEnter={e => { e.currentTarget.style.borderColor = T.yellow; e.currentTarget.style.color = T.yellow; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = T.navyMuted; e.currentTarget.style.color = T.navyText; }}
                 >
-                  Nos expertises
+                  {t('Nos expertises', 'Our expertise')}
                 </a>
             </div>
           </div>
@@ -321,10 +323,10 @@ function HeroSection() {
           <div className="lg:col-span-5 flex items-center justify-end">
             <div className="w-full max-w-md ml-auto space-y-4">
               {[
-                { title: 'Création de site web', desc: 'Site vitrine, contenu ou e-commerce sur mesure.' },
-                { title: "Création d'application", desc: 'Mobile ou web, pensée autour de vos utilisateurs.' },
-                { title: 'Automatisation', desc: 'Processus qui se déclenchent tout seuls.' },
-                { title: 'Environnement numérique', desc: 'Votre stack complète, maîtrisée et évolutive.' },
+                { title: t('Création de site web', 'Website development'), desc: t('Site vitrine, contenu ou e-commerce sur mesure.', 'Custom showcase, content or e-commerce websites.') },
+                { title: t("Création d'application", 'App development'), desc: t('Mobile ou web, pensée autour de vos utilisateurs.', 'Mobile or web, designed around your users.') },
+                { title: t('Automatisation', 'Automation'), desc: t('Processus qui se déclenchent tout seuls.', 'Processes that run automatically.') },
+                { title: t('Environnement numérique', 'Digital environment'), desc: t('Votre stack complète, maîtrisée et évolutive.', 'A complete, manageable and scalable technology stack.') },
               ].map((item, idx) => (
                 <div
                   key={idx}
@@ -366,6 +368,7 @@ function HeroSection() {
 
 /* ─── PARTNERS STRIP ─── */
 function PartnersStrip() {
+  const { t } = useLanguage();
   const partners = [
     { icon: 'auto_awesome', name: 'Selvy', color: T.onSurface },
     { icon: 'construction', name: 'Bricona', color: T.primary },
@@ -375,7 +378,7 @@ function PartnersStrip() {
       <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <p style={{ fontFamily: fonts.inter, fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: T.onSurfaceVariant, margin: 0 }}>
-            Ils nous font confiance &amp; Partenaires technologiques :
+            {t('Ils nous font confiance & Partenaires technologiques :', 'Trusted by our clients & technology partners:')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12" style={{ opacity: 0.8 }}>
             {partners.map(({ icon, name, color }) => (
@@ -393,25 +396,26 @@ function PartnersStrip() {
 
 /* ─── PROJECTS SECTION ─── */
 function ProjectsSection() {
+  const { t } = useLanguage();
   const projects = [
-    { number: '01', title: 'Site web', desc: 'Site vitrine, site de contenu ou site e-commerce, conçu sur mesure et facile à faire vivre.' },
-    { number: '02', title: 'Application', desc: 'Une application mobile ou web pensée autour de vos utilisateurs et de leurs usages réels.' },
-    { number: '03', title: 'Plateforme métier', desc: 'Un outil interne qui remplace les fichiers, les ressaisies et les tableurs partagés.' },
-    { number: '04', title: 'Automatisation', desc: 'Vos tâches répétitives transformées en processus qui se déclenchent tout seuls.' },
-    { number: '05', title: 'Intelligence artificielle', desc: 'Poser une question, obtenir une réponse fiable à partir de vos propres documents et données.' },
+    { number: '01', title: t('Site web', 'Website'), desc: t('Site vitrine, site de contenu ou site e-commerce, conçu sur mesure et facile à faire vivre.', 'A custom showcase, content or e-commerce website that is easy to maintain.') },
+    { number: '02', title: t('Application', 'Application'), desc: t('Une application mobile ou web pensée autour de vos utilisateurs et de leurs usages réels.', 'A mobile or web app designed around your users and how they work.') },
+    { number: '03', title: t('Plateforme métier', 'Business platform'), desc: t('Un outil interne qui remplace les fichiers, les ressaisies et les tableurs partagés.', 'An internal tool to replace files, duplicate data entry and shared spreadsheets.') },
+    { number: '04', title: t('Automatisation', 'Automation'), desc: t('Vos tâches répétitives transformées en processus qui se déclenchent tout seuls.', 'Turn repetitive tasks into processes that run automatically.') },
+    { number: '05', title: t('Intelligence artificielle', 'Artificial intelligence'), desc: t('Poser une question, obtenir une réponse fiable à partir de vos propres documents et données.', 'Ask a question and get a reliable answer based on your own documents and data.') },
   ];
   return (
     <section className="w-full py-24 bg-white">
       <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
         <div className="max-w-3xl">
           <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
-            Vos projets
+            {t('Vos projets', 'Your projects')}
           </p>
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: '0 0 24px', maxWidth: '32ch' }}>
-            Vous voulez construire quelque chose ?
+            {t('Vous voulez construire quelque chose ?', 'Looking to build something?')}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, margin: 0 }}>
-            Nous pouvons partir d'une idée, d'un besoin métier ou d'un produit qui existe déjà.
+            {t("Nous pouvons partir d'une idée, d'un besoin métier ou d'un produit qui existe déjà.", 'We can start with an idea, a business need or an existing product.')}
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
@@ -428,10 +432,10 @@ function ProjectsSection() {
         </div>
         <div className="mt-16 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <p style={{ fontFamily: fonts.inter, fontSize: '1.0625rem', lineHeight: 1.7, color: T.navyMuted, maxWidth: '28rem' }}>
-            Vous ne savez pas encore de quoi vous avez besoin ?
+            {t('Vous ne savez pas encore de quoi vous avez besoin ?', 'Not sure what you need yet?')}
           </p>
           <Link to="/contact" className="group inline-flex items-center gap-2 text-sm font-medium transition-colors" style={{ fontFamily: fonts.inter, color: '#0B1D33' }}>
-            <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>Expliquez-nous votre projet</span>
+            <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>{t('Expliquez-nous votre projet', 'Tell us about your project')}</span>
             <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
           </Link>
         </div>
@@ -442,6 +446,7 @@ function ProjectsSection() {
 
 /* ─── EXPERTISE CARD ─── */
 function ExpertiseCard({ badge, badgeLabel, title, desc, image, images, href }) {
+  const { t } = useLanguage();
   const slides = images || (image ? [image] : []);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -504,7 +509,7 @@ function ExpertiseCard({ badge, badgeLabel, title, desc, image, images, href }) 
           <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.15rem', fontWeight: 600, color: '#0B1D33', margin: '20px 0 16px' }}>{title}</h3>
           <p style={{ fontFamily: fonts.inter, fontSize: '0.95rem', lineHeight: '1.55', color: T.navyMuted, margin: '0 0 24px', flex: '1 1 auto' }}>{desc}</p>
           <span className="inline-flex items-center gap-2 text-sm font-medium transition-all duration-200 group-hover:gap-3" style={{ fontFamily: fonts.inter, marginTop: 'auto' }}>
-            <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px', color: '#0B1D33' }}>Découvrir</span>
+            <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px', color: '#0B1D33' }}>{t('Découvrir', 'Discover')}</span>
             <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
           </span>
         </div>
@@ -515,11 +520,12 @@ function ExpertiseCard({ badge, badgeLabel, title, desc, image, images, href }) 
 
 /* ─── EXPERTISE SECTION ─── */
 function ExpertiseSection() {
+  const { t } = useLanguage();
   const cards = [
-    { badge: 'SCALE', title: "Extension d'équipes techniques", desc: "Renforcer vos équipes avec des ingénieurs spécialisés, intégrés à vos méthodes et à votre environnement technique.", image: '/equipe.png', href: '/expertises/extension-equipes' },
-    { badge: 'BUILD', title: "Studio Produit", desc: "Concevoir et développer des produits numériques adaptés à vos usages réels.", images: ['/studio 1.jpg', '/studio 2.jfif'], href: '/expertises/studio-produit' },
-    { badge: 'EVOLVE', title: "Modernisation applicative", desc: "Reprendre en main, sécuriser et faire évoluer vos applications existantes.", image: '/modernisation.jpg', href: '/expertises/modernisation-applicative' },
-    { badge: 'AUTOMATE', badgeLabel: 'Nouvelle expertise', title: "IA & Automatisation", desc: "Automatiser les processus et créer de nouveaux usages grâce à l'intelligence artificielle.", image: '/automate.png', href: '/expertises/ia-automatisation' },
+    { badge: 'SCALE', title: t("Extension d'équipes techniques", 'Technical team extension'), desc: t('Renforcer vos équipes avec des ingénieurs spécialisés, intégrés à vos méthodes et à votre environnement technique.', 'Strengthen your team with specialized engineers who fit your methods and technical environment.'), image: '/equipe.png', href: '/expertises/extension-equipes' },
+    { badge: 'BUILD', title: t('Studio Produit', 'Product Studio'), desc: t('Concevoir et développer des produits numériques adaptés à vos usages réels.', 'Design and build digital products shaped around how you work.'), images: ['/studio 1.jpg', '/studio 2.jfif'], href: '/expertises/studio-produit' },
+    { badge: 'EVOLVE', title: t('Modernisation applicative', 'Application modernization'), desc: t('Reprendre en main, sécuriser et faire évoluer vos applications existantes.', 'Take ownership of, secure and evolve your existing applications.'), image: '/modernisation.jpg', href: '/expertises/modernisation-applicative' },
+    { badge: 'AUTOMATE', badgeLabel: t('Nouvelle expertise', 'New expertise'), title: t('IA & Automatisation', 'AI & Automation'), desc: t("Automatiser les processus et créer de nouveaux usages grâce à l'intelligence artificielle.", 'Automate processes and unlock new possibilities with artificial intelligence.'), image: '/automate.png', href: '/expertises/ia-automatisation' },
   ];
 
   return (
@@ -527,13 +533,13 @@ function ExpertiseSection() {
       <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
         <div className="max-w-3xl">
           <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
-            Nos expertises
+            {t('Nos expertises', 'Our expertise')}
           </p>
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: '0 0 24px', maxWidth: '32ch' }}>
-            Des capacités techniques pour chaque étape de votre transformation.
+            {t('Des capacités techniques pour chaque étape de votre transformation.', 'Technical capabilities for every stage of your transformation.')}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
-            De l'augmentation de capacité au développement d'un nouveau produit, jusqu'à la modernisation d'un patrimoine applicatif existant, Enésense intervient là où l'ingénierie numérique devient un levier stratégique.
+            {t("De l'augmentation de capacité au développement d'un nouveau produit, jusqu'à la modernisation d'un patrimoine applicatif existant, Enésense intervient là où l'ingénierie numérique devient un levier stratégique.", 'From expanding team capacity and building new products to modernizing existing applications, Enésense steps in where digital engineering becomes a strategic advantage.')}
           </p>
           <div className="mt-10">
             <Link
@@ -541,7 +547,7 @@ function ExpertiseSection() {
               className="group inline-flex items-center gap-3 border px-7 py-4 text-sm font-medium transition-all duration-200 hover:shadow-md hover:border-yellow"
               style={{ borderColor: T.navyMuted, color: '#0B1D33', fontFamily: fonts.inter }}
             >
-              Découvrir nos expertises
+              {t('Découvrir nos expertises', 'Explore our expertise')}
               <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
             </Link>
           </div>
@@ -556,6 +562,7 @@ function ExpertiseSection() {
 
 /* ─── SOLUTIONS SECTION ─── */
 function SolutionsSection() {
+  const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     { src: '/bricona.jfif', alt: 'BRICONA - vue 1' },
@@ -576,23 +583,23 @@ function SolutionsSection() {
       <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
         <div className="max-w-3xl">
           <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.yellow, marginBottom: '24px' }}>
-            Nos solutions
+            {t('Nos solutions', 'Our solutions')}
           </p>
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: T.navyText, margin: '0 0 24px', maxWidth: '32ch' }}>
-            Nous construisons aussi nos propres produits.
+            {t('Nous construisons aussi nos propres produits.', 'We also build our own products.')}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
-            Notre expertise ne se limite pas aux projets que nous réalisons pour nos clients. Enésense développe également ses propres plateformes et solutions numériques.
+            {t('Notre expertise ne se limite pas aux projets que nous réalisons pour nos clients. Enésense développe également ses propres plateformes et solutions numériques.', 'Our expertise goes beyond client projects. Enésense also develops its own platforms and digital solutions.')}
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
             <h3 style={{ fontFamily: fonts.jakarta, fontSize: '2.5rem', fontWeight: 700, color: T.navyText, letterSpacing: '-0.02em' }}>BRICONA</h3>
             <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', fontWeight: 500, color: T.yellow, marginTop: '16px' }}>
-              La plateforme numérique dédiée au secteur du BTP.
+              {t('La plateforme numérique dédiée au secteur du BTP.', 'The digital platform built for the construction industry.')}
             </p>
             <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, marginTop: '24px' }}>
-              BRICONA traduit notre approche produit : partir d'un problème métier concret et construire une plateforme numérique capable d'y répondre à grande échelle.
+              {t("BRICONA traduit notre approche produit : partir d'un problème métier concret et construire une plateforme numérique capable d'y répondre à grande échelle.", 'BRICONA reflects our product approach: start with a concrete business problem and build a digital platform that can solve it at scale.')}
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <a
@@ -602,7 +609,7 @@ function SolutionsSection() {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = T.yellow; e.currentTarget.style.color = T.yellow; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = T.navyMuted; e.currentTarget.style.color = T.navyText; }}
               >
-                Découvrir BRICONA
+                {t('Découvrir BRICONA', 'Discover BRICONA')}
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </a>
               <Link
@@ -612,7 +619,7 @@ function SolutionsSection() {
                 onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
                 onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
               >
-                Nos solutions
+                {t('Nos solutions', 'Our solutions')}
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
@@ -655,23 +662,24 @@ function SolutionsSection() {
 
 /* ─── MODEL SECTION ─── */
 function ModelSection() {
+  const { t } = useLanguage();
   const items = [
-    { title: 'Vos équipes', desc: 'Des ingénieurs capables de s\'intégrer à vos équipes, vos outils et vos rituels.' },
-    { title: 'Vos produits', desc: 'Une capacité de conception et de développement couvrant l\'ensemble du cycle produit.' },
-    { title: 'Votre patrimoine technologique', desc: 'Des applications et des données maîtrisées, sécurisées et conçues pour évoluer.' },
+    { title: t('Vos équipes', 'Your teams'), desc: t("Des ingénieurs capables de s'intégrer à vos équipes, vos outils et vos rituels.", 'Engineers who can integrate with your teams, tools and working practices.') },
+    { title: t('Vos produits', 'Your products'), desc: t("Une capacité de conception et de développement couvrant l'ensemble du cycle produit.", 'Design and development capabilities spanning the full product lifecycle.') },
+    { title: t('Votre patrimoine technologique', 'Your technology estate'), desc: t('Des applications et des données maîtrisées, sécurisées et conçues pour évoluer.', 'Applications and data that are managed, secure and built to evolve.') },
   ];
   return (
     <section className="w-full py-24 bg-white">
       <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
         <div className="max-w-3xl">
           <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
-            Notre modèle
+            {t('Notre modèle', 'Our model')}
           </p>
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: '0 0 24px', maxWidth: '32ch' }}>
-            Une ingénierie pensée pour s'intégrer à votre réalité.
+            {t("Une ingénierie pensée pour s'intégrer à votre réalité.", 'Engineering designed to fit your reality.')}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
-            Chaque organisation possède son environnement technique, ses contraintes et ses méthodes de travail. Nous construisons nos interventions autour de cette réalité plutôt que d'imposer un modèle standardisé.
+            {t("Chaque organisation possède son environnement technique, ses contraintes et ses méthodes de travail. Nous construisons nos interventions autour de cette réalité plutôt que d'imposer un modèle standardisé.", 'Every organization has its own technology, constraints and ways of working. We shape our engagements around that reality instead of imposing a standard model.')}
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -689,24 +697,25 @@ function ModelSection() {
 
 /* ─── EXIGENCE SECTION ─── */
 function ExigenceSection() {
+  const { t } = useLanguage();
   const items = [
-    { badge: '01', title: 'Transparence', desc: 'Un suivi clair de l\'avancement, des priorités et des décisions.' },
-    { badge: '02', title: 'Qualité technique', desc: 'Des pratiques d\'ingénierie structurées et une attention constante portée à la qualité du code.' },
-    { badge: '03', title: 'Maîtrise', desc: 'Le client conserve la propriété de ses développements, de ses données et de ses actifs numériques.' },
-    { badge: '04', title: 'Protection', desc: 'Une gouvernance interne dédiée à la protection des données et à la conformité de nos opérations.' },
+    { badge: '01', title: t('Transparence', 'Transparency'), desc: t("Un suivi clair de l'avancement, des priorités et des décisions.", 'Clear tracking of progress, priorities and decisions.') },
+    { badge: '02', title: t('Qualité technique', 'Technical quality'), desc: t("Des pratiques d'ingénierie structurées et une attention constante portée à la qualité du code.", 'Structured engineering practices and consistent attention to code quality.') },
+    { badge: '03', title: t('Maîtrise', 'Ownership'), desc: t('Le client conserve la propriété de ses développements, de ses données et de ses actifs numériques.', 'Clients retain ownership of their software, data and digital assets.') },
+    { badge: '04', title: t('Protection', 'Protection'), desc: t('Une gouvernance interne dédiée à la protection des données et à la conformité de nos opérations.', 'Internal governance dedicated to data protection and operational compliance.') },
   ];
   return (
     <section className="w-full py-24 bg-white">
       <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
         <div className="max-w-3xl">
           <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
-            Notre exigence
+            {t('Notre exigence', 'Our standards')}
           </p>
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: '0 0 24px', maxWidth: '32ch' }}>
-            Construire avec rigueur. Évoluer avec maîtrise.
+            {t('Construire avec rigueur. Évoluer avec maîtrise.', 'Build with rigor. Evolve with confidence.')}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
-            La qualité d'une solution numérique ne repose pas uniquement sur la technologie utilisée. Elle repose aussi sur la façon dont le projet est gouverné, développé et transmis.
+            {t("La qualité d'une solution numérique ne repose pas uniquement sur la technologie utilisée. Elle repose aussi sur la façon dont le projet est gouverné, développé et transmis.", 'The quality of a digital solution depends on more than technology. It also depends on how the project is governed, developed and handed over.')}
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-2" style={{ border: `1px solid ${T.navyMuted}20`, background: `${T.navyMuted}20` }}>
@@ -727,10 +736,11 @@ function ExigenceSection() {
 
 /* ─── PERSPECTIVES SECTION ─── */
 function PerspectivesSection() {
+  const { t } = useLanguage();
   const items = [
-    { badge: 'Transformation', title: 'Reprendre une application existante sans interrompre le service', desc: 'Ce que l\'audit technique doit révéler avant toute intervention.', href: '/perspectives/reprendre-une-application-existante' },
-    { badge: 'Ingénierie', title: 'Ce qui distingue une extension d\'équipe réussie d\'un simple renfort temporaire', desc: 'Pourquoi l\'intégration compte autant que la compétence technique.', href: '/perspectives/extension-equipe-reussie' },
-    { badge: 'Produit', title: 'Concevoir un produit avant de le vendre', desc: 'Ce que nos propres plateformes nous apprennent sur le développement produit.', href: '/perspectives/concevoir-un-produit-avant-de-le-vendre' },
+    { badge: t('Transformation', 'Transformation'), title: t('Reprendre une application existante sans interrompre le service', 'Taking over an existing application without service disruption'), desc: t("Ce que l'audit technique doit révéler avant toute intervention.", 'What a technical audit should uncover before work begins.'), href: '/perspectives/reprendre-une-application-existante' },
+    { badge: t('Ingénierie', 'Engineering'), title: t("Ce qui distingue une extension d'équipe réussie d'un simple renfort temporaire", 'What makes a successful team extension more than temporary staffing'), desc: t("Pourquoi l'intégration compte autant que la compétence technique.", 'Why integration matters as much as technical skill.'), href: '/perspectives/extension-equipe-reussie' },
+    { badge: t('Produit', 'Product'), title: t('Concevoir un produit avant de le vendre', 'Build a product before you sell it'), desc: t('Ce que nos propres plateformes nous apprennent sur le développement produit.', 'What our own platforms teach us about product development.'), href: '/perspectives/concevoir-un-produit-avant-de-le-vendre' },
   ];
   return (
     <section className="w-full py-24 bg-white">
@@ -740,10 +750,10 @@ function PerspectivesSection() {
             Perspectives
           </p>
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: '0 0 24px', maxWidth: '32ch' }}>
-            Comprendre la technologie. Anticiper ses évolutions.
+            {t('Comprendre la technologie. Anticiper ses évolutions.', 'Understand technology. Anticipate what comes next.')}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
-            Nos équipes partagent leurs réflexions sur l'ingénierie logicielle, les produits numériques et les transformations technologiques qui façonnent les entreprises.
+            {t("Nos équipes partagent leurs réflexions sur l'ingénierie logicielle, les produits numériques et les transformations technologiques qui façonnent les entreprises.", 'Our teams share perspectives on software engineering, digital products and the technology shifts shaping businesses.')}
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -762,7 +772,7 @@ function PerspectivesSection() {
                   onMouseEnter={e => (e.currentTarget.style.color = T.yellow)}
                   onMouseLeave={e => (e.currentTarget.style.color = '#0B1D33')}
                 >
-                  <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>Lire</span>
+                  <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>{t('Lire', 'Read')}</span>
                   <span className="transition-transform group-hover:translate-x-1">→</span>
                 </a>
               </div>
@@ -830,14 +840,15 @@ function PhaseCard({ badge, badgeStyle, step, stepColor, title, desc, price, pri
 
 /* ─── STATEMENT SECTION ─── */
 function StatementSection() {
+  const { t } = useLanguage();
   return (
     <section className="w-full py-[110px] text-center" style={{ background: '#FFFFFF', borderBottom: `1px solid ${T.line}` }}>
       <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
         <div style={{ fontSize: '0.82rem', letterSpacing: '0.06em', textTransform: 'uppercase', color: T.yellowDeep, fontWeight: 600, marginBottom: '24px', fontFamily: fonts.inter }}>
-          Notre principe
+          {t('Notre principe', 'Our principle')}
         </div>
         <h2 style={{ fontSize: 'clamp(1.55rem, 3vw, 2.1rem)', color: '#0B1D33', maxWidth: '26ch', margin: '0 auto', fontWeight: 500, lineHeight: 1.3, fontFamily: fonts.jakarta }}>
-          Nous appliquons à nos propres produits la même exigence d'ingénierie que nous mettons au service de nos clients.
+          {t("Nous appliquons à nos propres produits la même exigence d'ingénierie que nous mettons au service de nos clients.", 'We apply the same engineering standards to our own products as we do to our clients’ work.')}
         </h2>
       </div>
     </section>
@@ -846,6 +857,7 @@ function StatementSection() {
 
 /* ─── PRODUCT CARD ─── */
 function ProductCard({ name, coverType, title, desc, links, images }) {
+  const { t } = useLanguage();
   const [hovered, setHovered] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = images || [];
@@ -970,7 +982,7 @@ function ProductCard({ name, coverType, title, desc, links, images }) {
                 }
               }}
             >
-              {link.label}
+              {t(link.label, link.label === 'Découvrir' ? 'Discover' : 'Documentation (PDF)')}
             </Link>
           ) : (
             <a
@@ -1008,12 +1020,13 @@ function ProductCard({ name, coverType, title, desc, links, images }) {
 
 /* ─── PRODUCTS SECTION ─── */
 function ProductsSection() {
+  const { t } = useLanguage();
   const products = [
     {
       name: 'Selvy',
       coverType: 'selvy',
       title: 'Selvy',
-      desc: "Plateforme de social commerce pensée pour les marchands d'Afrique de l'Ouest.",
+      desc: t("Plateforme de social commerce pensée pour les marchands d'Afrique de l'Ouest.", 'A social commerce platform designed for merchants in West Africa.'),
       images: ['/selvy.jfif', '/selvy 1-1.png', '/selvy 1-2.png', '/selvy 2-1.png', '/selvy 2-2.png', '/selvy 3-1.png', '/selvy 3-2.png'],
       links: [
         { label: 'Découvrir', to: '/solutions/selvy', muted: false },
@@ -1024,7 +1037,7 @@ function ProductsSection() {
       name: 'Bricona',
       coverType: 'bricona',
       title: 'Bricona',
-      desc: 'Plateforme de mise en relation pour les métiers du BTP.',
+      desc: t('Plateforme de mise en relation pour les métiers du BTP.', 'A networking platform for the construction industry.'),
       images: ['/bricona.jfif', '/bricona 1.png', '/bricona 2.png', '/bricona 3.png'],
       links: [
         { label: 'Découvrir', to: '/solutions/bricona', muted: false },
@@ -1039,21 +1052,21 @@ function ProductsSection() {
         <div className="flex justify-between items-end gap-[30px] mb-[46px] flex-wrap">
           <div>
             <div style={{ fontSize: '0.84rem', color: T.yellow, fontWeight: 500, marginBottom: '14px', fontFamily: fonts.inter }}>
-              Ce que nous construisons
+              {t('Ce que nous construisons', 'What we build')}
             </div>
             <h2 style={{ fontSize: '1.85rem', color: '#FFFFFF', maxWidth: '16ch', fontFamily: fonts.jakarta, fontWeight: 600, letterSpacing: '-0.01em', lineHeight: 1.14, margin: 0 }}>
-              Nos produits numériques
+              {t('Nos produits numériques', 'Our digital products')}
             </h2>
           </div>
           <p style={{ color: T.onNavySoft, fontSize: '0.98rem', maxWidth: '36ch', fontFamily: fonts.inter, lineHeight: '1.55' }}>
-            Nous concevons nos propres produits numériques — c'est notre manière de rester au contact des enjeux techniques réels avant de les recommander à nos clients.
+            {t("Nous concevons nos propres produits numériques — c'est notre manière de rester au contact des enjeux techniques réels avant de les recommander à nos clients.", 'We build our own digital products to stay close to real technical challenges before recommending solutions to clients.')}
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-[28px]">
           {products.map(p => <ProductCard key={p.name} {...p} />)}
         </div>
         <p style={{ marginTop: '32px', color: T.onNavySoft, fontSize: '0.95rem', fontFamily: fonts.inter, lineHeight: '1.55' }}>
-          D'autres produits rejoignent progressivement cet écosystème. <Link to="/solutions" style={{ color: T.yellow, borderBottom: `1px solid ${T.yellow}`, paddingBottom: '1px', fontFamily: fonts.inter, textDecoration: 'none' }}>Découvrir nos produits</Link>
+          {t("D'autres produits rejoignent progressivement cet écosystème.", 'More products are gradually joining this ecosystem.')} <Link to="/solutions" style={{ color: T.yellow, borderBottom: `1px solid ${T.yellow}`, paddingBottom: '1px', fontFamily: fonts.inter, textDecoration: 'none' }}>{t('Découvrir nos produits', 'Explore our products')}</Link>
         </p>
       </div>
     </section>
@@ -1062,11 +1075,12 @@ function ProductsSection() {
 
 /* ─── FOOTER ─── */
 function Home1Footer() {
+  const { t } = useLanguage();
   const cols = [
-    { title: 'Solutions', links: ["IA & Automatisation", 'Digitalisation', 'SaaS & Plateformes', 'Automatisation des processus'] },
-    { title: 'Offres', links: ['Phase 1 Diagnostic', 'Phase 2 Déploiement', 'Phase 3 Pilotage'] },
-    { title: 'Entreprise', links: ['À propos', 'Équipe', 'Contact', 'Partenaires'] },
-    { title: 'Légal', links: ['Mentions légales', 'Politique de confidentialité', "Conditions d'utilisation"] },
+    { title: t('Solutions', 'Solutions'), links: [t('IA & Automatisation', 'AI & Automation'), t('Digitalisation', 'Digital transformation'), t('SaaS & Plateformes', 'SaaS & Platforms'), t('Automatisation des processus', 'Process automation')] },
+    { title: t('Offres', 'Services'), links: [t('Phase 1 Diagnostic', 'Phase 1: Assessment'), t('Phase 2 Déploiement', 'Phase 2: Deployment'), t('Phase 3 Pilotage', 'Phase 3: Operations')] },
+    { title: t('Entreprise', 'Company'), links: [t('À propos', 'About'), t('Équipe', 'Team'), t('Contact', 'Contact'), t('Partenaires', 'Partners')] },
+    { title: t('Légal', 'Legal'), links: [t('Mentions légales', 'Legal notice'), t('Politique de confidentialité', 'Privacy policy'), t("Conditions d'utilisation", 'Terms of use')] },
   ];
   return (
     <footer style={{ background: T.surfaceContainerLow }}>
@@ -1077,11 +1091,11 @@ function Home1Footer() {
               Enésense<span style={{ color: '#0B1D33' }}>Digital</span>
             </span>
             <p style={{ fontFamily: fonts.inter, fontSize: '15px', lineHeight: '24px', color: T.onSurfaceVariant, maxWidth: '300px', margin: '8px 0 0' }}>
-              Conseil, digitalisation de pointe et automatisation sur mesure pour propulser les entreprises dans l'ère numérique.
+              {t("Conseil, digitalisation de pointe et automatisation sur mesure pour propulser les entreprises dans l'ère numérique.", 'Expert consulting, advanced digital transformation and custom automation to propel businesses into the digital age.')}
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mt-4" style={{ background: T.amberSoft, color: T.amberContrast }}>
               <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: T.amberContrast }} />
-              <span style={{ fontFamily: fonts.inter, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Excellence Opérationnelle</span>
+              <span style={{ fontFamily: fonts.inter, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t('Excellence Opérationnelle', 'Operational Excellence')}</span>
             </div>
           </div>
           {cols.map(col => (
@@ -1101,8 +1115,8 @@ function Home1Footer() {
           ))}
         </div>
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3" style={{ borderTop: '1px solid #e2e8f0' }}>
-          <p style={{ fontFamily: fonts.inter, fontSize: '13px', color: T.onSurfaceVariant, margin: 0 }}>© 2025 Enésense. Tous droits réservés. Basé à Colombnes, France.</p>
-          <p style={{ fontFamily: fonts.inter, fontSize: '11px', color: T.outline, margin: 0 }}>Infrastructure Bricona RGPD</p>
+          <p style={{ fontFamily: fonts.inter, fontSize: '13px', color: T.onSurfaceVariant, margin: 0 }}>{t('© 2025 Enésense. Tous droits réservés. Basé à Colombnes, France.', '© 2025 Enésense. All rights reserved. Based in Colombes, France.')}</p>
+          <p style={{ fontFamily: fonts.inter, fontSize: '11px', color: T.outline, margin: 0 }}>{t('Infrastructure Bricona RGPD', 'GDPR-compliant Bricona infrastructure')}</p>
         </div>
       </div>
     </footer>
@@ -1166,16 +1180,17 @@ function Home1Footer() {
 
 /* ─── FINAL CONTACT SECTION ─── */
 function FinalContactSection() {
+  const { t } = useLanguage();
   return (
     <section id="contact" className="w-full py-[110px]" style={{ background: '#0B1D33', position: 'relative', overflow: 'hidden' }}>
       <div className="pointer-events-none absolute bottom-[-200px] left-[-140px] w-[560px] h-[560px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(242,183,5,0.22), transparent 68%)' }} />
       <div className="max-w-screen-xl mx-auto px-4 lg:px-8 relative">
         <div className="max-w-2xl text-center sm:text-left">
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700, letterSpacing: '-0.025em', color: '#ffffff', margin: '0 0 16px' }}>
-            Vous avez un projet de transformation digitale ?
+            {t('Vous avez un projet de transformation digitale ?', 'Planning a digital transformation project?')}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '17px', lineHeight: '28px', color: T.onNavySoft, margin: 0 }}>
-            Parlons-en. Décrivez-nous votre contexte, nous revenons vers vous avec un interlocuteur adapté à votre besoin.
+            {t('Parlons-en. Décrivez-nous votre contexte, nous revenons vers vous avec un interlocuteur adapté à votre besoin.', 'Let’s talk. Tell us about your context and we’ll connect you with the right person for your needs.')}
           </p>
         </div>
         <a href="#" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl transition-all duration-200 active:translate-y-0.5 mt-10"
@@ -1184,7 +1199,7 @@ function FinalContactSection() {
           onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
         >
           <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>mail</span>
-          <span>Parlons-en</span>
+          <span>{t('Parlons-en', "Let's talk")}</span>
         </a>
       </div>
     </section>

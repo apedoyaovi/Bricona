@@ -4,20 +4,24 @@ import { useEffect, lazy, Suspense } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import CookieConsent from './components/CookieConsent';
 import SEO from './components/SEO';
+import { LanguageProvider, useLanguage } from './utils/LanguageContext';
 
 // Composants communs (chargés immédiatement)
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 // Composant de chargement
-const LoadingFallback = () => (
-  <div className="flex items-center justify-center min-h-screen bg-surface">
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-16 h-16 rounded-full border-4 border-primary-fixed border-t-primary-container animate-spin"></div>
-      <p className="font-headline text-primary font-bold">Chargement...</p>
+const LoadingFallback = () => {
+  const { t } = useLanguage();
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-surface">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-16 h-16 rounded-full border-4 border-primary-fixed border-t-primary-container animate-spin"></div>
+        <p className="font-headline text-primary font-bold">{t('Chargement...', 'Loading...')}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Scroll to top on navigation
 function ScrollToTop() {
@@ -47,34 +51,36 @@ const PageNonTrouvee = lazy(() => import('./pages/PageNonTrouvee.jsx'));
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-surface">
-      <SEO />
-      <Navbar />
-      <main className="flex-grow">
-        <ScrollToTop />
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/expertises" element={<Expertises />} />
-            <Route path="/expertises/:id" element={<ExpertiseDetail />} />
-            <Route path="/solutions" element={<Solutions />} />
-            <Route path="/solutions/bricona" element={<SolutionDetail />} />
-            <Route path="/solutions/selvy" element={<SelvyDetail />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
-            <Route path="/politique-cookies" element={<PolitiqueCookies />} />
-            <Route path="/conditions-utilisation" element={<ConditionsUtilisation />} />
-            <Route path="/mentions-legales" element={<MentionsLegales />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="*" element={<PageNonTrouvee />} />
-          </Routes>
-        </Suspense>
-      </main>
-      <Footer />
-      <CookieConsent />
-      <Analytics />
-    </div>
+    <LanguageProvider>
+      <div className="min-h-screen flex flex-col bg-surface">
+        <SEO />
+        <Navbar />
+        <main className="flex-grow">
+          <ScrollToTop />
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/expertises" element={<Expertises />} />
+              <Route path="/expertises/:id" element={<ExpertiseDetail />} />
+              <Route path="/solutions" element={<Solutions />} />
+              <Route path="/solutions/bricona" element={<SolutionDetail />} />
+              <Route path="/solutions/selvy" element={<SelvyDetail />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
+              <Route path="/politique-cookies" element={<PolitiqueCookies />} />
+              <Route path="/conditions-utilisation" element={<ConditionsUtilisation />} />
+              <Route path="/mentions-legales" element={<MentionsLegales />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="*" element={<PageNonTrouvee />} />
+            </Routes>
+          </Suspense>
+        </main>
+        <Footer />
+        <CookieConsent />
+        <Analytics />
+      </div>
+    </LanguageProvider>
   );
 }
 

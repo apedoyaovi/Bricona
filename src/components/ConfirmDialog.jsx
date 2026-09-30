@@ -1,3 +1,5 @@
+import { useLanguage } from '../utils/LanguageContext';
+
 const ConfirmDialog = ({
   open,
   title,
@@ -8,6 +10,7 @@ const ConfirmDialog = ({
   onConfirm,
   onCancel,
 }) => {
+  const { t } = useLanguage();
   if (!open) return null;
 
   const isDanger = variant === 'danger';
@@ -18,7 +21,7 @@ const ConfirmDialog = ({
         type="button"
         className="absolute inset-0 bg-on-surface/45 backdrop-blur-sm cursor-pointer"
         onClick={onCancel}
-        aria-label="Fermer la confirmation"
+        aria-label={t('Fermer la confirmation', 'Close confirmation')}
       />
       <div className="relative w-full max-w-md rounded-[2rem] bg-white border border-outline-variant/20 p-6 shadow-[0_30px_90px_rgba(0,25,70,0.28)] animate-fade-up">
         <div className={`h-14 w-14 rounded-2xl flex items-center justify-center mb-5 ${isDanger ? 'bg-red-50 text-red-600' : 'bg-primary-fixed text-primary'}`}>
@@ -38,7 +41,7 @@ const ConfirmDialog = ({
             onClick={onCancel}
             className="rounded-xl border border-outline-variant/30 bg-white px-5 py-3 text-sm font-bold text-primary hover:bg-surface-container-low transition-colors"
           >
-            {cancelLabel}
+            {cancelLabel === 'Annuler' ? t('Annuler', 'Cancel') : cancelLabel}
           </button>
           <button
             type="button"

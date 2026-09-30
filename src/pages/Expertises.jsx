@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../utils/LanguageContext';
 
 const T = {
   yellow: '#F2B705',
@@ -118,41 +119,55 @@ const expertises = [
     number: '01',
     badge: 'SCALE',
     title: "Extension d'équipes techniques",
+    titleEn: 'Technical team extension',
     description: "Nous intégrons des ingénieurs à vos équipes existantes : mêmes outils, mêmes rituels, mêmes exigences de qualité. L'objectif n'est pas de fournir des profils, mais d'augmenter durablement votre capacité d'exécution.",
+    descriptionEn: 'We integrate engineers into your existing teams, using the same tools, rituals and quality standards. Our goal is not to supply profiles, but to sustainably increase your delivery capacity.',
     image: '/pillar-scale.jpg',
     alt: 'Visuel SCALE — Extension d’équipes techniques',
+    altEn: 'SCALE visual — Technical team extension',
   },
   {
     slug: 'studio-produit',
     number: '02',
     badge: 'BUILD',
     title: 'Studio Produit',
+    titleEn: 'Product Studio',
     description: "Nous couvrons l'ensemble du cycle produit : cadrage, architecture, conception, développement, mise en production et évolution. Chaque décision technique est prise au regard d'un usage réel et mesurable.",
+    descriptionEn: 'We cover the full product lifecycle: framing, architecture, design, development, launch and iteration. Every technical decision is grounded in real, measurable usage.',
     image: '/pillar-build.jpg',
     alt: 'Visuel BUILD — Studio Produit',
+    altEn: 'BUILD visual — Product Studio',
   },
   {
     slug: 'modernisation-applicative',
     number: '03',
     badge: 'EVOLVE',
     title: 'Modernisation applicative',
+    titleEn: 'Application modernization',
     description: 'Reprendre une application en production demande de la méthode : comprendre avant de remplacer, sécuriser avant d\'accélérer, découper avant de reconstruire. Nous intervenons progressivement, sans rupture de service.',
+    descriptionEn: 'Taking over a live application calls for a method: understand before replacing, secure before accelerating and break things down before rebuilding. We work incrementally, without service disruption.',
     image: '/pillar-evolve.jpg',
     alt: 'Visuel EVOLVE — Modernisation applicative',
+    altEn: 'EVOLVE visual — Application modernization',
   },
   {
     slug: 'ia-automatisation',
     number: '04',
     badge: 'AUTOMATE',
     badgeLabel: 'Nouvelle expertise',
+    badgeLabelEn: 'New expertise',
     title: 'IA & Automatisation',
+    titleEn: 'AI & Automation',
     description: "L'automatisation n'a de valeur que lorsqu'elle s'appuie sur des processus compris et des données maîtrisées. Nous partons de vos flux réels pour identifier ce qui peut être orchestré, assisté ou automatisé.",
+    descriptionEn: 'Automation creates value only when it is grounded in understood processes and well-managed data. We start with your real workflows to identify what can be orchestrated, assisted or automated.',
     image: '/pillar-automate.jpg',
     alt: 'Visuel AUTOMATE — IA & Automatisation',
+    altEn: 'AUTOMATE visual — AI & Automation',
   },
 ];
 
 function ExpertiseRow({ expertise, index }) {
+  const { t } = useLanguage();
   const isReversed = index % 2 === 1;
 
   return (
@@ -161,7 +176,7 @@ function ExpertiseRow({ expertise, index }) {
         <div className={isReversed ? 'md:order-2' : 'md:order-1'}>
           <img
             src={expertise.image}
-            alt={expertise.alt}
+            alt={t(expertise.alt, expertise.altEn)}
             className="h-full w-full object-cover"
             style={{ aspectRatio: '4 / 3' }}
           />
@@ -176,7 +191,7 @@ function ExpertiseRow({ expertise, index }) {
             </span>
             {expertise.badgeLabel && (
               <span style={{ fontFamily: fonts.inter, fontSize: '11px', fontWeight: 500, color: T.navy, border: `1px solid ${T.yellow}`, padding: '2px 8px' }}>
-                {expertise.badgeLabel}
+                {t(expertise.badgeLabel, expertise.badgeLabelEn)}
               </span>
             )}
           </div>
@@ -191,10 +206,10 @@ function ExpertiseRow({ expertise, index }) {
               maxWidth: '18ch',
             }}
           >
-            {expertise.title}
+            {t(expertise.title, expertise.titleEn)}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.0625rem', lineHeight: 1.75, color: T.navyMuted, margin: 0, maxWidth: '38rem' }}>
-            {expertise.description}
+            {t(expertise.description, expertise.descriptionEn)}
           </p>
           <div className="mt-8">
             <Link
@@ -202,7 +217,7 @@ function ExpertiseRow({ expertise, index }) {
               className="group inline-flex items-center gap-2 text-sm font-medium"
               style={{ fontFamily: fonts.inter, color: T.navy }}
             >
-              <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>En savoir plus</span>
+              <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>{t('En savoir plus', 'Learn more')}</span>
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
           </div>
@@ -213,6 +228,7 @@ function ExpertiseRow({ expertise, index }) {
 }
 
 export default function Expertises() {
+  const { t } = useLanguage();
   return (
     <div style={{ fontFamily: fonts.inter, background: '#ffffff', color: T.navy }}>
       <section className="relative w-full overflow-hidden px-6 pt-40 pb-24 lg:px-12 md:pt-48 md:pb-32" style={{ background: '#040f23', color: '#f7f8fa' }}>
@@ -226,7 +242,7 @@ export default function Expertises() {
         <ExpertisesHeroBackground />
         <div className="relative mx-auto max-w-7xl pl-4 md:pl-16 lg:pl-24" style={{ zIndex: 3 }}>
           <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.yellow, margin: '0 0 24px' }}>
-            Nos expertises
+            {t('Nos expertises', 'Our expertise')}
           </p>
           <h1
             style={{
@@ -240,10 +256,10 @@ export default function Expertises() {
               maxWidth: '18ch',
             }}
           >
-            Des capacités technologiques<br />au service de vos projets.
+            {t('Des capacités technologiques', 'Technology capabilities')}<br />{t('au service de vos projets.', 'for your projects.')}
           </h1>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: 1.75, color: T.navyMuted, margin: 0, maxWidth: '48rem' }}>
-            Qu'il s'agisse de renforcer une équipe, de concevoir un produit, de moderniser un patrimoine applicatif ou d'automatiser des processus, nos interventions reposent sur une même exigence d'ingénierie.
+            {t("Qu'il s'agisse de renforcer une équipe, de concevoir un produit, de moderniser un patrimoine applicatif ou d'automatiser des processus, nos interventions reposent sur une même exigence d'ingénierie.", 'Whether strengthening a team, designing a product, modernizing applications or automating processes, every engagement is grounded in the same engineering standards.')}
           </p>
         </div>
       </section>
@@ -268,10 +284,10 @@ export default function Expertises() {
                 maxWidth: '24ch',
               }}
             >
-              Un projet numérique à construire ou à faire évoluer ?
+              {t('Un projet numérique à construire ou à faire évoluer ?', 'A digital project to build or improve?')}
             </h2>
             <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: 1.75, color: T.navyMuted, margin: 0 }}>
-              Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.
+              {t('Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.', 'Tell us about your context and goals, and what we could build together.')}
             </p>
           </div>
           <Link
@@ -279,7 +295,7 @@ export default function Expertises() {
             className="group inline-flex items-center gap-3 px-7 py-4 text-sm font-medium transition-colors"
             style={{ fontFamily: fonts.inter, background: T.yellow, color: T.navy }}
           >
-            Parler à Enésense
+            {t('Parler à Enésense', 'Talk to Enésense')}
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../utils/LanguageContext';
 
 const T = {
   primary: '#1e40af',
@@ -37,14 +38,14 @@ const fonts = {
   inter: "'Inter', sans-serif",
 };
 
-const capabilities = [
-  { number: '01', title: 'Pilotage de chantier', desc: 'Planification, jalons et avancement consolidés dans une vue unique, accessible depuis le terrain.' },
-  { number: '02', title: 'Documents et conformité', desc: 'Centralisation des pièces, versions maîtrisées et traçabilité des échanges entre intervenants.' },
-  { number: '03', title: 'Indicateurs', desc: 'Suivi des coûts, des délais et des écarts, avec des indicateurs exploitables par la direction.' },
-  { number: '04', title: 'Collaboration', desc: 'Un espace commun aux équipes internes, sous-traitants et donneurs d\'ordre.' },
-];
-
 export default function SolutionDetail() {
+  const { t } = useLanguage();
+  const capabilities = [
+    { number: '01', title: t('Pilotage de chantier', 'Site management'), desc: t('Planification, jalons et avancement consolidés dans une vue unique, accessible depuis le terrain.', 'Planning, milestones and progress brought together in one view, accessible from the field.') },
+    { number: '02', title: t('Documents et conformité', 'Documents and compliance'), desc: t('Centralisation des pièces, versions maîtrisées et traçabilité des échanges entre intervenants.', 'Centralized documents, controlled versions and traceable communication between stakeholders.') },
+    { number: '03', title: t('Indicateurs', 'Metrics'), desc: t('Suivi des coûts, des délais et des écarts, avec des indicateurs exploitables par la direction.', 'Track costs, timelines and variances with metrics that leadership can act on.') },
+    { number: '04', title: t('Collaboration', 'Collaboration'), desc: t("Un espace commun aux équipes internes, sous-traitants et donneurs d'ordre.", 'A shared workspace for internal teams, subcontractors and clients.') },
+  ];
   return (
     <div style={{ fontFamily: fonts.inter, background: '#ffffff' }}>
       {/* Hero */}
@@ -52,16 +53,16 @@ export default function SolutionDetail() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="max-w-2xl">
             <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.yellow, marginBottom: '32px' }}>
-              Produit Enésense
+              {t('Produit Enésense', 'An Enésense product')}
             </p>
             <h1 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, lineHeight: 1.05, color: T.navyText, margin: '0 0 24px' }}>
               BRICONA
             </h1>
             <p style={{ fontFamily: fonts.inter, fontSize: '1.25rem', fontWeight: 500, color: T.navyText, margin: '0 0 24px' }}>
-              La plateforme numérique dédiée au secteur du BTP.
+              {t('La plateforme numérique dédiée au secteur du BTP.', 'The digital platform built for the construction industry.')}
             </p>
             <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, margin: '0 0 40px', maxWidth: '42rem' }}>
-              BRICONA est développée, exploitée et financée par Enésense. Elle illustre notre capacité à concevoir une plateforme métier complète, de l'architecture à la production.
+              {t("BRICONA est développée, exploitée et financée par Enésense. Elle illustre notre capacité à concevoir une plateforme métier complète, de l'architecture à la production.", 'Developed, operated and funded by Enésense, BRICONA demonstrates our ability to build a complete business platform, from architecture to production.')}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -71,7 +72,7 @@ export default function SolutionDetail() {
                 onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
                 onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
               >
-                Demander une démonstration
+                {t('Demander une démonstration', 'Request a demo')}
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
@@ -84,10 +85,10 @@ export default function SolutionDetail() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           {(() => {
             const slides = [
-              { src: '/bricona.jfif', alt: 'BRICONA - vue 1' },
-              { src: '/bricona 1.png', alt: 'BRICONA - vue 2' },
-              { src: '/bricona 2.png', alt: 'BRICONA - vue 3' },
-              { src: '/bricona 3.png', alt: 'BRICONA - vue 4' },
+              { src: '/bricona.jfif', alt: `${t('BRICONA - vue', 'BRICONA - view')} 1` },
+              { src: '/bricona 1.png', alt: `${t('BRICONA - vue', 'BRICONA - view')} 2` },
+              { src: '/bricona 2.png', alt: `${t('BRICONA - vue', 'BRICONA - view')} 3` },
+              { src: '/bricona 3.png', alt: `${t('BRICONA - vue', 'BRICONA - view')} 4` },
             ];
             const [currentSlide, setCurrentSlide] = useState(0);
             useEffect(() => {
@@ -136,7 +137,7 @@ export default function SolutionDetail() {
       <section className="py-20 md:py-24" style={{ background: T.surface }}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.85rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0, marginBottom: '24px' }}>
-            Un outil construit pour le terrain, pas pour la démonstration.
+            {t('Un outil construit pour le terrain, pas pour la démonstration.', 'Built for the field, not just for demos.')}
           </h2>
           <div className="grid gap-8 md:grid-cols-2">
             {capabilities.map((c, i) => {
@@ -163,10 +164,10 @@ export default function SolutionDetail() {
       <section className="py-20 md:py-24">
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.85rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0, marginBottom: '24px' }}>
-            Une capacité produit, pas une réalisation isolée.
+            {t('Une capacité produit, pas une réalisation isolée.', 'A product capability, not a one-off delivery.')}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, maxWidth: '42rem' }}>
-            Concevoir BRICONA nous impose les mêmes contraintes que celles de nos clients : exploitation continue, migrations de données, supervision, évolutions sans rupture. Ces exigences nourrissent directement notre pratique d'ingénierie.
+            {t("Concevoir BRICONA nous impose les mêmes contraintes que celles de nos clients : exploitation continue, migrations de données, supervision, évolutions sans rupture. Ces exigences nourrissent directement notre pratique d'ingénierie.", 'Building BRICONA means meeting the same challenges as our clients: continuous operations, data migrations, monitoring and seamless upgrades. These demands directly inform our engineering practice.')}
           </p>
           <div className="mt-10">
             <Link
@@ -176,7 +177,7 @@ export default function SolutionDetail() {
               onMouseEnter={e => (e.currentTarget.style.color = T.yellowDeep)}
               onMouseLeave={e => (e.currentTarget.style.color = '#0B1D33')}
             >
-              <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>Découvrir le Studio Produit</span>
+              <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>{t('Découvrir le Studio Produit', 'Discover the Product Studio')}</span>
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
           </div>
@@ -189,10 +190,10 @@ export default function SolutionDetail() {
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: 0, marginBottom: '24px' }}>
-                Un projet numérique à construire ou à faire évoluer ?
+                {t('Un projet numérique à construire ou à faire évoluer ?', 'A digital project to build or improve?')}
               </h2>
               <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
-                Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.
+                {t('Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.', 'Tell us about your context and goals, and what we could build together.')}
               </p>
             </div>
             <Link
@@ -202,7 +203,7 @@ export default function SolutionDetail() {
               onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
               onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
             >
-              Parler à Enésense
+              {t('Parler à Enésense', 'Talk to Enésense')}
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
           </div>

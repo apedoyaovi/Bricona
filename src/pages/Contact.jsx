@@ -2,23 +2,32 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { SITE_CONTENT_EVENT, addContactMessage, getSiteSettings, getSiteSettingsAsync } from '../utils/siteContent';
+import { useLanguage } from '../utils/LanguageContext';
 
 const faqItems = [
   {
     q: 'Quel est le délai moyen pour obtenir un devis ?',
+    qEn: 'How long does it usually take to receive a quote?',
     a: "Pour la majorité des demandes, nous fournissons une estimation initiale sous 24 à 48 heures ouvrées. Les projets complexes nécessitant une expertise technique approfondie peuvent prendre jusqu'à 4 jours.",
+    aEn: 'For most requests, we provide an initial estimate within 24 to 48 business hours. Complex projects requiring in-depth technical expertise may take up to 4 days.',
   },
   {
     q: 'Travaillez-vous avec des particuliers ?',
+    qEn: 'Do you work with individuals?',
     a: "Oui, Enésense accompagne tant les professionnels pour leurs besoins d'infrastructure digitale que les particuliers recherchant des experts pour des projets de rénovation ou de création.",
+    aEn: 'Yes. Enésense supports businesses with digital infrastructure and individuals looking for experts for renovation or creative projects.',
   },
   {
     q: 'Comment garantissez-vous la qualité de vos prestations ?',
+    qEn: 'How do you ensure the quality of your work?',
     a: "Chaque prestataire de notre réseau subit un audit rigoureux : vérification des certifications, analyse des travaux précédents et évaluation de la satisfaction client. Nous ne retenons que le top 5% des experts du marché.",
+    aEn: 'Every partner in our network undergoes a thorough review: certification checks, previous work analysis and client satisfaction assessment. We select only the top 5% of experts in the market.',
   },
   {
     q: 'Proposez-vous des contrats de maintenance ?',
+    qEn: 'Do you offer maintenance contracts?',
     a: "Absolument. Qu'il s'agisse de maintenance logicielle ou technique (bâtiment, installations), nous proposons des forfaits d'accompagnement sur le long terme pour assurer la pérennité de vos projets.",
+    aEn: 'Absolutely. Whether you need software or technical maintenance, we offer long-term support plans to help ensure your projects remain sustainable.',
   },
 ];
 
@@ -40,6 +49,7 @@ const fonts = {
 };
 
 const Contact = () => {
+  const { t } = useLanguage();
   const recaptchaSiteKey = import.meta.env.VITE_PUBLIC_RECAPTCHA_SITE_KEY || import.meta.env.VITE_RECAPTCHA_SITE_KEY;
   const recaptchaRef = useRef(null);
   const [open, setOpen] = useState(null);
@@ -75,13 +85,13 @@ const Contact = () => {
     setErrorMessage('');
 
     if (!messageValue.trim()) {
-      setErrorMessage('Veuillez decrire votre projet avant d envoyer la demande.');
+      setErrorMessage(t('Veuillez decrire votre projet avant d envoyer la demande.', 'Please describe your project before submitting the request.'));
       setIsSending(false);
       return;
     }
 
     if (recaptchaSiteKey && !recaptchaToken) {
-      setErrorMessage('Veuillez valider le reCAPTCHA avant d envoyer la demande.');
+      setErrorMessage(t('Veuillez valider le reCAPTCHA avant d envoyer la demande.', 'Please complete the reCAPTCHA before submitting the request.'));
       setIsSending(false);
       return;
     }
@@ -95,14 +105,14 @@ const Contact = () => {
         message: messageValue.trim(),
       });
 
-      setSuccessMessage('Votre demande a bien ete envoyee. Notre equipe vous contactera rapidement.');
+      setSuccessMessage(t('Votre demande a bien ete envoyee. Notre equipe vous contactera rapidement.', 'Your request has been sent. Our team will be in touch shortly.'));
       form.reset();
       recaptchaRef.current?.reset();
       setRecaptchaToken('');
     } catch (error) {
-      const reason = error instanceof Error ? error.message : 'Erreur inconnue';
+      const reason = error instanceof Error ? error.message : t('Erreur inconnue', 'Unknown error');
       console.error('Contact form submission failed:', reason, error);
-      setErrorMessage(`Impossible d'envoyer votre demande : ${reason}`);
+      setErrorMessage(`${t("Impossible d'envoyer votre demande :", 'Unable to send your request:')} ${reason}`);
       recaptchaRef.current?.reset();
       setRecaptchaToken('');
     } finally {
@@ -122,10 +132,10 @@ const Contact = () => {
                 Contact
               </span>
               <h1 className="text-center lg:text-left" style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(28px, 5vw, 56px)', fontWeight: 700, lineHeight: 0.95, letterSpacing: '-0.03em', color: T.navyText, margin: 0, maxWidth: '100%' }}>
-                Parlons de votre projet.
+                {t('Parlons de votre projet.', "Let's talk about your project.")}
               </h1>
               <p className="text-center lg:text-left" style={{ fontFamily: fonts.inter, fontSize: '19px', fontWeight: 400, lineHeight: '28px', letterSpacing: '-0.005em', color: T.navyMuted, maxWidth: '540px', margin: '0 auto' }}>
-                Vous cherchez à renforcer une équipe, construire un produit, moderniser une application ou explorer un cas d'usage en IA ? Décrivez-nous votre besoin.
+                {t("Vous cherchez à renforcer une équipe, construire un produit, moderniser une application ou explorer un cas d'usage en IA ? Décrivez-nous votre besoin.", 'Looking to strengthen a team, build a product, modernize an application or explore an AI use case? Tell us what you need.')}
               </p>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full pt-4">
                 <a
@@ -135,7 +145,7 @@ const Contact = () => {
                   onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
                   onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
                 >
-                  Discuter de votre projet
+                  {t('Discuter de votre projet', 'Discuss your project')}
                 </a>
                 <a
                   href="#contactForm"
@@ -144,7 +154,7 @@ const Contact = () => {
                   onMouseEnter={e => { e.currentTarget.style.borderColor = T.yellow; e.currentTarget.style.color = T.yellow; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = T.navyMuted; e.currentTarget.style.color = T.navyText; }}
                 >
-                  Voir le formulaire
+                  {t('Voir le formulaire', 'View the form')}
                 </a>
               </div>
             </div>
@@ -160,12 +170,12 @@ const Contact = () => {
             <form className="space-y-5" onSubmit={handleContactSubmit}>
               <div className="grid md:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="full-name">Nom</label>
-                  <input id="full-name" name="full-name" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} placeholder="Votre nom" type="text" required />
+                  <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="full-name">{t('Nom', 'Name')}</label>
+                  <input id="full-name" name="full-name" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} placeholder={t('Votre nom', 'Your name')} type="text" required />
                 </div>
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="company">Structure <span style={{ color: T.navyMuted }}>(optionnel)</span></label>
-                  <input id="company" name="company" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} placeholder="Nom de votre entreprise" type="text" />
+                  <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="company">{t('Structure', 'Company')} <span style={{ color: T.navyMuted }}>({t('optionnel', 'optional')})</span></label>
+                  <input id="company" name="company" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} placeholder={t('Nom de votre entreprise', 'Company name')} type="text" />
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-5">
@@ -174,25 +184,25 @@ const Contact = () => {
                   <input id="email" name="email" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} placeholder="email@entreprise.com" type="email" required />
                 </div>
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="phone">Téléphone</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="phone">{t('Téléphone', 'Phone')}</label>
                   <input id="phone" name="phone" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} placeholder="+33 6 00 00 00 00" type="tel" required />
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="project-type">Nature du besoin</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="project-type">{t('Nature du besoin', 'Project type')}</label>
                 <select id="project-type" name="project-type" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2 appearance-none cursor-pointer" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)', color: '#ffffff', fontFamily: fonts.inter }} required>
-                  <option value="" style={{ background: '#0A0D14', color: '#b0b8c4' }}>Sélectionnez un besoin</option>
-                  <option value="Extension d'équipe" style={{ background: '#0A0D14', color: '#f7f8fa' }}>Extension d'équipe</option>
-                  <option value="Nouveau produit" style={{ background: '#0A0D14', color: '#f7f8fa' }}>Nouveau produit</option>
-                  <option value="Modernisation applicative" style={{ background: '#0A0D14', color: '#f7f8fa' }}>Modernisation applicative</option>
-                  <option value="IA & automatisation" style={{ background: '#0A0D14', color: '#f7f8fa' }}>IA & automatisation</option>
-                  <option value="Création de site internet/appli" style={{ background: '#0A0D14', color: '#f7f8fa' }}>Création de site internet/appli</option>
-                  <option value="Autre" style={{ background: '#0A0D14', color: '#f7f8fa' }}>Autre</option>
+                  <option value="" style={{ background: '#0A0D14', color: '#b0b8c4' }}>{t('Sélectionnez un besoin', 'Select a project type')}</option>
+                  <option value="Extension d'équipe" style={{ background: '#0A0D14', color: '#f7f8fa' }}>{t("Extension d'équipe", 'Team extension')}</option>
+                  <option value="Nouveau produit" style={{ background: '#0A0D14', color: '#f7f8fa' }}>{t('Nouveau produit', 'New product')}</option>
+                  <option value="Modernisation applicative" style={{ background: '#0A0D14', color: '#f7f8fa' }}>{t('Modernisation applicative', 'Application modernization')}</option>
+                  <option value="IA & automatisation" style={{ background: '#0A0D14', color: '#f7f8fa' }}>{t('IA & automatisation', 'AI & automation')}</option>
+                  <option value="Création de site internet/appli" style={{ background: '#0A0D14', color: '#f7f8fa' }}>{t('Création de site internet/appli', 'Website or app development')}</option>
+                  <option value="Autre" style={{ background: '#0A0D14', color: '#f7f8fa' }}>{t('Autre', 'Other')}</option>
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="message">Message</label>
-                <textarea id="message" name="message" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2 resize-none" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} placeholder="Décrivez votre besoin, vos objectifs et vos délais..." rows={5} required></textarea>
+                <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="message">{t('Message', 'Message')}</label>
+                <textarea id="message" name="message" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2 resize-none" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} placeholder={t('Décrivez votre besoin, vos objectifs et vos délais...', 'Describe your needs, goals and timeline...')} rows={5} required></textarea>
               </div>
               {recaptchaSiteKey && (
                 <div className="overflow-hidden rounded-xl">
@@ -217,11 +227,11 @@ const Contact = () => {
               )}
               <div className="pt-2">
                 <button className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-base font-bold transition-all active:translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed hover:scale-105" type="submit" disabled={isSending || Boolean(recaptchaSiteKey && !recaptchaToken)} style={{ background: T.yellow, color: T.navyDeep, fontFamily: fonts.inter, boxShadow: '0 8px 24px rgba(0,0,0,0.25)' }}>
-                  {isSending ? 'Envoi en cours...' : 'Envoyer ma demande'}
+                  {isSending ? t('Envoi en cours...', 'Sending...') : t('Envoyer ma demande', 'Send my request')}
                   <span className="material-symbols-outlined">send</span>
                 </button>
                 <p className="text-[11px] mt-4 text-center md:text-left" style={{ color: T.navyMuted }}>
-                  En envoyant ce formulaire, vous acceptez notre politique de confidentialité. Vos données sont traitées avec soin.
+                  {t('En envoyant ce formulaire, vous acceptez notre politique de confidentialité. Vos données sont traitées avec soin.', 'By submitting this form, you agree to our privacy policy. Your data will be handled with care.')}
                 </p>
               </div>
             </form>
@@ -231,12 +241,12 @@ const Contact = () => {
           <div className="lg:col-span-5 space-y-6">
             {/* Contact Info */}
             <div className="rounded-2xl p-6 space-y-5" style={{ background: 'rgba(4,15,35,0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: fonts.jakarta, color: T.navyText }}>Informations Directes</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: fonts.jakarta, color: T.navyText }}>{t('Informations Directes', 'Direct Contact')}</h2>
               {[
-                { icon: 'call', label: 'Appels', value: settings.phone },
+                { icon: 'call', label: t('Appels', 'Phone'), value: settings.phone },
                 { icon: 'chat', label: 'WhatsApp', value: settings.whatsapp },
                 { icon: 'mail', label: 'Email', value: settings.email },
-                { icon: 'location_on', label: 'Siège Social', value: settings.address },
+                { icon: 'location_on', label: t('Siège Social', 'Head office'), value: settings.address },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-4 p-3 rounded-xl transition-colors hover:bg-white/5">
                   <div className="p-2.5 rounded-lg" style={{ background: 'rgba(242,183,5,0.12)' }}>
@@ -252,7 +262,7 @@ const Contact = () => {
 
             {/* Social Networks */}
             <div className="rounded-2xl p-6" style={{ background: 'rgba(4,15,35,0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <p className="text-xs font-bold uppercase mb-5 tracking-[0.2em] text-center" style={{ fontFamily: fonts.inter, color: T.yellow }}>Suivez nous sur</p>
+              <p className="text-xs font-bold uppercase mb-5 tracking-[0.2em] text-center" style={{ fontFamily: fonts.inter, color: T.yellow }}>{t('Suivez nous sur', 'Follow us')}</p>
               <div className="flex justify-center items-center gap-5">
                 <a href="https://web.facebook.com/profile.php?id=61586741540007" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="group relative w-14 h-14 flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110 hover:shadow-lg" style={{ background: 'rgba(242,183,5,0.15)', border: '1px solid rgba(242,183,5,0.4)' }}>
                   <span className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold whitespace-nowrap" style={{ fontFamily: fonts.inter, color: T.yellow }}>Facebook</span>
@@ -276,7 +286,7 @@ const Contact = () => {
       <section className="px-6 md:px-8 py-10 max-w-7xl mx-auto">
         <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
           <iframe
-            title="Localisation Enésense"
+            title={t('Localisation Enésense', 'Enésense location')}
             src={`https://maps.google.com/maps?q=${encodeURIComponent(settings.address || 'Colombs, France')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
             width="100%"
             height="420"
@@ -292,7 +302,7 @@ const Contact = () => {
       {/* FAQ Section */}
       <section className="px-6 md:px-8 py-12 max-w-4xl mx-auto">
         <div className="text-center mb-10">
-          <h2 className="font-headline text-2xl font-bold mb-4">Questions Fréquentes</h2>
+          <h2 className="font-headline text-2xl font-bold mb-4">{t('Questions Fréquentes', 'Frequently Asked Questions')}</h2>
           <div className="h-1 w-20 bg-secondary-container mx-auto rounded-full"></div>
         </div>
         <div className="space-y-4">
@@ -302,11 +312,11 @@ const Contact = () => {
                 className="w-full flex items-center justify-between p-4 text-left hover:bg-surface-container-low transition-colors group"
                 onClick={() => setOpen(open === i ? null : i)}
               >
-                <span className="font-headline font-semibold text-on-surface">{item.q}</span>
+                <span className="font-headline font-semibold text-on-surface">{t(item.q, item.qEn)}</span>
                 <span className={`material-symbols-outlined text-outline group-hover:text-primary transition-all ${open === i ? 'rotate-180' : ''}`}>expand_more</span>
               </button>
               {open === i && (
-                <div className="px-4 pb-4 text-on-surface-variant leading-relaxed">{item.a}</div>
+                <div className="px-4 pb-4 text-on-surface-variant leading-relaxed">{t(item.a, item.aEn)}</div>
               )}
             </div>
           ))}

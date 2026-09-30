@@ -8,11 +8,13 @@ import {
   getContactMessages,
 } from '../utils/siteContent';
 import ConfirmDialog from '../components/ConfirmDialog';
+import { useLanguage } from '../utils/LanguageContext';
 
 const adminPassword = 'bricona-admin-2026';
 const adminSessionKey = 'bricona-admin-session';
 
 const AdminDashboard = () => {
+  const { language, t } = useLanguage();
   const [settings, setSettings] = useState(() => getSiteSettings());
   const [messages, setMessages] = useState([]);
   const [notice, setNotice] = useState('');
@@ -31,7 +33,7 @@ const AdminDashboard = () => {
     open: false,
     title: '',
     message: '',
-    confirmLabel: 'Confirmer',
+    confirmLabel: t('Confirmer', 'Confirm'),
     variant: 'primary',
     onConfirm: null,
   });
@@ -40,7 +42,7 @@ const AdminDashboard = () => {
     setConfirmDialog((current) => ({ ...current, open: false, onConfirm: null }));
   };
 
-  const requestConfirmation = ({ title, message, confirmLabel = 'Confirmer', variant = 'primary', onConfirm }) => {
+  const requestConfirmation = ({ title, message, confirmLabel = t('Confirmer', 'Confirm'), variant = 'primary', onConfirm }) => {
     setConfirmDialog({
       open: true,
       title,
@@ -55,7 +57,7 @@ const AdminDashboard = () => {
     event.preventDefault();
 
     if (password !== adminPassword) {
-      setLoginError('Mot de passe incorrect.');
+      setLoginError(t('Mot de passe incorrect.', 'Incorrect password.'));
       return;
     }
 
@@ -67,9 +69,9 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     requestConfirmation({
-      title: 'Deconnexion',
-      message: 'Voulez-vous vraiment quitter l espace proprietaire ?',
-      confirmLabel: 'Se deconnecter',
+      title: t('Deconnexion', 'Log out'),
+      message: t('Voulez-vous vraiment quitter l espace proprietaire ?', 'Are you sure you want to leave the admin area?'),
+      confirmLabel: t('Se deconnecter', 'Log out'),
       onConfirm: () => {
         window.sessionStorage.removeItem(adminSessionKey);
         setIsAuthenticated(false);
@@ -84,9 +86,9 @@ const AdminDashboard = () => {
 
     try {
       setMessages(await getContactMessages());
-      setNotice('Messages actualises.');
+      setNotice(t('Messages actualises.', 'Messages refreshed.'));
     } catch {
-      setError('Impossible de charger les messages. Verifiez la policy select Supabase.');
+      setError(t('Impossible de charger les messages. Verifiez la policy select Supabase.', 'Unable to load messages. Check the Supabase select policy.'));
     } finally {
       setIsLoading(false);
     }
@@ -112,7 +114,7 @@ const AdminDashboard = () => {
           const remoteSettings = await getSiteSettingsFromSupabase();
           setSettings(remoteSettings);
         } catch {
-          setError('Impossible de charger les parametres depuis Supabase.');
+          setError(t('Impossible de charger les parametres depuis Supabase.', 'Unable to load settings from Supabase.'));
         } finally {
           setIsLoading(false);
         }
@@ -131,17 +133,17 @@ const AdminDashboard = () => {
     };
 
     requestConfirmation({
-      title: 'Mettre a jour les contacts ?',
-      message: 'Ces informations seront utilisees dans la page contact, les confirmations et les boutons flottants.',
-      confirmLabel: 'Enregistrer',
+      title: t('Mettre a jour les contacts ?', 'Update contact details?'),
+      message: t('Ces informations seront utilisees dans la page contact, les confirmations et les boutons flottants.', 'This information is used on the contact page, in confirmations and in the floating buttons.'),
+      confirmLabel: t('Enregistrer', 'Save'),
       onConfirm: async () => {
         try {
           saveSiteSettings(trimmed);
           await saveSiteSettingsToSupabase(trimmed);
           setSettings(trimmed);
-          setNotice('Contacts du site mis a jour.');
+          setNotice(t('Contacts du site mis a jour.', 'Site contact details updated.'));
         } catch {
-          setError('Parametres sauvegardes localement, mais la synchronisation Supabase a echoue.');
+          setError(t('Parametres sauvegardes localement, mais la synchronisation Supabase a echoue.', 'Settings were saved locally, but Supabase synchronization failed.'));
         } finally {
           closeConfirmDialog();
         }
@@ -160,16 +162,16 @@ const AdminDashboard = () => {
             <div className="h-14 w-14 rounded-2xl bg-primary-fixed text-primary flex items-center justify-center mb-6">
               <span className="material-symbols-outlined text-2xl">admin_panel_settings</span>
             </div>
-            <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-3">Acces securise</p>
+            <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-3">{t('Acces securise', 'Secure access')}</p>
             <h1 className="font-headline text-2xl font-extrabold text-on-surface mb-3">
-              Espace proprietaire
+              {t('Espace proprietaire', 'Admin area')}
             </h1>
             <p className="text-sm text-on-surface-variant leading-relaxed mb-6">
-              Entrez le mot de passe administrateur pour gerer les messages et les parametres du site.
+              {t('Entrez le mot de passe administrateur pour gerer les messages et les parametres du site.', 'Enter the administrator password to manage messages and site settings.')}
             </p>
 
             <label className="block text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2" htmlFor="admin-password">
-              Mot de passe
+              {t('Mot de passe', 'Password')}
             </label>
             <div className="relative">
               <input
@@ -178,7 +180,7 @@ const AdminDashboard = () => {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 className="w-full rounded-xl bg-surface-container-low px-4 py-3 pr-12 text-sm outline-none focus:ring-4 focus:ring-primary/10"
-                placeholder="Mot de passe admin"
+                placeholder={t('Mot de passe admin', 'Admin password')}
                 autoComplete="current-password"
                 required
               />
@@ -186,7 +188,7 @@ const AdminDashboard = () => {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"
-                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                aria-label={showPassword ? t('Masquer le mot de passe', 'Hide password') : t('Afficher le mot de passe', 'Show password')}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
                   {showPassword ? 'visibility_off' : 'visibility'}
@@ -201,7 +203,7 @@ const AdminDashboard = () => {
             )}
 
             <button type="submit" className="mt-6 w-full bg-primary text-white rounded-xl px-6 py-4 font-bold hover:bg-primary-container transition-colors">
-              Se connecter
+              {t('Se connecter', 'Sign in')}
             </button>
           </form>
         </section>
@@ -223,12 +225,12 @@ const AdminDashboard = () => {
       <section className="max-w-7xl mx-auto px-6 md:px-8">
         <div className="mb-8 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div>
-            <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-3">Espace proprietaire</p>
+            <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-3">{t('Espace proprietaire', 'Admin area')}</p>
             <h1 className="font-headline text-3xl lg:text-4xl font-extrabold text-on-surface mb-3">
               Administration
             </h1>
             <p className="text-on-surface-variant text-sm max-w-2xl leading-relaxed">
-              Consultez les messages recus et parametrez les informations de contact du site.
+              {t('Consultez les messages recus et parametrez les informations de contact du site.', 'Review received messages and manage the website contact details.')}
             </p>
           </div>
           <button
@@ -236,7 +238,7 @@ const AdminDashboard = () => {
             onClick={handleLogout}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-5 py-3 text-sm font-bold text-primary hover:bg-primary-fixed transition-colors"
           >
-            Deconnexion
+            {t('Deconnexion', 'Log out')}
             <span className="material-symbols-outlined text-base">logout</span>
           </button>
         </div>
@@ -265,10 +267,10 @@ const AdminDashboard = () => {
           >
             <span className="material-symbols-outlined text-3xl mb-4">mark_email_unread</span>
             <span className={`block font-headline text-lg font-bold mb-1 ${activeTab === 'messages' ? 'text-white' : 'text-primary'}`}>
-              Messages recus
+              {t('Messages recus', 'Received messages')}
             </span>
             <span className={`block text-sm ${activeTab === 'messages' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
-              Consulter les demandes envoyees depuis la page contact.
+              {t('Consulter les demandes envoyees depuis la page contact.', 'Review requests sent through the contact page.')}
             </span>
           </button>
 
@@ -283,10 +285,10 @@ const AdminDashboard = () => {
           >
             <span className="material-symbols-outlined text-3xl mb-4">settings</span>
             <span className={`block font-headline text-lg font-bold mb-1 ${activeTab === 'settings' ? 'text-white' : 'text-primary'}`}>
-              Parametres du site
+              {t('Parametres du site', 'Site settings')}
             </span>
             <span className={`block text-sm ${activeTab === 'settings' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
-              Mettre a jour les contacts affiches aux visiteurs.
+              {t('Mettre a jour les contacts affiches aux visiteurs.', 'Update the contact details shown to visitors.')}
             </span>
           </button>
         </div>
@@ -297,21 +299,21 @@ const AdminDashboard = () => {
               <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
                 <span className="material-symbols-outlined text-3xl text-primary mb-3">mark_email_unread</span>
                 <p className="font-headline text-2xl font-extrabold text-primary">{messages.length}</p>
-                <p className="text-sm text-on-surface-variant">message(s) recus</p>
+                <p className="text-sm text-on-surface-variant">{t('message(s) recus', 'message(s) received')}</p>
               </div>
               <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
                 <span className="material-symbols-outlined text-3xl text-primary mb-3">business_center</span>
                 <p className="font-headline text-2xl font-extrabold text-primary">
                   {messages.filter((message) => message.company).length}
                 </p>
-                <p className="text-sm text-on-surface-variant">demande(s) avec entreprise</p>
+                <p className="text-sm text-on-surface-variant">{t('demande(s) avec entreprise', 'request(s) with a company')}</p>
               </div>
               <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
                 <span className="material-symbols-outlined text-3xl text-primary mb-3">alternate_email</span>
                 <p className="font-headline text-2xl font-extrabold text-primary">
                   {messages.filter((message) => message.email).length}
                 </p>
-                <p className="text-sm text-on-surface-variant">contact(s) par email</p>
+                <p className="text-sm text-on-surface-variant">{t('contact(s) par email', 'email contact(s)')}</p>
               </div>
             </div>
 
@@ -319,8 +321,8 @@ const AdminDashboard = () => {
               {isLoading ? (
                 <div className="rounded-2xl bg-surface-container-low p-8 text-center">
                   <span className="material-symbols-outlined text-4xl text-primary mb-3">hourglass_top</span>
-                  <p className="font-headline font-bold text-primary mb-1">Chargement des messages...</p>
-                  <p className="text-sm text-on-surface-variant">Les donnees sont recuperees depuis Supabase.</p>
+                  <p className="font-headline font-bold text-primary mb-1">{t('Chargement des messages...', 'Loading messages...')}</p>
+                  <p className="text-sm text-on-surface-variant">{t('Les donnees sont recuperees depuis Supabase.', 'Data is being retrieved from Supabase.')}</p>
                 </div>
               ) : messages.length > 0 ? (
                 <>
@@ -336,7 +338,7 @@ const AdminDashboard = () => {
                             )}
                           </div>
                           <span className="rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-on-surface-variant">
-                            {new Intl.DateTimeFormat('fr-FR', {
+                            {new Intl.DateTimeFormat(language === 'en' ? 'en-GB' : 'fr-FR', {
                               day: 'numeric',
                               month: 'long',
                               year: 'numeric',
@@ -373,7 +375,7 @@ const AdminDashboard = () => {
                     return (
                       <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-2 text-sm text-on-surface-variant">
-                          <span>Messages par page</span>
+                          <span>{t('Messages par page', 'Messages per page')}</span>
                           <select
                             value={messagesPageSize}
                             onChange={(event) => setMessagesPageSize(Number(event.target.value))}
@@ -397,11 +399,11 @@ const AdminDashboard = () => {
                             className="inline-flex items-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-4 py-2 text-sm font-bold text-primary hover:bg-primary-fixed transition-colors disabled:opacity-50"
                           >
                             <span className="material-symbols-outlined text-base">chevron_left</span>
-                            Precedent
+                            {t('Precedent', 'Previous')}
                           </button>
 
                           <span className="text-sm font-bold text-on-surface">
-                            Page {safePage} / {totalPages}
+                            {t('Page', 'Page')} {safePage} / {totalPages}
                           </span>
 
                           <button
@@ -410,7 +412,7 @@ const AdminDashboard = () => {
                             onClick={() => setMessagesPage((page) => Math.min(totalPages, page + 1))}
                             className="inline-flex items-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-4 py-2 text-sm font-bold text-primary hover:bg-primary-fixed transition-colors disabled:opacity-50"
                           >
-                            Suivant
+                            {t('Suivant', 'Next')}
                             <span className="material-symbols-outlined text-base">chevron_right</span>
                           </button>
                         </div>
@@ -421,8 +423,8 @@ const AdminDashboard = () => {
               ) : (
                 <div className="rounded-2xl bg-surface-container-low p-8 text-center">
                   <span className="material-symbols-outlined text-4xl text-primary mb-3">mail_off</span>
-                  <p className="font-headline font-bold text-primary mb-1">Aucun message pour le moment.</p>
-                  <p className="text-sm text-on-surface-variant">Les demandes du formulaire contact apparaitront ici.</p>
+                  <p className="font-headline font-bold text-primary mb-1">{t('Aucun message pour le moment.', 'No messages yet.')}</p>
+                  <p className="text-sm text-on-surface-variant">{t('Les demandes du formulaire contact apparaitront ici.', 'Contact form requests will appear here.')}</p>
                 </div>
               )}
             </div>
@@ -431,14 +433,14 @@ const AdminDashboard = () => {
 
         {activeTab === 'settings' && (
           <form className="rounded-[2rem] bg-primary text-white p-6 md:p-7 shadow-xl shadow-primary/20" onSubmit={handleSettingsSubmit}>
-            <h2 className="font-headline text-xl font-bold mb-2">Contacts du site</h2>
-            <p className="text-primary-fixed/80 text-sm mb-5">Ces informations servent aux confirmations et aux boutons de contact.</p>
+            <h2 className="font-headline text-xl font-bold mb-2">{t('Contacts du site', 'Website contacts')}</h2>
+            <p className="text-primary-fixed/80 text-sm mb-5">{t('Ces informations servent aux confirmations et aux boutons de contact.', 'This information is used in confirmations and contact buttons.')}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
                 { name: 'email', label: 'Email', type: 'email' },
-                { name: 'phone', label: 'Telephone', type: 'tel' },
+                { name: 'phone', label: t('Telephone', 'Phone'), type: 'tel' },
                 { name: 'whatsapp', label: 'WhatsApp', type: 'tel' },
-                { name: 'address', label: 'Adresse', type: 'text' },
+                { name: 'address', label: t('Adresse', 'Address'), type: 'text' },
               ].map((field) => (
                 <div key={field.name}>
                   <label className="block text-xs font-bold uppercase tracking-[0.12em] text-primary-fixed/80 mb-2" htmlFor={field.name}>{field.label}</label>
@@ -454,7 +456,7 @@ const AdminDashboard = () => {
               ))}
             </div>
             <button type="submit" className="mt-5 bg-secondary-container text-on-secondary-container rounded-xl px-6 py-3 font-bold hover:scale-105 transition-transform">
-              Enregistrer les contacts
+              {t('Enregistrer les contacts', 'Save contacts')}
             </button>
           </form>
         )}

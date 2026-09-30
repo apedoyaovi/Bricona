@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../utils/LanguageContext';
 
 const T = {
   navy: '#0A0D14',
@@ -20,14 +21,14 @@ const fonts = {
   inter: "'Inter', sans-serif",
 };
 
-const capabilities = [
-  { number: '01', title: 'Vitrine sociale', desc: 'Présenter les produits dans un espace simple, visuel et pensé pour les échanges avec la clientèle.' },
-  { number: '02', title: 'Commandes', desc: 'Centraliser les demandes, suivre les étapes et garder une vue claire sur les ventes en cours.' },
-  { number: '03', title: 'Paiements et confiance', desc: 'Structurer les transactions et les informations essentielles pour faciliter des échanges plus sereins.' },
-  { number: '04', title: 'Communauté', desc: 'Créer un point de contact durable entre les marchands, leurs clients et leur réseau commercial.' },
-];
-
 export default function SelvyDetail() {
+  const { t } = useLanguage();
+  const capabilities = [
+    { number: '01', title: t('Vitrine sociale', 'Social storefront'), desc: t('Présenter les produits dans un espace simple, visuel et pensé pour les échanges avec la clientèle.', 'Showcase products in a simple, visual space designed for customer conversations.') },
+    { number: '02', title: t('Commandes', 'Orders'), desc: t('Centraliser les demandes, suivre les étapes et garder une vue claire sur les ventes en cours.', 'Centralize requests, track each step and keep a clear view of ongoing sales.') },
+    { number: '03', title: t('Paiements et confiance', 'Payments and trust'), desc: t('Structurer les transactions et les informations essentielles pour faciliter des échanges plus sereins.', 'Organize transactions and key information to make interactions more reliable.') },
+    { number: '04', title: t('Communauté', 'Community'), desc: t('Créer un point de contact durable entre les marchands, leurs clients et leur réseau commercial.', 'Build lasting connections between merchants, their customers and their business networks.') },
+  ];
   const selvySlides = ['/selvy.jfif', '/selvy 1-1.png', '/selvy 1-2.png', '/selvy 2-1.png', '/selvy 2-2.png', '/selvy 3-1.png', '/selvy 3-2.png'];
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -44,16 +45,16 @@ export default function SelvyDetail() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="max-w-2xl">
             <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.yellow, marginBottom: '32px' }}>
-              Produit Enésense
+              {t('Produit Enésense', 'An Enésense product')}
             </p>
             <h1 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, lineHeight: 1.05, color: T.navyText, margin: '0 0 24px' }}>
               SELVY
             </h1>
             <p style={{ fontFamily: fonts.inter, fontSize: '1.25rem', fontWeight: 500, color: T.navyText, margin: '0 0 24px' }}>
-              Le social commerce simplifié pour les marchands d'Afrique de l'Ouest.
+              {t("Le social commerce simplifié pour les marchands d'Afrique de l'Ouest.", 'Simplified social commerce for merchants in West Africa.')}
             </p>
             <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, margin: '0 0 40px', maxWidth: '42rem' }}>
-              SELVY aide les marchands à présenter leurs produits, recevoir des demandes et développer leur activité commerciale grâce à une expérience numérique accessible et centrée sur les usages réels.
+              {t('SELVY aide les marchands à présenter leurs produits, recevoir des demandes et développer leur activité commerciale grâce à une expérience numérique accessible et centrée sur les usages réels.', 'SELVY helps merchants showcase products, receive orders and grow their business through an accessible digital experience built around real-world needs.')}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -63,7 +64,7 @@ export default function SelvyDetail() {
                 onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
                 onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
               >
-                Demander une démonstration
+                {t('Demander une démonstration', 'Request a demo')}
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
@@ -80,7 +81,7 @@ export default function SelvyDetail() {
                 <img
                   key={src}
                   src={src}
-                  alt={`SELVY - vue ${idx + 1}`}
+                  alt={`${t('SELVY - vue', 'SELVY - view')} ${idx + 1}`}
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-contain transition-opacity duration-700"
                   style={{ opacity: idx === currentSlide ? 1 : 0 }}
@@ -110,7 +111,7 @@ export default function SelvyDetail() {
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                {['Catalogue', 'Commandes', 'Clients'].map(item => (
+                {[t('Catalogue', 'Catalog'), t('Commandes', 'Orders'), t('Clients', 'Customers')].map(item => (
                   <div key={item} className="border-t pt-4" style={{ borderTopColor: 'rgba(242,183,5,0.7)' }}>
                     <span style={{ fontFamily: fonts.inter, fontSize: '12px', fontWeight: 600, color: T.navyText }}>{item}</span>
                   </div>
@@ -124,7 +125,7 @@ export default function SelvyDetail() {
       <section className="py-20 md:py-24" style={{ background: T.surface }}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.85rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0, marginBottom: '24px' }}>
-            Une plateforme pensée pour le commerce de proximité.
+            {t('Une plateforme pensée pour le commerce de proximité.', 'A platform designed for local commerce.')}
           </h2>
           <div className="grid gap-8 md:grid-cols-2">
             {capabilities.map((capability, index) => (
@@ -147,10 +148,10 @@ export default function SelvyDetail() {
       <section className="py-20 md:py-24">
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.85rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0, marginBottom: '24px' }}>
-            Une capacité produit, pas une réalisation isolée.
+            {t('Une capacité produit, pas une réalisation isolée.', 'A product capability, not a one-off delivery.')}
           </h2>
           <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, maxWidth: '42rem' }}>
-            Concevoir SELVY nous confronte aux réalités du commerce quotidien : simplicité d'usage, adoption progressive, confiance et exploitation sur la durée. Ces apprentissages nourrissent directement notre approche produit.
+            {t("Concevoir SELVY nous confronte aux réalités du commerce quotidien : simplicité d'usage, adoption progressive, confiance et exploitation sur la durée. Ces apprentissages nourrissent directement notre approche produit.", 'Building SELVY keeps us close to the realities of everyday commerce: ease of use, gradual adoption, trust and long-term operations. These lessons directly shape our product approach.')}
           </p>
           <div className="mt-10">
             <Link
@@ -160,7 +161,7 @@ export default function SelvyDetail() {
               onMouseEnter={e => (e.currentTarget.style.color = T.yellowDeep)}
               onMouseLeave={e => (e.currentTarget.style.color = '#0B1D33')}
             >
-              <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>Découvrir le Studio Produit</span>
+              <span style={{ borderBottom: `2px solid ${T.yellow}`, paddingBottom: '2px' }}>{t('Découvrir le Studio Produit', 'Discover the Product Studio')}</span>
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
           </div>
@@ -172,10 +173,10 @@ export default function SelvyDetail() {
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: 0, marginBottom: '24px' }}>
-                Un projet numérique à construire ou à faire évoluer ?
+                {t('Un projet numérique à construire ou à faire évoluer ?', 'A digital project to build or improve?')}
               </h2>
               <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
-                Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.
+                {t('Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.', 'Tell us about your context and goals, and what we could build together.')}
               </p>
             </div>
             <Link
@@ -185,7 +186,7 @@ export default function SelvyDetail() {
               onMouseEnter={e => (e.currentTarget.style.background = T.yellowDeep)}
               onMouseLeave={e => (e.currentTarget.style.background = T.yellow)}
             >
-              Parler à Enésense
+              {t('Parler à Enésense', 'Talk to Enésense')}
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
           </div>

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../utils/LanguageContext';
 
 const CookieConsent = () => {
+  const { t } = useLanguage();
   const [visible, setVisible] = useState(() => {
     if (typeof window === 'undefined') return false;
     return !window.localStorage.getItem('enesence-cookie-consent');
@@ -48,11 +50,11 @@ const CookieConsent = () => {
               <span className="material-symbols-outlined text-xl">cookie</span>
             </div>
             <div>
-              <p className="font-headline text-base font-bold text-on-surface">Nous utilisons des cookies</p>
+              <p className="font-headline text-base font-bold text-on-surface">{t('Nous utilisons des cookies', 'We use cookies')}</p>
               <p className="text-sm leading-relaxed text-on-surface-variant">
-                Nous utilisons des cookies essentiels et analytiques pour améliorer votre expérience et la performance du site. Vous pouvez en savoir plus dans notre{' '}
+                {t('Nous utilisons des cookies essentiels et analytiques pour améliorer votre expérience et la performance du site. Vous pouvez en savoir plus dans notre', 'We use essential and analytics cookies to improve your experience and the performance of this website. Learn more in our')}{' '}
                 <Link to="/politique-cookies" className="font-semibold text-primary hover:underline">
-                  politique de cookies
+                  {t('politique de cookies', 'cookie policy')}
                 </Link>.
               </p>
             </div>
@@ -64,21 +66,21 @@ const CookieConsent = () => {
               onClick={() => saveConsent('refused')}
               className="rounded-xl border border-outline-variant bg-surface px-4 py-2.5 text-sm font-medium text-on-surface transition hover:bg-surface-container-low"
             >
-              Refuser
+              {t('Refuser', 'Reject')}
             </button>
             <button
               type="button"
               onClick={() => setCustomOpen(true)}
               className="rounded-xl border border-outline-variant bg-surface px-4 py-2.5 text-sm font-medium text-on-surface transition hover:bg-surface-container-low"
             >
-              Personnaliser
+              {t('Personnaliser', 'Customize')}
             </button>
             <button
               type="button"
               onClick={() => saveConsent('accepted')}
               className="rounded-xl bg-primary text-white px-4 py-2.5 text-sm font-semibold shadow-md transition hover:brightness-105"
             >
-              Accepter
+              {t('Accepter', 'Accept')}
             </button>
           </div>
         </div>
@@ -89,8 +91,8 @@ const CookieConsent = () => {
           <div className="w-full max-w-xl rounded-3xl border border-outline-variant/40 bg-surface shadow-2xl">
             <div className="flex items-center justify-between border-b border-outline-variant/30 px-6 py-4">
               <div>
-                <p className="font-headline text-xl font-bold text-on-surface">Préférences cookies</p>
-                <p className="text-sm text-on-surface-variant">Choisissez les cookies que vous acceptez.</p>
+                <p className="font-headline text-xl font-bold text-on-surface">{t('Préférences cookies', 'Cookie preferences')}</p>
+                <p className="text-sm text-on-surface-variant">{t('Choisissez les cookies que vous acceptez.', 'Choose which cookies you accept.')}</p>
               </div>
               <button
                 type="button"
@@ -104,16 +106,16 @@ const CookieConsent = () => {
             <div className="space-y-4 p-6">
               <div className="flex items-center justify-between rounded-2xl bg-surface-container-low p-4">
                 <div>
-                  <p className="font-bold text-on-surface">Cookies nécessaires</p>
-                  <p className="text-sm text-on-surface-variant">Obligatoires pour le bon fonctionnement du site.</p>
+                  <p className="font-bold text-on-surface">{t('Cookies nécessaires', 'Necessary cookies')}</p>
+                  <p className="text-sm text-on-surface-variant">{t('Obligatoires pour le bon fonctionnement du site.', 'Required for the website to function properly.')}</p>
                 </div>
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">Toujours actifs</span>
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">{t('Toujours actifs', 'Always active')}</span>
               </div>
 
               <div className="flex items-center justify-between rounded-2xl border border-outline-variant/30 p-4">
                 <div>
-                  <p className="font-bold text-on-surface">Cookies analytiques</p>
-                  <p className="text-sm text-on-surface-variant">Aident à améliorer nos services et la performance du site.</p>
+                  <p className="font-bold text-on-surface">{t('Cookies analytiques', 'Analytics cookies')}</p>
+                  <p className="text-sm text-on-surface-variant">{t('Aident à améliorer nos services et la performance du site.', 'Help us improve our services and website performance.')}</p>
                 </div>
                 <button
                   type="button"
@@ -126,8 +128,8 @@ const CookieConsent = () => {
 
               <div className="flex items-center justify-between rounded-2xl border border-outline-variant/30 p-4">
                 <div>
-                  <p className="font-bold text-on-surface">Cookies marketing</p>
-                  <p className="text-sm text-on-surface-variant">Permettent d’affiner les campagnes et contenus publicitaires.</p>
+                  <p className="font-bold text-on-surface">{t('Cookies marketing', 'Marketing cookies')}</p>
+                  <p className="text-sm text-on-surface-variant">{t('Permettent d’affiner les campagnes et contenus publicitaires.', 'Help tailor advertising campaigns and content.')}</p>
                 </div>
                 <button
                   type="button"
@@ -145,14 +147,14 @@ const CookieConsent = () => {
                 onClick={() => saveConsent('refused')}
                 className="rounded-xl border border-outline-variant bg-surface px-4 py-2.5 text-sm font-medium text-on-surface transition hover:bg-surface-container-low"
               >
-                Refuser
+                {t('Refuser', 'Reject')}
               </button>
               <button
                 type="button"
                 onClick={() => saveConsent('custom')}
                 className="rounded-xl bg-primary text-white px-4 py-2.5 text-sm font-semibold shadow-md transition hover:brightness-105"
               >
-                Enregistrer mes choix
+                {t('Enregistrer mes choix', 'Save my choices')}
               </button>
             </div>
           </div>

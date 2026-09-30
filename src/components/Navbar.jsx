@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Languages } from 'lucide-react';
 import logoImg from '../assets/Logo.png';
+import { useLanguage } from '../utils/LanguageContext';
 
 const navLinks = [
   { to: '/', label: 'Accueil' },
@@ -27,12 +29,45 @@ const discoverLinks = [
   { label: 'Conditions d\'utilisation', to: '/conditions-utilisation' },
 ];
 
+const translations = {
+  fr: {
+    nav: ['Accueil', 'Expertises', 'À Propos', 'Solutions'],
+    discover: ['Expertises', "Extension d'équipes", 'Studio Produit', 'Modernisation applicative', 'IA & Automatisation', 'Solutions', 'BRICONA', 'SELVY', 'Le Groupe', 'Contact', 'Mentions légales', 'Confidentialité', 'Cookies', "Conditions d'utilisation"],
+    discoverLabel: 'Découvrir',
+    contact: "Contactez l'équipe",
+    closeMenu: 'Fermer le menu',
+    openMenu: 'Ouvrir le menu',
+    close: 'Fermer',
+    ready: 'Prêt à démarrer ?',
+    quote: 'Obtenir un Devis',
+    response: 'Réponse sous 24h garantie',
+    switchLanguage: 'Langue',
+  },
+  en: {
+    nav: ['Home', 'Expertise', 'About', 'Solutions'],
+    discover: ['Expertise', 'Team extension', 'Product studio', 'Application modernization', 'AI & Automation', 'Solutions', 'BRICONA', 'SELVY', 'The Group', 'Contact', 'Legal notices', 'Privacy', 'Cookies', 'Terms of use'],
+    discoverLabel: 'Discover',
+    contact: 'Contact our team',
+    closeMenu: 'Close menu',
+    openMenu: 'Open menu',
+    close: 'Close',
+    ready: 'Ready to get started?',
+    quote: 'Request a quote',
+    response: 'Guaranteed response within 24 hours',
+    switchLanguage: 'Language',
+  },
+};
+
 
 const Navbar = () => {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [discoverOpen, setDiscoverOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { language, setLanguage } = useLanguage();
+  const copy = translations[language];
+  const localizedNavLinks = navLinks.map((link, index) => ({ ...link, label: copy.nav[index] }));
+  const localizedDiscoverLinks = discoverLinks.map((link, index) => ({ ...link, label: copy.discover[index] }));
 
   // Fermer le menu mobile sur changement de route
   useEffect(() => {
@@ -96,9 +131,25 @@ const Navbar = () => {
           {/* Right: menus & buttons */}
           <div className="flex items-center gap-4 md:gap-6">
 
+            <div role="group" aria-label={copy.switchLanguage} className="inline-flex items-center gap-0.5 rounded-full border border-slate-300 bg-white p-1 shadow-sm">
+              <Languages aria-hidden="true" size={16} className="ml-1.5 text-slate-500" />
+              {['fr', 'en'].map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => setLanguage(option)}
+                  aria-pressed={language === option}
+                  aria-label={option === 'fr' ? 'Français' : 'English'}
+                  className={`min-w-10 rounded-full px-2.5 py-1.5 text-xs font-bold transition-colors ${language === option ? 'bg-navy-dark text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+                >
+                  {option.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-5 lg:gap-7 xl:gap-8 font-label text-sm font-medium tracking-wide">
-            {navLinks.filter((link) => link.to === '/').map((link) => (
+            {localizedNavLinks.filter((link) => link.to === '/').map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -112,7 +163,7 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
-            {navLinks.filter((link) => link.to !== '/' && !link.hidden).map((link) => (
+            {localizedNavLinks.filter((link) => link.to !== '/' && !link.hidden).map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -134,13 +185,13 @@ const Navbar = () => {
                 to="/solutions/bricona"
                 className="text-slate-600 hover:text-yellow hover:border-b-2 hover:border-yellow pb-1 transition-all duration-300 inline-flex items-center gap-1 text-sm"
               >
-                Découvrir
+                {copy.discoverLabel}
                 <span className="material-symbols-outlined text-sm">expand_more</span>
               </Link>
               <div className="fixed left-0 top-[72px] w-full opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-all duration-200 z-[100] shadow-2xl">
                 <div className="max-w-7xl mx-auto px-6 md:px-8">
                   <div className="rounded-none bg-white shadow-xl border border-slate-200 p-3 flex flex-wrap gap-2">
-                    {discoverLinks.map((item) => (
+                    {localizedDiscoverLinks.map((item) => (
                       <Link
                         key={item.to}
                         to={item.to}
@@ -159,14 +210,14 @@ const Navbar = () => {
               to="/contact"
               className="hidden md:inline-flex items-center justify-center bg-primary-container hover:bg-electric-blue text-on-primary px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 shadow-md active:translate-y-0.5 md:ml-auto hover:scale-105"
             >
-              Contactez l'équipe
+              {copy.contact}
             </Link>
 
            {/* Hamburger Button (Mobile) */}
            <button
              onClick={() => setMenuOpen(!menuOpen)}
              className="md:hidden relative z-10 w-10 h-10 flex flex-col items-center justify-center gap-1.5 rounded-xl hover:bg-surface-container transition-colors"
-             aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+             aria-label={menuOpen ? copy.closeMenu : copy.openMenu}
            >
              <span
                className={`block h-0.5 bg-on-surface rounded-full transition-all duration-300 ${menuOpen ? 'w-6 translate-y-2 rotate-45' : 'w-6'
@@ -205,7 +256,7 @@ const Navbar = () => {
           <button
             onClick={() => setMenuOpen(false)}
             className="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors"
-            aria-label="Fermer"
+            aria-label={copy.close}
           >
             <span className="material-symbols-outlined text-on-surface-variant">close</span>
           </button>
@@ -216,7 +267,7 @@ const Navbar = () => {
 
           {/* Drawer Nav Links */}
           <nav className="flex flex-col px-4 py-6 gap-1">
-            {navLinks.filter((link) => !link.hidden).map((link) => (
+            {localizedNavLinks.filter((link) => !link.hidden).map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -240,7 +291,7 @@ const Navbar = () => {
             onClick={() => setDiscoverOpen(!discoverOpen)}
             className="w-full flex items-center justify-between px-4 py-3.5 text-left font-medium text-on-surface-variant hover:bg-surface-container-low transition-all duration-200"
           >
-            <span className="font-medium">Découvrir</span>
+            <span className="font-medium">{copy.discoverLabel}</span>
             <span className="material-symbols-outlined text-sm transition-transform duration-200" style={{ transform: discoverOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
               expand_more
             </span>
@@ -250,7 +301,7 @@ const Navbar = () => {
             style={{ maxHeight: discoverOpen ? '400px' : '0' }}
           >
             <div className="flex flex-col gap-1">
-              {discoverLinks.map((item) => (
+              {localizedDiscoverLinks.map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}
@@ -266,14 +317,14 @@ const Navbar = () => {
 
         {/* Drawer CTA */}
         <div className="px-6 pb-10 pt-4 border-t border-outline-variant/20">
-          <p className="text-xs text-on-surface-variant mb-4 tracking-widest uppercase font-bold">Prêt à démarrer ?</p>
+          <p className="text-xs text-on-surface-variant mb-4 tracking-widest uppercase font-bold">{copy.ready}</p>
           <Link
             to="/contact"
             className="block w-full bg-primary-container hover:bg-electric-blue text-on-primary text-center py-4 rounded-lg font-bold text-lg shadow-lg hover:brightness-105 transition-all active:scale-95 hover:scale-105"
           >
-            Obtenir un Devis
+            {copy.quote}
           </Link>
-          <p className="text-center text-xs text-on-surface-variant mt-4">Réponse sous 24h garantie</p>
+          <p className="text-center text-xs text-on-surface-variant mt-4">{copy.response}</p>
         </div>
       </div>
     </div>
