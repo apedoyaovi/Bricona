@@ -378,7 +378,7 @@ function PartnersStrip() {
       <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <p style={{ fontFamily: fonts.inter, fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: T.onSurfaceVariant, margin: 0 }}>
-            {t('Ils nous font confiance & Partenaires technologiques :', 'Trusted by our clients & technology partners:')}
+            {t('Nos plateformes numériques :', 'Trusted by our clients & technology partners:')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12" style={{ opacity: 0.8 }}>
             {partners.map(({ icon, name, color }) => (
