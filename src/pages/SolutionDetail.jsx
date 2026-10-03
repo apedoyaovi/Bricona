@@ -61,7 +61,7 @@ export default function SolutionDetail() {
             <p style={{ fontFamily: fonts.inter, fontSize: '1.25rem', fontWeight: 500, color: T.navyText, margin: '0 0 24px' }}>
               {t('La plateforme numérique dédiée au secteur du BTP.', 'The digital platform built for the construction industry.')}
             </p>
-            <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, margin: '0 0 40px', maxWidth: '42rem' }}>
+            <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: '#FFFFFF', margin: '0 0 40px', maxWidth: '42rem' }}>
               {t("BRICONA est développée, exploitée et financée par Enésense. Elle illustre notre capacité à concevoir une plateforme métier complète, de l'architecture à la production.", 'Developed, operated and funded by Enésense, BRICONA demonstrates our ability to build a complete business platform, from architecture to production.')}
             </p>
             <div className="flex flex-wrap gap-4">
@@ -86,9 +86,9 @@ export default function SolutionDetail() {
           {(() => {
             const slides = [
               { src: '/bricona.jfif', alt: `${t('BRICONA - vue', 'BRICONA - view')} 1` },
-              { src: '/bricona 1.png', alt: `${t('BRICONA - vue', 'BRICONA - view')} 2` },
-              { src: '/bricona 2.png', alt: `${t('BRICONA - vue', 'BRICONA - view')} 3` },
-              { src: '/bricona 3.png', alt: `${t('BRICONA - vue', 'BRICONA - view')} 4` },
+              // { src: '/bricona 1.png', alt: `${t('BRICONA - vue', 'BRICONA - view')} 2` },
+              // { src: '/bricona 2.png', alt: `${t('BRICONA - vue', 'BRICONA - view')} 3` },
+              // { src: '/bricona 3.png', alt: `${t('BRICONA - vue', 'BRICONA - view')} 4` },
             ];
             const [currentSlide, setCurrentSlide] = useState(0);
             useEffect(() => {
@@ -98,7 +98,7 @@ export default function SolutionDetail() {
               return () => clearInterval(timer);
             }, [slides.length]);
             return (
-              <div className="relative overflow-hidden border aspect-video" style={{ borderColor: `${T.navyMuted}20` }}>
+              <div className="relative overflow-hidden border aspect-video" style={{ borderColor: 'rgba(55,65,81,0.2)' }}>
                 {slides.map((slide, idx) => (
                   <img
                     key={slide.src}
@@ -144,13 +144,13 @@ export default function SolutionDetail() {
               const isAccent = i % 2 === 0;
               return (
                 <div key={c.number}>
-                  <span style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: isAccent ? T.yellow : T.navyMuted }}>
+                   <span style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: isAccent ? T.yellow : '#374151' }}>
                     {c.number}
                   </span>
                   <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.125rem', fontWeight: 600, color: '#0B1D33', marginTop: '12px', marginBottom: '12px' }}>
                     {c.title}
                   </h3>
-                  <p style={{ fontFamily: fonts.inter, fontSize: '1rem', lineHeight: '1.75', color: T.navyMuted }}>
+                   <p style={{ fontFamily: fonts.inter, fontSize: '1rem', lineHeight: '1.75', color: '#374151' }}>
                     {c.desc}
                   </p>
                 </div>
@@ -166,7 +166,7 @@ export default function SolutionDetail() {
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.85rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0, marginBottom: '24px' }}>
             {t('Une capacité produit, pas une réalisation isolée.', 'A product capability, not a one-off delivery.')}
           </h2>
-          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, maxWidth: '42rem' }}>
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: '#374151', maxWidth: '42rem' }}>
             {t("Concevoir BRICONA nous impose les mêmes contraintes que celles de nos clients : exploitation continue, migrations de données, supervision, évolutions sans rupture. Ces exigences nourrissent directement notre pratique d'ingénierie.", 'Building BRICONA means meeting the same challenges as our clients: continuous operations, data migrations, monitoring and seamless upgrades. These demands directly inform our engineering practice.')}
           </p>
           <div className="mt-10">
@@ -185,14 +185,14 @@ export default function SolutionDetail() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 md:py-24" style={{ borderTop: `1px solid ${T.navyMuted}20`, background: '#ffffff' }}>
+      <section className="py-20 md:py-24" style={{ borderTop: '1px solid rgba(55,65,81,0.2)', background: '#ffffff' }}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: 0, marginBottom: '24px' }}>
                 {t('Un projet numérique à construire ou à faire évoluer ?', 'A digital project to build or improve?')}
               </h2>
-              <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
+              <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: '#374151' }}>
                 {t('Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.', 'Tell us about your context and goals, and what we could build together.')}
               </p>
             </div>

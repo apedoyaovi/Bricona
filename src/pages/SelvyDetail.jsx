@@ -29,7 +29,7 @@ export default function SelvyDetail() {
     { number: '03', title: t('Paiements et confiance', 'Payments and trust'), desc: t('Structurer les transactions et les informations essentielles pour faciliter des échanges plus sereins.', 'Organize transactions and key information to make interactions more reliable.') },
     { number: '04', title: t('Communauté', 'Community'), desc: t('Créer un point de contact durable entre les marchands, leurs clients et leur réseau commercial.', 'Build lasting connections between merchants, their customers and their business networks.') },
   ];
-  const selvySlides = ['/selvy.jfif', '/selvy 1-1.png', '/selvy 1-2.png', '/selvy 2-1.png', '/selvy 2-2.png', '/selvy 3-1.png', '/selvy 3-2.png'];
+  const selvySlides = ['/selvy.jfif']; //, '/selvy 1-1.png', '/selvy 1-2.png', '/selvy 2-1.png', '/selvy 2-2.png', '/selvy 3-1.png', '/selvy 3-2.png'
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {

@@ -114,16 +114,16 @@ export default function ExpertiseDetail() {
             <h1 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.75rem, 4vw, 3rem)', fontWeight: 700, lineHeight: 1.05, color: T.navyText, margin: '0 0 24px' }}>
               {expertise.heading}
             </h1>
-            <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted, margin: '0 0 40px', maxWidth: '42rem' }}>
+            <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: '#FFFFFF', margin: '0 0 40px', maxWidth: '42rem' }}>
               {expertise.description}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/contact"
                 className="group inline-flex items-center gap-3 border px-7 py-4 font-medium text-sm transition-all duration-200"
-                style={{ borderColor: T.navyMuted, color: T.navyText }}
+                style={{ borderColor: '#374151', color: T.navyText }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = T.yellow; e.currentTarget.style.color = T.yellow; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = T.navyMuted; e.currentTarget.style.color = T.navyText; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = '#374151'; e.currentTarget.style.color = T.navyText; }}
               >
                 {t('Parler à Enésense', 'Talk to Enésense')}
                 <span className="transition-transform group-hover:translate-x-1">→</span>
@@ -143,23 +143,23 @@ export default function ExpertiseDetail() {
               </h2>
               <ul className="mt-8 space-y-0" style={{ fontFamily: fonts.inter }}>
                 {expertise.whenItems.map((item, i) => (
-                  <li key={i} className="flex gap-4 border-b pb-5" style={{ borderBottomColor: `${T.navyMuted}30` }}>
-                    <span className="mt-2 h-2 w-2 shrink-0" style={{ background: T.yellow, borderRadius: '50%' }} aria-hidden="true"></span>
-                    <span style={{ color: T.navyMuted, fontSize: '1.0625rem', lineHeight: '1.75' }}>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.5rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0 }}>
-                {t('Ce que nous livrons', 'What we deliver')}
-              </h2>
-              <ul className="mt-8 space-y-0" style={{ fontFamily: fonts.inter }}>
-                {expertise.deliversItems.map((item, i) => (
-                  <li key={i} className="flex gap-4 border-b pb-5" style={{ borderBottomColor: `${T.navyMuted}30` }}>
-                    <span className="mt-2 h-2 w-2 shrink-0" style={{ background: T.navy, borderRadius: '50%' }} aria-hidden="true"></span>
-                    <span style={{ color: T.navyMuted, fontSize: '1.0625rem', lineHeight: '1.75' }}>{item}</span>
-                  </li>
+                   <li key={i} className="flex gap-4 border-b pb-5" style={{ borderBottomColor: 'rgba(55,65,81,0.3)' }}>
+                     <span className="mt-2 h-2 w-2 shrink-0" style={{ background: T.yellow, borderRadius: '50%' }} aria-hidden="true"></span>
+                     <span style={{ color: '#374151', fontSize: '1.0625rem', lineHeight: '1.75' }}>{item}</span>
+                   </li>
+                 ))}
+               </ul>
+             </div>
+             <div>
+               <h2 style={{ fontFamily: fonts.jakarta, fontSize: '1.5rem', fontWeight: 600, color: '#0B1D33', lineHeight: 1.3, margin: 0 }}>
+                 {t('Ce que nous livrons', 'What we deliver')}
+               </h2>
+               <ul className="mt-8 space-y-0" style={{ fontFamily: fonts.inter }}>
+                 {expertise.deliversItems.map((item, i) => (
+                   <li key={i} className="flex gap-4 border-b pb-5" style={{ borderBottomColor: 'rgba(55,65,81,0.3)' }}>
+                     <span className="mt-2 h-2 w-2 shrink-0" style={{ background: T.navy, borderRadius: '50%' }} aria-hidden="true"></span>
+                     <span style={{ color: '#374151', fontSize: '1.0625rem', lineHeight: '1.75' }}>{item}</span>
+                   </li>
                 ))}
               </ul>
             </div>
@@ -171,18 +171,18 @@ export default function ExpertiseDetail() {
       <section className="py-20 md:py-24" style={{ background: T.surface }}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="max-w-3xl">
-            <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted, marginBottom: '24px' }}>
+            <p style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#374151', marginBottom: '24px' }}>
               {t('Autres expertises', 'Other expertise')}
             </p>
           </div>
-          <div className="mt-16 grid grid-cols-1 sm:grid-cols-3" style={{ border: `1px solid ${T.navyMuted}20`, background: `${T.navyMuted}10` }}>
+          <div className="mt-16 grid grid-cols-1 sm:grid-cols-3" style={{ border: '1px solid rgba(55,65,81,0.2)', background: 'rgba(55,65,81,0.1)' }}>
             {otherExpertises.map(exp => (
               <Link
                 key={exp.slug}
                 to={`/expertises/${exp.slug}`}
                 className="group bg-white p-8 transition-colors hover:bg-surface flex flex-col"
               >
-                <span style={{ fontFamily: fonts.inter, fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navyMuted }}>
+                <span style={{ fontFamily: fonts.inter, fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#374151' }}>
                   {exp.badge}
                 </span>
                 <h3 style={{ fontFamily: fonts.jakarta, fontSize: '1.125rem', fontWeight: 600, color: '#0B1D33', margin: '16px 0' }}>
@@ -199,14 +199,14 @@ export default function ExpertiseDetail() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 md:py-24" style={{ borderTop: `1px solid ${T.navyMuted}20`, background: '#ffffff' }}>
+      <section className="py-20 md:py-24" style={{ borderTop: '1px solid rgba(55,65,81,0.2)', background: '#ffffff' }}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: '#0B1D33', margin: 0, marginBottom: '24px' }}>
                 {t('Un projet numérique à construire ou à faire évoluer ?', 'A digital project to build or improve?')}
               </h2>
-              <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: T.navyMuted }}>
+              <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: '#374151' }}>
                 {t('Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.', 'Tell us about your context and goals, and what we could build together.')}
               </p>
             </div>

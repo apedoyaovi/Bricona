@@ -122,7 +122,7 @@ const expertises = [
     titleEn: 'Technical team extension',
     description: "Nous intégrons des ingénieurs à vos équipes existantes : mêmes outils, mêmes rituels, mêmes exigences de qualité. L'objectif n'est pas de fournir des profils, mais d'augmenter durablement votre capacité d'exécution.",
     descriptionEn: 'We integrate engineers into your existing teams, using the same tools, rituals and quality standards. Our goal is not to supply profiles, but to sustainably increase your delivery capacity.',
-    image: '/pillar-scale.jpg',
+    image: '/equipe.png',
     alt: 'Visuel SCALE — Extension d’équipes techniques',
     altEn: 'SCALE visual — Technical team extension',
   },
@@ -134,7 +134,7 @@ const expertises = [
     titleEn: 'Product Studio',
     description: "Nous couvrons l'ensemble du cycle produit : cadrage, architecture, conception, développement, mise en production et évolution. Chaque décision technique est prise au regard d'un usage réel et mesurable.",
     descriptionEn: 'We cover the full product lifecycle: framing, architecture, design, development, launch and iteration. Every technical decision is grounded in real, measurable usage.',
-    image: '/pillar-build.jpg',
+    image: '/studio 1.jpg',
     alt: 'Visuel BUILD — Studio Produit',
     altEn: 'BUILD visual — Product Studio',
   },
@@ -146,7 +146,7 @@ const expertises = [
     titleEn: 'Application modernization',
     description: 'Reprendre une application en production demande de la méthode : comprendre avant de remplacer, sécuriser avant d\'accélérer, découper avant de reconstruire. Nous intervenons progressivement, sans rupture de service.',
     descriptionEn: 'Taking over a live application calls for a method: understand before replacing, secure before accelerating and break things down before rebuilding. We work incrementally, without service disruption.',
-    image: '/pillar-evolve.jpg',
+    image: '/modernisation.jpg',
     alt: 'Visuel EVOLVE — Modernisation applicative',
     altEn: 'EVOLVE visual — Application modernization',
   },
@@ -160,7 +160,7 @@ const expertises = [
     titleEn: 'AI & Automation',
     description: "L'automatisation n'a de valeur que lorsqu'elle s'appuie sur des processus compris et des données maîtrisées. Nous partons de vos flux réels pour identifier ce qui peut être orchestré, assisté ou automatisé.",
     descriptionEn: 'Automation creates value only when it is grounded in understood processes and well-managed data. We start with your real workflows to identify what can be orchestrated, assisted or automated.',
-    image: '/pillar-automate.jpg',
+    image: '/automate.png',
     alt: 'Visuel AUTOMATE — IA & Automatisation',
     altEn: 'AUTOMATE visual — AI & Automation',
   },
@@ -183,7 +183,7 @@ function ExpertiseRow({ expertise, index }) {
         </div>
         <div className={isReversed ? 'md:order-1' : 'md:order-2'}>
           <div className="flex flex-wrap items-center gap-3">
-            <span style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 500, color: T.navyMuted }}>
+            <span style={{ fontFamily: fonts.inter, fontSize: '13px', fontWeight: 500, color: '#374151' }}>
               0 {expertise.number}
             </span>
             <span style={{ fontFamily: fonts.inter, fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: T.navy }}>
@@ -208,7 +208,7 @@ function ExpertiseRow({ expertise, index }) {
           >
             {t(expertise.title, expertise.titleEn)}
           </h2>
-          <p style={{ fontFamily: fonts.inter, fontSize: '1.0625rem', lineHeight: 1.75, color: T.navyMuted, margin: 0, maxWidth: '38rem' }}>
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.0625rem', lineHeight: 1.75, color: '#374151', margin: 0, maxWidth: '38rem' }}>
             {t(expertise.description, expertise.descriptionEn)}
           </p>
           <div className="mt-8">
@@ -258,7 +258,7 @@ export default function Expertises() {
           >
             {t('Des capacités technologiques', 'Technology capabilities')}<br />{t('au service de vos projets.', 'for your projects.')}
           </h1>
-          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: 1.75, color: T.navyMuted, margin: 0, maxWidth: '48rem' }}>
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: 1.75, color: '#FFFFFF', margin: 0, maxWidth: '48rem' }}>
             {t("Qu'il s'agisse de renforcer une équipe, de concevoir un produit, de moderniser un patrimoine applicatif ou d'automatiser des processus, nos interventions reposent sur une même exigence d'ingénierie.", 'Whether strengthening a team, designing a product, modernizing applications or automating processes, every engagement is grounded in the same engineering standards.')}
           </p>
         </div>
@@ -286,7 +286,7 @@ export default function Expertises() {
             >
               {t('Un projet numérique à construire ou à faire évoluer ?', 'A digital project to build or improve?')}
             </h2>
-            <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: 1.75, color: T.navyMuted, margin: 0 }}>
+            <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: 1.75, color: '#374151', margin: 0 }}>
               {t('Parlons de votre contexte, de vos enjeux et de ce que nous pouvons construire ensemble.', 'Tell us about your context and goals, and what we could build together.')}
             </p>
           </div>
