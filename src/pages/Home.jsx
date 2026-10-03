@@ -588,7 +588,7 @@ function SolutionsSection() {
           <h2 style={{ fontFamily: fonts.jakarta, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 600, lineHeight: 1.3, color: T.navyText, margin: '0 0 24px', maxWidth: '32ch' }}>
             {t('Nous construisons aussi nos propres produits.', 'We also build our own products.')}
           </h2>
-          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: '#374151' }}>
+          <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: '#FFFFFF' }}>
             {t('Notre expertise ne se limite pas aux projets que nous réalisons pour nos clients. Enésense développe également ses propres plateformes et solutions numériques.', 'Our expertise goes beyond client projects. Enésense also develops its own platforms and digital solutions.')}
           </p>
         </div>
@@ -598,7 +598,7 @@ function SolutionsSection() {
             <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', fontWeight: 500, color: T.yellow, marginTop: '16px' }}>
               {t('La plateforme numérique dédiée au secteur du BTP.', 'The digital platform built for the construction industry.')}
             </p>
-            <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: '#374151', marginTop: '24px' }}>
+            <p style={{ fontFamily: fonts.inter, fontSize: '1.125rem', lineHeight: '1.75', color: '#FFFFFF', marginTop: '24px' }}>
               {t("BRICONA traduit notre approche produit : partir d'un problème métier concret et construire une plateforme numérique capable d'y répondre à grande échelle.", 'BRICONA reflects our product approach: start with a concrete business problem and build a digital platform that can solve it at scale.')}
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
