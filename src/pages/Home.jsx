@@ -323,10 +323,10 @@ function HeroSection() {
           <div className="lg:col-span-5 flex items-center justify-end">
             <div className="w-full max-w-md ml-auto space-y-4">
               {[
-                { title: t('Création de site web', 'Website development'), desc: t('Site vitrine, contenu ou e-commerce sur mesure.', 'Custom showcase, content or e-commerce websites.') },
-                { title: t("Création d'application", 'App development'), desc: t('Mobile ou web, pensée autour de vos utilisateurs.', 'Mobile or web, designed around your users.') },
-                { title: t('Automatisation', 'Automation'), desc: t('Processus qui se déclenchent tout seuls.', 'Processes that run automatically.') },
-                { title: t('Environnement numérique', 'Digital environment'), desc: t('Votre stack complète, maîtrisée et évolutive.', 'A complete, manageable and scalable technology stack.') },
+                { title: t('Création de site web', 'Website development') },
+                { title: t("Création d'application", 'App development') },
+                { title: t('Automatisation', 'Automation') },
+                { title: t('Intelligence Artificielle', 'Digital environment') },
               ].map((item, idx) => (
                 <div
                   key={idx}
