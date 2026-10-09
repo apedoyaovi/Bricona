@@ -6,6 +6,7 @@ import {
   getSiteSettingsFromSupabase,
   saveSiteSettingsToSupabase,
   getContactMessages,
+  formatPhoneHref,
 } from '../utils/siteContent';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useLanguage } from '../utils/LanguageContext';
@@ -353,6 +354,15 @@ const AdminDashboard = () => {
                         </p>
 
                         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                          {message.phone && (
+                            <a
+                              href={formatPhoneHref(message.phone)}
+                              className="rounded-xl bg-white px-4 py-3 font-bold text-primary hover:bg-primary-fixed transition-colors"
+                            >
+                              <span className="material-symbols-outlined text-base align-[-3px] mr-2">call</span>
+                              {message.phone}
+                            </a>
+                          )}
                           <a
                             href={`mailto:${message.email}`}
                             className="rounded-xl bg-white px-4 py-3 font-bold text-primary hover:bg-primary-fixed transition-colors"

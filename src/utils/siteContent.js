@@ -36,6 +36,7 @@ const mapSupabaseContactMessage = (message) => ({
   fullName: message.full_name,
   company: message.company,
   email: message.email,
+  phone: message.phone,
   projectType: message.project_type,
   message: message.message,
   createdAt: message.created_at,
@@ -110,6 +111,7 @@ export const addContactMessage = async (message) => {
         full_name: message.fullName,
         company: message.company || null,
         email: message.email,
+        phone: message.phone,
         project_type: message.projectType,
         message: message.message,
       });
@@ -133,7 +135,7 @@ export const getContactMessages = async () => {
   if (hasSupabaseConfig) {
     const { data, error } = await supabase
       .from('contact_messages')
-      .select('id,full_name,company,email,project_type,message,created_at')
+      .select('id,full_name,company,email,phone,project_type,message,created_at')
       .order('created_at', { ascending: false });
 
     if (error) throw error;

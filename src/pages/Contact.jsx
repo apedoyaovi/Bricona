@@ -101,6 +101,7 @@ const Contact = () => {
         fullName: (formData.get('full-name') || '').trim(),
         company: (formData.get('company') || '').trim(),
         email: (formData.get('email') || '').trim(),
+        phone: (formData.get('phone') || '').trim(),
         projectType: (formData.get('project-type') || '').trim(),
         message: messageValue.trim(),
       });
