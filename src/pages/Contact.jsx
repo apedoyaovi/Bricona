@@ -56,6 +56,7 @@ const Contact = () => {
   const [settings, setSettings] = useState(() => getSiteSettings());
   const [isSending, setIsSending] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [notificationWarning, setNotificationWarning] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [recaptchaToken, setRecaptchaToken] = useState('');
 
@@ -86,6 +87,7 @@ const Contact = () => {
 
     setIsSending(true);
     setSuccessMessage('');
+    setNotificationWarning('');
     setErrorMessage('');
 
     if (!messageValue.trim()) {
@@ -112,7 +114,7 @@ const Contact = () => {
     }
 
     try {
-      await addContactMessage({
+      const result = await addContactMessage({
         fullName: (formData.get('full-name') || '').trim(),
         company: (formData.get('company') || '').trim(),
         email: (formData.get('email') || '').trim(),
@@ -123,6 +125,7 @@ const Contact = () => {
       });
 
       setSuccessMessage(t('Votre demande a bien ete envoyee. Notre equipe vous contactera rapidement.', 'Your request has been sent. Our team will be in touch shortly.'));
+      setNotificationWarning(result?.notificationError || '');
       form.reset();
       recaptchaRef.current?.reset();
       setRecaptchaToken('');
@@ -239,6 +242,14 @@ const Contact = () => {
               {successMessage && (
                 <p className="rounded-xl px-4 py-3 text-sm font-bold text-green-400" aria-live="polite" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)' }}>
                   {successMessage}
+                </p>
+              )}
+              {notificationWarning && (
+                <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800" role="status">
+                  {t(
+                    "Votre demande est enregistree, mais la notification push n'a pas pu etre envoyee. Contactez l'administrateur du site.",
+                    'Your request was saved, but its push notification could not be sent. Please contact the site administrator.'
+                  )}
                 </p>
               )}
               {errorMessage && (

@@ -119,7 +119,7 @@ export const addContactMessage = async (message) => {
       ? new Date(message.appointmentDate).toISOString()
       : null;
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('contact_messages')
       .insert({
         full_name: message.fullName,
@@ -129,10 +129,35 @@ export const addContactMessage = async (message) => {
         project_type: message.projectType,
         message: message.message,
         appointment_date: appointmentDate,
-      });
+      })
+      .select('id')
+      .single();
 
     if (error) throw error;
-    return;
+
+    const { data: notificationResult, error: notificationError } = await supabase.functions.invoke(
+      'send-push-notification',
+      { body: { messageId: data.id } },
+    );
+
+    if (notificationError) {
+      console.error('Contact message was saved, but the push notification could not be sent:', notificationError);
+      return { notificationError: notificationError.message };
+    }
+
+    if (notificationResult?.subscriptions === 0) {
+      const reason = 'No devices are subscribed to push notifications';
+      console.warn(reason);
+      return { notificationError: reason };
+    }
+
+    if (notificationResult?.failed > 0) {
+      const reason = `${notificationResult.failed} notification(s) could not be delivered`;
+      console.error('Contact message was saved, but push delivery was incomplete:', notificationResult);
+      return { notificationError: reason };
+    }
+
+    return { notificationError: '' };
   }
 
   const messages = readJson(contactMessagesKey, []);
@@ -201,7 +226,7 @@ export const addCandidature = async (candidature) => {
   }
 
   if (hasSupabaseConfig) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('candidatures')
       .insert({
         full_name: fullName,
@@ -210,7 +235,9 @@ export const addCandidature = async (candidature) => {
         profile,
         cv_url: cvUrl,
         cv_file_name: cv?.name || null,
-      });
+      })
+      .select('id')
+      .single();
 
     if (error) {
       if (cvUrl) {
@@ -221,7 +248,30 @@ export const addCandidature = async (candidature) => {
       }
       throw error;
     }
-    return;
+
+    const { data: notificationResult, error: notificationError } = await supabase.functions.invoke(
+      'send-push-notification',
+      { body: { candidatureId: data.id } },
+    );
+
+    if (notificationError) {
+      console.error('Candidature was saved, but the push notification could not be sent:', notificationError);
+      return { notificationError: notificationError.message };
+    }
+
+    if (notificationResult?.subscriptions === 0) {
+      const reason = 'No devices are subscribed to push notifications';
+      console.warn(reason);
+      return { notificationError: reason };
+    }
+
+    if (notificationResult?.failed > 0) {
+      const reason = `${notificationResult.failed} notification(s) could not be delivered`;
+      console.error('Candidature was saved, but push delivery was incomplete:', notificationResult);
+      return { notificationError: reason };
+    }
+
+    return { notificationError: '' };
   }
 
   const candidatures = readJson(candidaturesKey, []);

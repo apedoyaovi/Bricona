@@ -13,6 +13,7 @@ const CandidatureModal = ({ open, onClose }) => {
   const [cvFile, setCvFile] = useState(null);
   const [isSending, setIsSending] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [notificationWarning, setNotificationWarning] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [dragActive, setDragActive] = useState(false);
 
@@ -25,6 +26,7 @@ const CandidatureModal = ({ open, onClose }) => {
       setCustomProfile('');
       setCvFile(null);
       setSuccess(false);
+      setNotificationWarning('');
       setErrorMessage('');
     }
   }, [open]);
@@ -90,13 +92,14 @@ const CandidatureModal = ({ open, onClose }) => {
     setErrorMessage('');
 
     try {
-      await addCandidature({
+      const result = await addCandidature({
         fullName: fullName.trim(),
         email: email.trim(),
         phone: phone.trim(),
         profile: profile === 'autre' ? customProfile.trim() : profile,
         cv: cvFile,
       });
+      setNotificationWarning(result?.notificationError || '');
       setSuccess(true);
     } catch (error) {
       const reason = error instanceof Error ? error.message : t('Erreur inconnue', 'Unknown error');
@@ -165,6 +168,14 @@ const CandidatureModal = ({ open, onClose }) => {
               <p className="text-sm text-on-surface-variant leading-relaxed mb-6">
                 {t('Votre candidature a bien ete recue. Notre equipe l examine sous 48h ouvrées.', 'Your application has been received. Our team will review it within 48 business hours.')}
               </p>
+              {notificationWarning && (
+                <p className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-left text-sm font-medium text-amber-800" role="status">
+                  {t(
+                    "La candidature est enregistree, mais la notification push n'a pas pu etre envoyee. Contactez l'administrateur du site.",
+                    'The application was saved, but its push notification could not be sent. Please contact the site administrator.'
+                  )}
+                </p>
+              )}
               <button
                 type="button"
                 onClick={onClose}

@@ -50,39 +50,53 @@ const ConditionsUtilisation = lazy(() => import('./pages/ConditionsUtilisation')
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const PageNonTrouvee = lazy(() => import('./pages/PageNonTrouvee.jsx'));
 
+function AppLayout() {
+  const isAdminRoute = useLocation().pathname === '/admin';
+
+  return (
+    <div className="min-h-screen flex flex-col bg-surface">
+      <SEO />
+      {!isAdminRoute && (
+        <Navbar />
+      )}
+      <main className="flex-grow">
+        <ScrollToTop />
+        <RouteErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/expertises" element={<Expertises />} />
+              <Route path="/expertises/:id" element={<ExpertiseDetail />} />
+              <Route path="/solutions" element={<Solutions />} />
+              <Route path="/solutions/bricona" element={<SolutionDetail />} />
+              <Route path="/solutions/selvy" element={<SelvyDetail />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
+              <Route path="/politique-cookies" element={<PolitiqueCookies />} />
+              <Route path="/conditions-utilisation" element={<ConditionsUtilisation />} />
+              <Route path="/mentions-legales" element={<MentionsLegales />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="*" element={<PageNonTrouvee />} />
+            </Routes>
+          </Suspense>
+        </RouteErrorBoundary>
+      </main>
+      {!isAdminRoute && (
+        <>
+          <Footer />
+          <CookieConsent />
+        </>
+      )}
+      <Analytics />
+    </div>
+  );
+}
+
 function App() {
   return (
     <LanguageProvider>
-      <div className="min-h-screen flex flex-col bg-surface">
-        <SEO />
-        <Navbar />
-        <main className="flex-grow">
-          <ScrollToTop />
-          <RouteErrorBoundary>
-            <Suspense fallback={<LoadingFallback />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/expertises" element={<Expertises />} />
-                <Route path="/expertises/:id" element={<ExpertiseDetail />} />
-                <Route path="/solutions" element={<Solutions />} />
-                <Route path="/solutions/bricona" element={<SolutionDetail />} />
-                <Route path="/solutions/selvy" element={<SelvyDetail />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
-                <Route path="/politique-cookies" element={<PolitiqueCookies />} />
-                <Route path="/conditions-utilisation" element={<ConditionsUtilisation />} />
-                <Route path="/mentions-legales" element={<MentionsLegales />} />
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="*" element={<PageNonTrouvee />} />
-              </Routes>
-            </Suspense>
-          </RouteErrorBoundary>
-        </main>
-        <Footer />
-        <CookieConsent />
-        <Analytics />
-      </div>
+      <AppLayout />
     </LanguageProvider>
   );
 }

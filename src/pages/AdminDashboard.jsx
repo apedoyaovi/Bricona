@@ -13,9 +13,16 @@ import {
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useLanguage } from '../utils/LanguageContext';
 import {
+  getPwaInstallPrompt,
+  subscribeToPwaInstallPrompt,
+  takePwaInstallPrompt,
+} from '../utils/pwaInstallPrompt.js';
+import {
   isPushSupported,
   isPushConfigured,
   isSubscribed,
+  getPushBadgeCount,
+  clearPushBadgeCount,
   subscribeToPush,
   unsubscribeFromPush,
   requestNotificationPermission,
@@ -31,6 +38,7 @@ const AdminDashboard = () => {
   const [settings, setSettings] = useState(() => getSiteSettings());
   const [messages, setMessages] = useState([]);
   const [candidatures, setCandidatures] = useState([]);
+  const [expandedMessageIds, setExpandedMessageIds] = useState(() => new Set());
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +51,8 @@ const AdminDashboard = () => {
   const [pushLoading, setPushLoading] = useState(false);
   const [pushSupported, setPushSupported] = useState(false);
   const [pushPermission, setPushPermission] = useState('default');
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [pushBadgeCount, setPushBadgeCount] = useState(0);
+  const [deferredPrompt, setDeferredPrompt] = useState(() => getPwaInstallPrompt());
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [newMessagesCount, setNewMessagesCount] = useState(0);
   const [newCandidaturesCount, setNewCandidaturesCount] = useState(0);
@@ -53,7 +62,11 @@ const AdminDashboard = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
-  const [activeTab, setActiveTab] = useState('messages');
+  const [activeTab, setActiveTab] = useState(() => (
+    new URLSearchParams(window.location.search).get('tab') === 'candidatures'
+      ? 'candidatures'
+      : 'messages'
+  ));
   const [confirmDialog, setConfirmDialog] = useState({
     open: false,
     title: '',
@@ -155,6 +168,15 @@ const AdminDashboard = () => {
     setNewCandidaturesCount(0);
   };
 
+  const markPushNotificationsAsViewed = async () => {
+    try {
+      setPushBadgeCount(await clearPushBadgeCount());
+    } catch (error) {
+      console.error('Unable to clear push notification badge:', error);
+      setError(t('Impossible de mettre a jour le badge de notifications.', 'Unable to update the notification badge.'));
+    }
+  };
+
   const downloadCv = async (cvPath, fileName, cvId) => {
     setDownloadingCvId(cvId);
     try {
@@ -235,11 +257,12 @@ const AdminDashboard = () => {
   };
 
   const handleInstallPWA = async () => {
-    if (!deferredPrompt) return;
+    const prompt = takePwaInstallPrompt();
+    if (!prompt) return;
     setDeferredPrompt(null);
     setShowInstallBanner(false);
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    prompt.prompt();
+    const { outcome } = await prompt.userChoice;
     if (outcome === 'accepted') {
       setNotice(t('PWA installee avec succes.', 'PWA installed successfully.'));
     }
@@ -278,6 +301,31 @@ const AdminDashboard = () => {
   }, [isAuthenticated]);
 
   useEffect(() => {
+    if (!isAuthenticated || !('serviceWorker' in navigator)) return undefined;
+
+    let active = true;
+    const handlePushBadgeCount = (event) => {
+      if (event.data?.type === 'PUSH_BADGE_COUNT') {
+        setPushBadgeCount(event.data.count);
+      }
+    };
+
+    navigator.serviceWorker.addEventListener('message', handlePushBadgeCount);
+    getPushBadgeCount()
+      .then((count) => {
+        if (active) setPushBadgeCount(count);
+      })
+      .catch((error) => {
+        console.error('Unable to read push notification badge:', error);
+      });
+
+    return () => {
+      active = false;
+      navigator.serviceWorker.removeEventListener('message', handlePushBadgeCount);
+    };
+  }, [isAuthenticated]);
+
+  useEffect(() => {
     if (isAuthenticated && activeTab === 'settings') {
       (async () => {
         setIsLoading(true);
@@ -296,15 +344,17 @@ const AdminDashboard = () => {
   }, [isAuthenticated, activeTab]);
 
   useEffect(() => {
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstallBanner(true);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return subscribeToPwaInstallPrompt((prompt) => {
+      setDeferredPrompt(prompt);
+      if (!prompt) setShowInstallBanner(false);
+    });
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated && deferredPrompt) {
+      setShowInstallBanner(true);
+    }
+  }, [isAuthenticated, deferredPrompt]);
 
   const handleSettingsSubmit = async (event) => {
     event.preventDefault();
@@ -337,10 +387,10 @@ const AdminDashboard = () => {
 
   if (!isAuthenticated) {
     return (
-      <main className="pt-24 pb-16 min-h-screen bg-surface flex items-center">
-        <section className="w-full max-w-md mx-auto px-6">
+      <main className="flex min-h-screen items-center bg-surface px-4 py-10 sm:px-6 sm:py-16">
+        <section className="mx-auto w-full max-w-md">
           <form
-            className="rounded-[2rem] bg-white border border-outline-variant/20 p-7 shadow-[0_24px_60px_rgba(0,50,125,0.10)]"
+            className="rounded-3xl border border-outline-variant/20 bg-white p-5 shadow-[0_24px_60px_rgba(0,50,125,0.10)] sm:rounded-[2rem] sm:p-7"
             onSubmit={handleLogin}
           >
             <div className="h-14 w-14 rounded-2xl bg-primary-fixed text-primary flex items-center justify-center mb-6">
@@ -396,7 +446,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <main className="pt-24 pb-16 bg-surface">
+    <main className="min-h-screen bg-[#f5f7fb]">
       <ConfirmDialog
         open={confirmDialog.open}
         title={confirmDialog.title}
@@ -407,85 +457,164 @@ const AdminDashboard = () => {
         onConfirm={confirmDialog.onConfirm}
       />
       {showInstallBanner && deferredPrompt && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-4 py-2.5 rounded-full bg-white shadow-[0_12px_40px_rgba(0,50,125,0.25)] border border-outline-variant/20 animate-slide-down max-w-xs w-full mx-4">
+        <div className="fixed top-3 left-3 right-3 z-[60] flex items-center gap-2 rounded-2xl border border-outline-variant/20 bg-white px-3 py-2.5 shadow-[0_12px_40px_rgba(0,50,125,0.25)] animate-slide-down sm:left-1/2 sm:right-auto sm:w-max sm:max-w-[calc(100vw-2rem)] sm:-translate-x-1/2 sm:gap-3 sm:rounded-full sm:px-4">
           <span className="material-symbols-outlined text-primary text-lg">phone_android</span>
-          <span className="text-sm font-bold text-on-surface">{t('Installer Enésense Admin', 'Install Enésense Admin')}</span>
+          <span className="min-w-0 flex-1 text-sm font-bold text-on-surface">{t('Installer Enésense Admin', 'Install Enésense Admin')}</span>
           <button
             type="button"
             onClick={handleInstallPWA}
-            className="px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors"
+            className="shrink-0 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-primary-container"
           >
             {t('Installer', 'Install')}
           </button>
           <button
             type="button"
             onClick={() => setShowInstallBanner(false)}
-            className="text-on-surface-variant hover:text-primary transition-colors"
+            className="shrink-0 p-2 text-on-surface-variant transition-colors hover:text-primary"
             aria-label={t('Fermer', 'Close')}
           >
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
         </div>
       )}
-      <section className="max-w-7xl mx-auto px-6 md:px-8">
-        <div className="mb-8 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-          <div>
-            <p className="font-label editorial-caps text-primary font-bold text-[10px] mb-3">{t('Espace proprietaire', 'Admin area')}</p>
-            <h1 className="font-headline text-3xl lg:text-4xl font-extrabold text-on-surface mb-3">
-              Administration
-            </h1>
-            <p className="text-on-surface-variant text-sm max-w-2xl leading-relaxed">
-              {t('Consultez les messages recus, les candidatures et parametrez les informations de contact du site.', 'Review received messages, job applications and manage the website contact details.')}
-            </p>
+      <div className="min-h-screen lg:grid lg:grid-cols-[248px_minmax(0,1fr)]">
+        <aside className="hidden border-r border-slate-200 bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:z-30 lg:flex lg:h-screen lg:w-[248px] lg:flex-col">
+          <div className="flex h-[76px] items-center gap-3 border-b border-slate-100 px-6">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white">
+              <span className="material-symbols-outlined">dashboard</span>
+            </span>
+            <div>
+              <p className="font-headline text-sm font-extrabold tracking-wide text-primary">ENÉSENSE</p>
+              <p className="text-[11px] font-medium text-slate-500">{t('Administration', 'Admin dashboard')}</p>
+            </div>
           </div>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-5 py-3 text-sm font-bold text-primary hover:bg-primary-fixed transition-colors"
-          >
-            {t('Deconnexion', 'Log out')}
-            <span className="material-symbols-outlined text-base">logout</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              markMessagesAsViewed();
-              markCandidaturesAsViewed();
-            }}
-            className={`relative inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-5 py-3 text-primary hover:bg-primary-fixed transition-colors`}
-            aria-label={t('Notifications', 'Notifications')}
-          >
-            <span className="material-symbols-outlined text-base">notifications</span>
-            {(newMessagesCount + newCandidaturesCount) > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[5px] h-[5px] rounded-full bg-red-600 border-2 border-white">
-                {(newMessagesCount + newCandidaturesCount) > 9 ? '9+' : newMessagesCount + newCandidaturesCount}
-              </span>
-            )}
-          </button>
-          {pushSupported && (
+
+          <p className="px-6 pb-2 pt-7 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+            {t('Espace de travail', 'Workspace')}
+          </p>
+          <nav className="space-y-1 px-3" aria-label={t('Navigation administration', 'Admin navigation')}>
             <button
               type="button"
-              onClick={handleTogglePush}
-              disabled={pushLoading}
-              className={`inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-5 py-3 text-sm font-bold ${pushSubscribed ? 'text-primary' : pushPermission === 'denied' ? 'text-red-600' : 'text-on-surface-variant'} hover:bg-primary-fixed transition-colors disabled:opacity-60`}
+              onClick={() => {
+                markMessagesAsViewed();
+                setActiveTab('messages');
+                refreshMessages();
+              }}
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition-colors ${
+                activeTab === 'messages' ? 'bg-primary text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+              }`}
             >
-              <span className="material-symbols-outlined text-base">
-                {pushSubscribed ? 'notifications_active' : pushPermission === 'denied' ? 'notifications_off' : 'notifications_none'}
-              </span>
-              {pushLoading ? (
-                <span className="text-[10px] animate-spin">…</span>
-              ) : pushSubscribed ? (
-                t('Abonnement push actif', 'Push subscription active')
-              ) : pushPermission === 'denied' ? (
-                <>
-                  <span>Notifications bloquées</span>
-                </>
-              ) : (
-                t('Activer notifications', 'Enable push')
+              <span className="material-symbols-outlined text-[20px]">inbox</span>
+              <span className="flex-1">{t('Messages', 'Messages')}</span>
+              {newMessagesCount > 0 && (
+                <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${activeTab === 'messages' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-700'}`}>
+                  {newMessagesCount}
+                </span>
               )}
             </button>
-          )}
-        </div>
+            <button
+              type="button"
+              onClick={() => {
+                markCandidaturesAsViewed();
+                setActiveTab('candidatures');
+                refreshCandidatures();
+              }}
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition-colors ${
+                activeTab === 'candidatures' ? 'bg-primary text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[20px]">work_outline</span>
+              <span className="flex-1">{t('Candidatures', 'Applications')}</span>
+              {newCandidaturesCount > 0 && (
+                <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${activeTab === 'candidatures' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-700'}`}>
+                  {newCandidaturesCount}
+                </span>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('settings')}
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition-colors ${
+                activeTab === 'settings' ? 'bg-primary text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[20px]">settings</span>
+              <span>{t('Parametres du site', 'Site settings')}</span>
+            </button>
+          </nav>
+
+          <div className="mt-auto border-t border-slate-100 p-4">
+            {pushSupported && (
+              <button
+                type="button"
+                onClick={handleTogglePush}
+                disabled={pushLoading}
+                className={`mb-3 flex min-h-11 w-full items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-bold transition-colors disabled:opacity-60 ${
+                  pushSubscribed ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <span className="material-symbols-outlined text-lg">
+                  {pushSubscribed ? 'notifications_active' : pushPermission === 'denied' ? 'notifications_off' : 'notifications_none'}
+                </span>
+                <span>{pushSubscribed ? t('Notifications actives', 'Notifications enabled') : t('Activer notifications', 'Enable notifications')}</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm font-semibold text-slate-500 transition-colors hover:bg-red-50 hover:text-red-700"
+            >
+              <span className="material-symbols-outlined text-[20px]">logout</span>
+              {t('Deconnexion', 'Log out')}
+            </button>
+          </div>
+        </aside>
+
+      <section className="min-w-0 px-4 pb-8 pt-4 sm:px-6 lg:col-start-2 lg:px-8 lg:pt-[104px] xl:px-10">
+        <header className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-center sm:justify-between lg:fixed lg:left-[248px] lg:right-0 lg:top-0 lg:z-20 lg:mb-0 lg:min-h-[76px] lg:border-b lg:bg-[#f5f7fb]/95 lg:px-8 lg:py-3 lg:backdrop-blur xl:px-10">
+          <div className="min-w-0">
+            <p className="font-label editorial-caps mb-1 text-[10px] font-bold text-primary">{t('Espace proprietaire', 'Admin workspace')}</p>
+            <h1 className="font-headline text-2xl font-extrabold text-on-surface sm:text-3xl">
+              {activeTab === 'messages'
+                ? t('Messages recus', 'Received messages')
+                : activeTab === 'candidatures'
+                  ? t('Candidatures', 'Applications')
+                  : t('Parametres du site', 'Site settings')}
+            </h1>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
+            <button
+              type="button"
+              onClick={() => {
+                markMessagesAsViewed();
+                markCandidaturesAsViewed();
+                markPushNotificationsAsViewed();
+              }}
+              className="relative inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+              aria-label={t('Marquer les notifications comme consultees', 'Mark notifications as read')}
+              title={t('Marquer comme consultees', 'Mark as read')}
+            >
+              <span className="material-symbols-outlined text-lg">notifications</span>
+              <span className="sm:hidden">{t('Alertes', 'Alerts')}</span>
+              {pushBadgeCount > 0 && (
+                <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-[#f5f7fb] bg-red-600 px-1 text-[10px] font-bold text-white">
+                  {pushBadgeCount > 9 ? '9+' : pushBadgeCount}
+                </span>
+              )}
+            </button>
+            {pushSupported && (
+              <button
+                type="button"
+                onClick={handleTogglePush}
+                disabled={pushLoading}
+                className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold transition-colors hover:bg-slate-50 disabled:opacity-60 lg:hidden ${pushSubscribed ? 'text-emerald-700' : 'text-slate-600'}`}
+              >
+                <span className="material-symbols-outlined text-lg">{pushSubscribed ? 'notifications_active' : 'notifications_none'}</span>
+                <span>{pushSubscribed ? t('Actives', 'On') : t('Activer', 'Enable')}</span>
+              </button>
+            )}
+          </div>
+        </header>
 
         {notice && (
           <div className="mb-6 rounded-2xl bg-green-100 border border-green-200 px-5 py-4 text-sm font-bold text-green-700">
@@ -500,8 +629,8 @@ const AdminDashboard = () => {
         )}
 
         {(newMessagesCount > 0 || newCandidaturesCount > 0) && (
-          <div className="mb-6 rounded-2xl bg-amber-50 border border-amber-200 px-5 py-4 text-sm font-bold text-amber-700 flex items-center gap-3">
-            <span className="material-symbols-outlined text-amber-500">notifications</span>
+          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm font-bold text-amber-700 sm:px-5">
+            <span className="material-symbols-outlined shrink-0 text-amber-500">notifications</span>
             {newMessagesCount > 0 && newCandidaturesCount > 0 && (
               <span>
                 {t('Nouveaux messages :', 'New messages:')} {newMessagesCount} {t('Nouveaux candidaures :', 'New applications:')} {newCandidaturesCount}
@@ -520,7 +649,7 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mb-5 grid grid-cols-3 gap-2 lg:hidden sm:mb-8 sm:gap-4">
           <button
             type="button"
             onClick={() => {
@@ -528,22 +657,22 @@ const AdminDashboard = () => {
               setActiveTab('messages');
               refreshMessages();
             }}
-            className={`rounded-2xl p-5 text-left shadow-sm transition-colors ${
+            className={`min-w-0 rounded-xl p-3 text-left shadow-sm transition-colors sm:rounded-2xl sm:p-5 ${
               activeTab === 'messages'
                 ? 'bg-primary text-white shadow-[0_18px_40px_rgba(0,50,125,0.18)]'
                 : 'bg-white border border-outline-variant/20 hover:bg-primary-fixed'
             }`}
           >
-            <span className="material-symbols-outlined text-3xl mb-4">mark_email_unread</span>
-            <span className={`block font-headline text-lg font-bold mb-1 ${activeTab === 'messages' ? 'text-white' : 'text-primary'}`}>
-              {t('Messages recus', 'Received messages')}
+            <span className="material-symbols-outlined mb-1 text-xl sm:mb-4 sm:text-3xl">mark_email_unread</span>
+            <span className={`block break-words font-headline text-xs font-bold sm:mb-1 sm:text-lg ${activeTab === 'messages' ? 'text-white' : 'text-primary'}`}>
+              {t('Messages', 'Messages')}
               {newMessagesCount > 0 && (
                 <span className="ml-2 inline-flex items-center justify-center min-w-5 h-5 rounded-full bg-red-600 text-[10px] font-bold text-white">
                   {newMessagesCount}
                 </span>
               )}
             </span>
-            <span className={`block text-sm ${activeTab === 'messages' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
+            <span className={`hidden text-sm sm:block ${activeTab === 'messages' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
               {t('Consulter les demandes envoyees depuis la page contact.', 'Review requests sent through the contact page.')}
             </span>
           </button>
@@ -551,17 +680,17 @@ const AdminDashboard = () => {
           <button
             type="button"
             onClick={() => setActiveTab('settings')}
-            className={`rounded-2xl p-5 text-left shadow-sm transition-colors ${
+            className={`min-w-0 rounded-xl p-3 text-left shadow-sm transition-colors sm:rounded-2xl sm:p-5 ${
               activeTab === 'settings'
                 ? 'bg-primary text-white shadow-[0_18px_40px_rgba(0,50,125,0.18)]'
                 : 'bg-white border border-outline-variant/20 hover:bg-primary-fixed'
             }`}
           >
-            <span className="material-symbols-outlined text-3xl mb-4">settings</span>
-            <span className={`block font-headline text-lg font-bold mb-1 ${activeTab === 'settings' ? 'text-white' : 'text-primary'}`}>
-              {t('Parametres du site', 'Site settings')}
+            <span className="material-symbols-outlined mb-1 text-xl sm:mb-4 sm:text-3xl">settings</span>
+            <span className={`block break-words font-headline text-xs font-bold sm:mb-1 sm:text-lg ${activeTab === 'settings' ? 'text-white' : 'text-primary'}`}>
+              {t('Parametres', 'Settings')}
             </span>
-            <span className={`block text-sm ${activeTab === 'settings' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
+            <span className={`hidden text-sm sm:block ${activeTab === 'settings' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
               {t('Mettre a jour les contacts affiches aux visiteurs.', 'Update the contact details shown to visitors.')}
             </span>
           </button>
@@ -573,22 +702,22 @@ const AdminDashboard = () => {
               setActiveTab('candidatures');
               refreshCandidatures();
             }}
-            className={`rounded-2xl p-5 text-left shadow-sm transition-colors ${
+            className={`min-w-0 rounded-xl p-3 text-left shadow-sm transition-colors sm:rounded-2xl sm:p-5 ${
               activeTab === 'candidatures'
                 ? 'bg-primary text-white shadow-[0_18px_40px_rgba(0,50,125,0.18)]'
                 : 'bg-white border border-outline-variant/20 hover:bg-primary-fixed'
             }`}
           >
-            <span className="material-symbols-outlined text-3xl mb-4">description</span>
-            <span className={`block font-headline text-lg font-bold mb-1 ${activeTab === 'candidatures' ? 'text-white' : 'text-primary'}`}>
-              {t('Candidatures', 'Job applications')}
+            <span className="material-symbols-outlined mb-1 text-xl sm:mb-4 sm:text-3xl">description</span>
+            <span className={`block break-words font-headline text-xs font-bold sm:mb-1 sm:text-lg ${activeTab === 'candidatures' ? 'text-white' : 'text-primary'}`}>
+              {t('Candidatures', 'Applications')}
               {newCandidaturesCount > 0 && (
                 <span className="ml-2 inline-flex items-center justify-center min-w-5 h-5 rounded-full bg-red-600 text-[10px] font-bold text-white">
                   {newCandidaturesCount}
                 </span>
               )}
             </span>
-            <span className={`block text-sm ${activeTab === 'candidatures' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
+            <span className={`hidden text-sm sm:block ${activeTab === 'candidatures' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
               {t('Consulter les candidatures recues.', 'Review received job applications.')}
             </span>
           </button>
@@ -596,47 +725,68 @@ const AdminDashboard = () => {
 
         {activeTab === 'messages' && (
           <div className="space-y-6">
-            <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
-                <span className="material-symbols-outlined text-3xl text-primary mb-3">mark_email_unread</span>
-                <p className="font-headline text-2xl font-extrabold text-primary">{messages.length}</p>
-                <p className="text-sm text-on-surface-variant">{t('message(s) recus', 'message(s) received')}</p>
+            <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-primary">
+                  <span className="material-symbols-outlined">mark_email_unread</span>
+                </span>
+                <div><p className="font-headline text-xl font-extrabold text-primary">{messages.length}</p>
+                  <p className="text-xs text-slate-500">{t('Messages recus', 'Messages received')}</p></div>
               </div>
-              <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
-                <span className="material-symbols-outlined text-3xl text-primary mb-3">business_center</span>
-                <p className="font-headline text-2xl font-extrabold text-primary">
-                  {messages.filter((message) => message.company).length}
-                </p>
-                <p className="text-sm text-on-surface-variant">{t('demande(s) avec entreprise', 'request(s) with a company')}</p>
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
+                  <span className="material-symbols-outlined">business_center</span>
+                </span>
+                <div><p className="font-headline text-xl font-extrabold text-primary">{messages.filter((message) => message.company).length}</p>
+                  <p className="text-xs text-slate-500">{t('Avec entreprise', 'With a company')}</p></div>
               </div>
-              <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
-                <span className="material-symbols-outlined text-3xl text-primary mb-3">alternate_email</span>
-                <p className="font-headline text-2xl font-extrabold text-primary">
-                  {messages.filter((message) => message.email).length}
-                </p>
-                <p className="text-sm text-on-surface-variant">{t('contact(s) par email', 'email contact(s)')}</p>
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                  <span className="material-symbols-outlined">alternate_email</span>
+                </span>
+                <div><p className="font-headline text-xl font-extrabold text-primary">{messages.filter((message) => message.email).length}</p>
+                  <p className="text-xs text-slate-500">{t('Contacts par email', 'Email contacts')}</p></div>
               </div>
             </div>
 
-            <div className="rounded-[2rem] bg-white border border-outline-variant/20 p-6 md:p-7 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
               {isLoading ? (
-                <div className="rounded-2xl bg-surface-container-low p-8 text-center">
+                <div className="rounded-2xl bg-surface-container-low p-5 text-center sm:p-8">
                   <span className="material-symbols-outlined text-4xl text-primary mb-3">hourglass_top</span>
                   <p className="font-headline font-bold text-primary mb-1">{t('Chargement des messages...', 'Loading messages...')}</p>
                   <p className="text-sm text-on-surface-variant">{t('Les donnees sont recuperees depuis Supabase.', 'Data is being retrieved from Supabase.')}</p>
                 </div>
               ) : messages.length > 0 ? (
                 <>
-                  <div className="space-y-4">
-                    {messages.map((message) => (
-                      <article key={message.id} className="rounded-2xl bg-surface-container-low p-5">
-                        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                          <div>
-                            <p className="font-headline text-lg font-bold text-primary">{message.fullName}</p>
-                            <p className="text-sm font-bold text-on-surface mt-1">{message.projectType}</p>
+                  <div className="space-y-3">
+                    {messages.slice(
+                      (Math.min(messagesPage, Math.max(1, Math.ceil(messages.length / messagesPageSize))) - 1) * messagesPageSize,
+                      Math.min(messagesPage, Math.max(1, Math.ceil(messages.length / messagesPageSize))) * messagesPageSize
+                    ).map((message) => (
+                      <article key={message.id} className="min-w-0 rounded-xl border border-slate-200 bg-white p-3 transition-shadow hover:shadow-md sm:p-4">
+                        <div className="flex min-w-0 items-start gap-3">
+                          <span className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xs font-bold uppercase text-primary sm:flex">
+                            {message.fullName.split(/\s+/).slice(0, 2).map((part) => part[0]).join('')}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+                              <div className="min-w-0">
+                                <p className="break-words text-sm font-bold text-slate-900">{message.fullName}</p>
+                                <p className="mt-0.5 break-words text-xs font-medium text-primary">{message.projectType}{message.company ? ` · ${message.company}` : ''}</p>
+                              </div>
+                              <span className="text-[11px] text-slate-500">
+                                {new Intl.DateTimeFormat(language === 'en' ? 'en-GB' : 'fr-FR', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                }).format(new Date(message.createdAt))}
+                              </span>
+                            </div>
                             {message.appointmentDate && (
-                              <p className="text-sm text-on-surface-variant mt-1">
-                                <span className="material-symbols-outlined text-base align-[-3px] mr-1">schedule</span>
+                              <p className="mt-2 text-xs text-slate-600">
+                                <span className="material-symbols-outlined mr-1 align-[-3px] text-sm">schedule</span>
                                 {t('Rendez-vous', 'Appointment')}:{' '}
                                 {new Intl.DateTimeFormat(language === 'en' ? 'en-GB' : 'fr-FR', {
                                   day: 'numeric',
@@ -647,42 +797,37 @@ const AdminDashboard = () => {
                                 }).format(new Date(message.appointmentDate))}
                               </p>
                             )}
-                            {message.company && (
-                              <p className="text-sm text-on-surface-variant mt-1">{message.company}</p>
+                            <p className={`mt-2 whitespace-pre-wrap break-words rounded-lg bg-slate-50 px-3 py-2 text-xs leading-relaxed text-slate-600 ${expandedMessageIds.has(message.id) ? '' : 'line-clamp-2'}`}>
+                              {message.message}
+                            </p>
+                            {message.message.length > 120 && (
+                              <button
+                                type="button"
+                                onClick={() => setExpandedMessageIds((current) => {
+                                  const next = new Set(current);
+                                  if (next.has(message.id)) next.delete(message.id);
+                                  else next.add(message.id);
+                                  return next;
+                                })}
+                                className="mt-1 text-xs font-semibold text-primary hover:underline"
+                              >
+                                {expandedMessageIds.has(message.id) ? t('Reduire', 'Show less') : t('Lire le message', 'Read message')}
+                              </button>
                             )}
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {message.email && (
+                                <a href={`mailto:${message.email}`} className="inline-flex max-w-full items-center gap-1.5 rounded-lg bg-blue-50 px-2.5 py-1.5 text-xs font-semibold text-primary hover:bg-blue-100">
+                                  <span className="material-symbols-outlined text-sm">mail</span>
+                                  <span className="break-all">{message.email}</span>
+                                </a>
+                              )}
+                              {message.phone && (
+                                <a href={formatPhoneHref(message.phone)} className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200">
+                                  <span className="material-symbols-outlined text-sm">call</span>{message.phone}
+                                </a>
+                              )}
+                            </div>
                           </div>
-                          <span className="rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-on-surface-variant">
-                            {new Intl.DateTimeFormat(language === 'en' ? 'en-GB' : 'fr-FR', {
-                              day: 'numeric',
-                              month: 'long',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            }).format(new Date(message.createdAt))}
-                          </span>
-                        </div>
-
-                        <p className="mt-4 rounded-xl bg-white px-4 py-3 text-sm leading-relaxed text-on-surface-variant">
-                          {message.message}
-                        </p>
-
-                        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                          {message.phone && (
-                            <a
-                              href={formatPhoneHref(message.phone)}
-                              className="rounded-xl bg-white px-4 py-3 font-bold text-primary hover:bg-primary-fixed transition-colors"
-                            >
-                              <span className="material-symbols-outlined text-base align-[-3px] mr-2">call</span>
-                              {message.phone}
-                            </a>
-                          )}
-                          <a
-                            href={`mailto:${message.email}`}
-                            className="rounded-xl bg-white px-4 py-3 font-bold text-primary hover:bg-primary-fixed transition-colors"
-                          >
-                            <span className="material-symbols-outlined text-base align-[-3px] mr-2">mail</span>
-                            {message.email}
-                          </a>
                         </div>
                       </article>
                     ))}
@@ -695,8 +840,8 @@ const AdminDashboard = () => {
                     const end = start + messagesPageSize;
 
                     return (
-                      <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-2 text-sm text-on-surface-variant">
+                      <div className="mt-6 flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">
+                        <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-on-surface-variant sm:justify-start">
                           <span>{t('Messages par page', 'Messages per page')}</span>
                           <select
                             value={messagesPageSize}
@@ -713,12 +858,12 @@ const AdminDashboard = () => {
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-center gap-2 sm:justify-end">
                           <button
                             type="button"
                             disabled={safePage <= 1}
                             onClick={() => setMessagesPage((page) => Math.max(1, page - 1))}
-                            className="inline-flex items-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-4 py-2 text-sm font-bold text-primary hover:bg-primary-fixed transition-colors disabled:opacity-50"
+                            className="inline-flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border border-outline-variant/20 bg-white px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary-fixed disabled:opacity-50 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm"
                           >
                             <span className="material-symbols-outlined text-base">chevron_left</span>
                             {t('Precedent', 'Previous')}
@@ -732,7 +877,7 @@ const AdminDashboard = () => {
                             type="button"
                             disabled={safePage >= totalPages}
                             onClick={() => setMessagesPage((page) => Math.min(totalPages, page + 1))}
-                            className="inline-flex items-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-4 py-2 text-sm font-bold text-primary hover:bg-primary-fixed transition-colors disabled:opacity-50"
+                            className="inline-flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border border-outline-variant/20 bg-white px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary-fixed disabled:opacity-50 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm"
                           >
                             {t('Suivant', 'Next')}
                             <span className="material-symbols-outlined text-base">chevron_right</span>
@@ -754,7 +899,7 @@ const AdminDashboard = () => {
         )}
 
         {activeTab === 'settings' && (
-          <form className="rounded-[2rem] bg-primary text-white p-6 md:p-7 shadow-xl shadow-primary/20" onSubmit={handleSettingsSubmit}>
+          <form className="rounded-3xl bg-primary p-4 text-white shadow-xl shadow-primary/20 sm:rounded-[2rem] sm:p-6 md:p-7" onSubmit={handleSettingsSubmit}>
             <h2 className="font-headline text-xl font-bold mb-2">{t('Contacts du site', 'Website contacts')}</h2>
             <p className="text-primary-fixed/80 text-sm mb-5">{t('Ces informations servent aux confirmations et aux boutons de contact.', 'This information is used in confirmations and contact buttons.')}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -777,7 +922,7 @@ const AdminDashboard = () => {
                 </div>
               ))}
             </div>
-            <button type="submit" className="mt-5 bg-secondary-container text-on-secondary-container rounded-xl px-6 py-3 font-bold hover:scale-105 transition-transform">
+            <button type="submit" className="mt-5 min-h-11 w-full rounded-xl bg-secondary-container px-6 py-3 font-bold text-on-secondary-container transition-transform hover:scale-[1.02] sm:w-auto">
               {t('Enregistrer les contacts', 'Save contacts')}
             </button>
           </form>
@@ -785,119 +930,105 @@ const AdminDashboard = () => {
 
         {activeTab === 'candidatures' && (
           <div className="space-y-6">
-            <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
-                <span className="material-symbols-outlined text-3xl text-primary mb-3">description</span>
-                <p className="font-headline text-2xl font-extrabold text-primary">{candidatures.length}</p>
-                <p className="text-sm text-on-surface-variant">{t('candidature(s) recu(s)', 'application(s) received')}</p>
+            <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-primary">
+                  <span className="material-symbols-outlined">description</span>
+                </span>
+                <div><p className="font-headline text-xl font-extrabold text-primary">{candidatures.length}</p>
+                  <p className="text-xs text-slate-500">{t('Candidatures recues', 'Applications received')}</p></div>
               </div>
-              <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
-                <span className="material-symbols-outlined text-3xl text-primary mb-3">person</span>
-                <p className="font-headline text-2xl font-extrabold text-primary">
-                  {candidatures.filter((c) => c.email).length}
-                </p>
-                <p className="text-sm text-on-surface-variant">{t('contact(s) par email', 'email contact(s)')}</p>
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
+                  <span className="material-symbols-outlined">person</span>
+                </span>
+                <div><p className="font-headline text-xl font-extrabold text-primary">{candidatures.filter((c) => c.email).length}</p>
+                  <p className="text-xs text-slate-500">{t('Contacts email', 'Email contacts')}</p></div>
               </div>
-              <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
-                <span className="material-symbols-outlined text-3xl text-primary mb-3">attach_file</span>
-                <p className="font-headline text-2xl font-extrabold text-primary">
-                  {candidatures.filter((c) => c.cvFileName || c.cvUrl).length}
-                </p>
-                <p className="text-sm text-on-surface-variant">{t('cv joint(s)', 'CV(s) attached')}</p>
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                  <span className="material-symbols-outlined">attach_file</span>
+                </span>
+                <div><p className="font-headline text-xl font-extrabold text-primary">{candidatures.filter((c) => c.cvFileName || c.cvUrl).length}</p>
+                  <p className="text-xs text-slate-500">{t('CV joints', 'CVs attached')}</p></div>
               </div>
             </div>
 
-            <div className="rounded-[2rem] bg-white border border-outline-variant/20 p-6 md:p-7 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
               {isLoading ? (
-                <div className="rounded-2xl bg-surface-container-low p-8 text-center">
+                <div className="rounded-2xl bg-surface-container-low p-5 text-center sm:p-8">
                   <span className="material-symbols-outlined text-4xl text-primary mb-3">hourglass_top</span>
                   <p className="font-headline font-bold text-primary mb-1">{t('Chargement des candidatures...', 'Loading applications...')}</p>
                   <p className="text-sm text-on-surface-variant">{t('Les donnees sont recuperees depuis Supabase.', 'Data is being retrieved from Supabase.')}</p>
                 </div>
               ) : candidatures.length > 0 ? (
                 <>
-                  <div className="space-y-4">
-                    {candidatures.map((c) => (
-                      <article key={c.id} className="rounded-2xl bg-surface-container-low p-5">
-                        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                          <div>
-                            <p className="font-headline text-lg font-bold text-primary">{c.fullName}</p>
-                            <p className="text-sm font-bold text-on-surface mt-1">{c.profile}</p>
+                  <div className="space-y-3">
+                    {candidatures.slice(
+                      (Math.min(candidaturesPage, Math.max(1, Math.ceil(candidatures.length / candidaturesPageSize))) - 1) * candidaturesPageSize,
+                      Math.min(candidaturesPage, Math.max(1, Math.ceil(candidatures.length / candidaturesPageSize))) * candidaturesPageSize
+                    ).map((c) => (
+                      <article key={c.id} className="flex min-w-0 flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 transition-shadow hover:shadow-md sm:flex-row sm:items-center sm:p-4">
+                        <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-50 text-sm font-bold uppercase text-violet-700 sm:flex">
+                          {c.fullName.split(/\s+/).slice(0, 2).map((part) => part[0]).join('')}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+                            <div className="min-w-0">
+                              <p className="break-words text-sm font-bold text-slate-900">{c.fullName}</p>
+                              <p className="mt-0.5 break-words text-xs font-medium text-primary">{c.profile}</p>
+                            </div>
+                            <span className="text-[11px] text-slate-500">
+                              {new Intl.DateTimeFormat(language === 'en' ? 'en-GB' : 'fr-FR', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              }).format(new Date(c.createdAt))}
+                            </span>
+                          </div>
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
                             {c.email && (
-                              <p className="text-sm text-on-surface-variant mt-1">{c.email}</p>
+                              <a href={`mailto:${c.email}`} className="inline-flex max-w-full items-center gap-1.5 rounded-lg bg-blue-50 px-2.5 py-1.5 text-xs font-semibold text-primary hover:bg-blue-100">
+                                <span className="material-symbols-outlined text-sm">mail</span>
+                                <span className="break-all">{c.email}</span>
+                              </a>
                             )}
                             {c.phone && (
-                              <p className="text-sm text-on-surface-variant mt-1">{c.phone}</p>
+                              <a href={formatPhoneHref(c.phone)} className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200">
+                                <span className="material-symbols-outlined text-sm">call</span>{c.phone}
+                              </a>
+                            )}
+                            {c.cvFileName && (
+                              <span className="inline-flex min-w-0 items-center gap-1.5 text-xs text-slate-500">
+                                <span className="material-symbols-outlined text-sm">attach_file</span>
+                                <span className="max-w-40 truncate">{c.cvFileName}</span>
+                              </span>
                             )}
                           </div>
-                          <span className="rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-on-surface-variant">
-                            {new Intl.DateTimeFormat(language === 'en' ? 'en-GB' : 'fr-FR', {
-                              day: 'numeric',
-                              month: 'long',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            }).format(new Date(c.createdAt))}
-                          </span>
                         </div>
-
-                        {c.cvFileName && (
-                          <div className="mt-4 rounded-xl bg-white px-4 py-3 flex items-center gap-2 text-sm text-on-surface-variant border border-outline-variant/20">
-                            <span className="material-symbols-outlined text-base">attach_file</span>
-                            <span className="font-medium truncate max-w-[160px]">{c.cvFileName}</span>
-                            {c.cvUrl && (
-                              <>
-                                <button
-                                  type="button"
-                                  onClick={() => downloadCv(c.cvUrl, c.cvFileName, c.id)}
-                                  disabled={downloadingCvId === c.id}
-                                  className="ml-auto inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold hover:bg-primary-container transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                  {downloadingCvId === c.id ? (
-                                    <>
-                                      <span className="material-symbols-outlined text-base align-[-1px] animate-spin">refresh</span>
-                                      {t('Chargement...', 'Loading...')}
-                                    </>
-                                  ) : (
-                                    <>
-                                      <span className="material-symbols-outlined text-base align-[-1px]">download</span>
-                                      {t('Telecharger', 'Download')}
-                                    </>
-                                  )}
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => viewCv(c.cvUrl)}
-                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white border border-outline-variant/20 text-[#0B1D33] font-bold hover:bg-primary-fixed hover:text-white transition-colors"
-                                >
-                                  <span className="material-symbols-outlined text-base align-[-1px]">visibility</span>
-                                  {t('Voir', 'View')}
-                                </button>
-                              </>
-                            )}
+                        {c.cvUrl && (
+                          <div className="flex shrink-0 gap-2 sm:flex-col">
+                            <button
+                              type="button"
+                              onClick={() => downloadCv(c.cvUrl, c.cvFileName, c.id)}
+                              disabled={downloadingCvId === c.id}
+                              className="inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none"
+                            >
+                              <span className="material-symbols-outlined text-base">{downloadingCvId === c.id ? 'refresh' : 'download'}</span>
+                              {t('Telecharger', 'Download')}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => viewCv(c.cvUrl)}
+                              className="inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 transition-colors hover:bg-slate-50 sm:flex-none"
+                            >
+                              <span className="material-symbols-outlined text-base">visibility</span>
+                              {t('Voir', 'View')}
+                            </button>
                           </div>
                         )}
-
-                        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                          {c.email && (
-                            <a
-                              href={`mailto:${c.email}`}
-                              className="rounded-xl bg-white px-4 py-3 font-bold text-primary hover:bg-primary-fixed transition-colors"
-                            >
-                              <span className="material-symbols-outlined text-base align-[-3px] mr-2">mail</span>
-                              {c.email}
-                            </a>
-                          )}
-                          {c.phone && (
-                            <a
-                              href={formatPhoneHref(c.phone)}
-                              className="rounded-xl bg-white px-4 py-3 font-bold text-primary hover:bg-primary-fixed transition-colors"
-                            >
-                              <span className="material-symbols-outlined text-base align-[-3px] mr-2">call</span>
-                              {c.phone}
-                            </a>
-                          )}
-                        </div>
                       </article>
                     ))}
                   </div>
@@ -909,8 +1040,8 @@ const AdminDashboard = () => {
                     const end = start + candidaturesPageSize;
 
                     return (
-                      <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-2 text-sm text-on-surface-variant">
+                      <div className="mt-6 flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">
+                        <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-on-surface-variant sm:justify-start">
                           <span>{t('Candidatures par page', 'Applications per page')}</span>
                           <select
                             value={candidaturesPageSize}
@@ -927,12 +1058,12 @@ const AdminDashboard = () => {
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-center gap-2 sm:justify-end">
                           <button
                             type="button"
                             disabled={safePage <= 1}
                             onClick={() => setCandidaturesPage((page) => Math.max(1, page - 1))}
-                            className="inline-flex items-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-4 py-2 text-sm font-bold text-primary hover:bg-primary-fixed transition-colors disabled:opacity-50"
+                            className="inline-flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border border-outline-variant/20 bg-white px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary-fixed disabled:opacity-50 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm"
                           >
                             <span className="material-symbols-outlined text-base">chevron_left</span>
                             {t('Precedent', 'Previous')}
@@ -946,7 +1077,7 @@ const AdminDashboard = () => {
                             type="button"
                             disabled={safePage >= totalPages}
                             onClick={() => setCandidaturesPage((page) => Math.min(totalPages, page + 1))}
-                            className="inline-flex items-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-4 py-2 text-sm font-bold text-primary hover:bg-primary-fixed transition-colors disabled:opacity-50"
+                            className="inline-flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border border-outline-variant/20 bg-white px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary-fixed disabled:opacity-50 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm"
                           >
                             {t('Suivant', 'Next')}
                             <span className="material-symbols-outlined text-base">chevron_right</span>
@@ -967,6 +1098,7 @@ const AdminDashboard = () => {
           </div>
         )}
       </section>
+      </div>
     </main>
   );
 };

@@ -5,9 +5,11 @@ import App from './App.jsx'
 import './index.css'
 import { initializePerformanceOptimizations } from './utils/performanceOptimization.js'
 import { registerServiceWorker } from './utils/pushNotifications'
+import { capturePwaInstallPrompt } from './utils/pwaInstallPrompt.js'
 
 // Initialiser les optimisations de performance dès le démarrage
 initializePerformanceOptimizations();
+capturePwaInstallPrompt();
 
 // Enregistrer le service worker en production pour le support PWA et notifications push
 // (sans skipWaiting ni clients.claim pour éviter tout rechargement forcé)

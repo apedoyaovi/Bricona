@@ -8,6 +8,11 @@ const VAPID_PUBLIC_KEY = import.meta.env.VITE_PUBLIC_VAPID_KEY || '';
 
 export const isPushConfigured = () => hasSupabaseConfig && Boolean(VAPID_PUBLIC_KEY);
 
+const arrayBufferToBase64Url = (buffer) => btoa(String.fromCharCode(...new Uint8Array(buffer)))
+  .replace(/\+/g, '-')
+  .replace(/\//g, '_')
+  .replace(/=+$/g, '');
+
 const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding)
@@ -50,8 +55,8 @@ const saveSubscription = async (subscription) => {
     .from('push_subscriptions')
     .insert({
       endpoint: subscription.endpoint,
-      p256dh: btoa(String.fromCharCode(...new Uint8Array(p256dh))),
-      auth: btoa(String.fromCharCode(...new Uint8Array(auth))),
+      p256dh: arrayBufferToBase64Url(p256dh),
+      auth: arrayBufferToBase64Url(auth),
       updated_at: new Date().toISOString()
     });
 
@@ -112,6 +117,41 @@ export const getSubscription = async () => {
   const registration = await navigator.serviceWorker.ready;
   return registration.pushManager.getSubscription();
 };
+
+const sendServiceWorkerMessage = async (type) => {
+  if (!('serviceWorker' in navigator)) {
+    throw new Error('Service workers non supportes par ce navigateur');
+  }
+
+  const registration = await navigator.serviceWorker.ready;
+  if (!registration.active) {
+    throw new Error('Le service worker des notifications n’est pas actif.');
+  }
+
+  return new Promise((resolve, reject) => {
+    const channel = new MessageChannel();
+    const timeout = window.setTimeout(() => {
+      channel.port1.close();
+      reject(new Error('Le service worker ne repond pas.'));
+    }, 5000);
+
+    channel.port1.onmessage = (event) => {
+      window.clearTimeout(timeout);
+      channel.port1.close();
+      if (event.data?.error) {
+        reject(new Error(event.data.error));
+      } else {
+        resolve(event.data?.count || 0);
+      }
+    };
+
+    registration.active.postMessage({ type }, [channel.port2]);
+  });
+};
+
+export const getPushBadgeCount = () => sendServiceWorkerMessage('GET_PUSH_BADGE_COUNT');
+
+export const clearPushBadgeCount = () => sendServiceWorkerMessage('CLEAR_PUSH_BADGE_COUNT');
 
 export const registerServiceWorker = async () => {
   if ('serviceWorker' in navigator) {
