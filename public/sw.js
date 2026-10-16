@@ -1,13 +1,11 @@
-// Service Worker pour Enésense Admin - Notifications Push
-const CACHE_NAME = 'enésense-admin-cache-v1';
-const OFFLINE_URL = '/admin';
+// Service Worker unique du site : notifications push et activation sans rechargement forcé.
 
 self.addEventListener('install', (event) => {
-  // Pas de skipWaiting pour éviter le rechargement forcé
+  event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', (event) => {
-  // Pas de clients.claim() pour éviter le rechargement forcé
+  event.waitUntil(self.clients.claim());
 });
 
 // Gestion des notifications push reçues
@@ -32,7 +30,12 @@ self.addEventListener('push', (event) => {
   };
 
   if (event.data) {
-    const payload = event.data.json();
+    let payload;
+    try {
+      payload = event.data.json();
+    } catch {
+      payload = { body: event.data.text() };
+    }
     options.body = payload.body || 'Nouvelle notification';
     options.title = payload.title || 'Enésense Admin';
     options.data = payload.data || {};
@@ -57,16 +60,20 @@ self.addEventListener('notificationclick', (event) => {
     return;
   }
 
-  const url = event.notification.data.url || '/admin';
+  const requestedUrl = event.notification.data?.url || '/admin';
+  const url = new URL(requestedUrl, self.location.origin);
+  if (url.origin !== self.location.origin) {
+    return;
+  }
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
       for (const client of clients) {
-        if (client.url.includes(url) && 'focus' in client) {
+        if (new URL(client.url).href === url.href && 'focus' in client) {
           return client.focus();
         }
       }
       if (self.clients.openWindow) {
-        return self.clients.openWindow(url);
+        return self.clients.openWindow(url.href);
       }
     })
   );

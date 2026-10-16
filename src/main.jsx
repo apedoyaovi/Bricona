@@ -12,7 +12,9 @@ initializePerformanceOptimizations();
 // Enregistrer le service worker en production pour le support PWA et notifications push
 // (sans skipWaiting ni clients.claim pour éviter tout rechargement forcé)
 if (import.meta.env.PROD) {
-  registerServiceWorker().catch(() => {});
+  registerServiceWorker().catch((error) => {
+    console.error('Service worker registration failed:', error);
+  });
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

@@ -1,36 +1,4 @@
-// Utility pour enregistrer le Service Worker et optimiser la performance
-
-export function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    // Attendre que la page soit chargée
-    window.addEventListener('load', () => {
-      navigator.serviceWorker
-        .register('/service-worker.js', { scope: '/' })
-        .then((registration) => {
-          console.log('✅ Service Worker enregistré avec succès:', registration);
-          
-          // Vérifier les mises à jour toutes les heures
-          setInterval(() => {
-            registration.update();
-          }, 3600000);
-        })
-        .catch((error) => {
-          console.log('❌ Erreur lors de l\'enregistrement du Service Worker:', error);
-        });
-    });
-
-    // Gérer les mises à jour du Service Worker
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshing) return;
-      refreshing = true;
-      // Recharger la page quand une nouvelle version est disponible
-      window.location.reload();
-    });
-  } else {
-    console.warn('Service Workers non supportés dans ce navigateur');
-  }
-}
+// Utility pour optimiser les performances du site
 
 // Optimisation des images avec Intersection Observer
 export function setupLazyImageLoading() {
@@ -216,7 +184,6 @@ export function detectSlowConnection() {
 
 // Initialiser toutes les optimisations
 export function initializePerformanceOptimizations() {
-  registerServiceWorker();
   setupLazyImageLoading();
   monitorPerformanceMetrics();
   prefetchCriticalRoutes();

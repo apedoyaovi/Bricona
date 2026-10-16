@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, lazy, Suspense } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import CookieConsent from './components/CookieConsent';
+import RouteErrorBoundary from './components/RouteErrorBoundary';
 import SEO from './components/SEO';
 import { LanguageProvider, useLanguage } from './utils/LanguageContext';
 
@@ -57,24 +58,26 @@ function App() {
         <Navbar />
         <main className="flex-grow">
           <ScrollToTop />
-          <Suspense fallback={<LoadingFallback />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/expertises" element={<Expertises />} />
-              <Route path="/expertises/:id" element={<ExpertiseDetail />} />
-              <Route path="/solutions" element={<Solutions />} />
-              <Route path="/solutions/bricona" element={<SolutionDetail />} />
-              <Route path="/solutions/selvy" element={<SelvyDetail />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
-              <Route path="/politique-cookies" element={<PolitiqueCookies />} />
-              <Route path="/conditions-utilisation" element={<ConditionsUtilisation />} />
-              <Route path="/mentions-legales" element={<MentionsLegales />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="*" element={<PageNonTrouvee />} />
-            </Routes>
-          </Suspense>
+          <RouteErrorBoundary>
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/expertises" element={<Expertises />} />
+                <Route path="/expertises/:id" element={<ExpertiseDetail />} />
+                <Route path="/solutions" element={<Solutions />} />
+                <Route path="/solutions/bricona" element={<SolutionDetail />} />
+                <Route path="/solutions/selvy" element={<SelvyDetail />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
+                <Route path="/politique-cookies" element={<PolitiqueCookies />} />
+                <Route path="/conditions-utilisation" element={<ConditionsUtilisation />} />
+                <Route path="/mentions-legales" element={<MentionsLegales />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="*" element={<PageNonTrouvee />} />
+              </Routes>
+            </Suspense>
+          </RouteErrorBoundary>
         </main>
         <Footer />
         <CookieConsent />

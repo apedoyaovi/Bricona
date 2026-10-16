@@ -6,6 +6,8 @@ import { supabase, hasSupabaseConfig } from './supabaseClient';
 // Convertir la clé publique en base64 URL-safe
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_PUBLIC_VAPID_KEY || '';
 
+export const isPushConfigured = () => hasSupabaseConfig && Boolean(VAPID_PUBLIC_KEY);
+
 const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding)
@@ -20,7 +22,10 @@ const urlBase64ToUint8Array = (base64String) => {
 };
 
 export const isPushSupported = () => {
-  return 'serviceWorker' in navigator && 'PushManager' in window;
+  return typeof window !== 'undefined'
+    && 'Notification' in window
+    && 'serviceWorker' in navigator
+    && 'PushManager' in window;
 };
 
 export const isSubscribed = async () => {
@@ -30,9 +35,36 @@ export const isSubscribed = async () => {
   return !!subscription;
 };
 
+const saveSubscription = async (subscription) => {
+  if (!hasSupabaseConfig) {
+    throw new Error('Configuration Supabase manquante pour enregistrer cet appareil.');
+  }
+
+  const p256dh = subscription.getKey('p256dh');
+  const auth = subscription.getKey('auth');
+  if (!p256dh || !auth) {
+    throw new Error('Le navigateur a retourne un abonnement push incomplet.');
+  }
+
+  const { error } = await supabase
+    .from('push_subscriptions')
+    .insert({
+      endpoint: subscription.endpoint,
+      p256dh: btoa(String.fromCharCode(...new Uint8Array(p256dh))),
+      auth: btoa(String.fromCharCode(...new Uint8Array(auth))),
+      updated_at: new Date().toISOString()
+    });
+
+  if (error && error.code !== '23505') throw error;
+};
+
 export const subscribeToPush = async () => {
   if (!isPushSupported()) {
     throw new Error('Notifications push non supportées par ce navigateur');
+  }
+
+  if (!hasSupabaseConfig) {
+    throw new Error('Configuration Supabase manquante pour enregistrer cet appareil.');
   }
 
   if (!VAPID_PUBLIC_KEY) {
@@ -43,6 +75,7 @@ export const subscribeToPush = async () => {
   const existingSubscription = await registration.pushManager.getSubscription();
 
   if (existingSubscription) {
+    await saveSubscription(existingSubscription);
     return existingSubscription;
   }
 
@@ -51,19 +84,7 @@ export const subscribeToPush = async () => {
     applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
   });
 
-  // Sauvegarder l'abonnement en base
-  if (hasSupabaseConfig) {
-    const { error } = await supabase
-      .from('push_subscriptions')
-      .upsert({
-        endpoint: subscription.endpoint,
-        p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')))),
-        auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')))),
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'endpoint' });
-
-    if (error) throw error;
-  }
+  await saveSubscription(subscription);
 
   return subscription;
 };
@@ -76,10 +97,11 @@ export const unsubscribeFromPush = async () => {
 
   if (subscription) {
     if (hasSupabaseConfig) {
-      await supabase
+      const { error } = await supabase
         .from('push_subscriptions')
         .delete()
         .eq('endpoint', subscription.endpoint);
+      if (error) throw error;
     }
     await subscription.unsubscribe();
   }
@@ -98,7 +120,7 @@ export const registerServiceWorker = async () => {
     });
     return registration;
   }
-  return null;
+  throw new Error('Service workers non supportes par ce navigateur');
 };
 
 export const requestNotificationPermission = async () => {

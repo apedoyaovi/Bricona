@@ -15,6 +15,12 @@ const candidaturesKey = 'bricona-candidatures';
 
 const canUseStorage = () => typeof window !== 'undefined' && window.localStorage;
 
+const requireSupabaseInProduction = () => {
+  if (import.meta.env.PROD && !hasSupabaseConfig) {
+    throw new Error('Configuration Supabase manquante. Les donnees ne peuvent pas etre envoyees depuis le site publie.');
+  }
+};
+
 const readJson = (key, fallback) => {
   if (!canUseStorage()) return fallback;
 
@@ -106,7 +112,13 @@ export const saveSiteSettings = (settings) => {
 };
 
 export const addContactMessage = async (message) => {
+  requireSupabaseInProduction();
+
   if (hasSupabaseConfig) {
+    const appointmentDate = message.appointmentDate
+      ? new Date(message.appointmentDate).toISOString()
+      : null;
+
     const { error } = await supabase
       .from('contact_messages')
       .insert({
@@ -116,7 +128,7 @@ export const addContactMessage = async (message) => {
         phone: message.phone,
         project_type: message.projectType,
         message: message.message,
-        appointment_date: message.appointmentDate || null,
+        appointment_date: appointmentDate,
       });
 
     if (error) throw error;
@@ -135,6 +147,8 @@ export const addContactMessage = async (message) => {
 };
 
 export const getContactMessages = async () => {
+  requireSupabaseInProduction();
+
   if (hasSupabaseConfig) {
     const { data, error } = await supabase
       .from('contact_messages')
@@ -168,6 +182,8 @@ const mapSupabaseCandidature = (c) => ({
 });
 
 export const addCandidature = async (candidature) => {
+  requireSupabaseInProduction();
+
   const { fullName, email, phone, profile, cv } = candidature;
   let cvUrl = null;
 
@@ -196,7 +212,15 @@ export const addCandidature = async (candidature) => {
         cv_file_name: cv?.name || null,
       });
 
-    if (error) throw error;
+    if (error) {
+      if (cvUrl) {
+        const { error: cleanupError } = await supabase.storage.from('cvs').remove([cvUrl]);
+        if (cleanupError) {
+          console.error('Unable to remove the uploaded CV after candidature creation failed:', cleanupError);
+        }
+      }
+      throw error;
+    }
     return;
   }
 
@@ -216,6 +240,8 @@ export const addCandidature = async (candidature) => {
 };
 
 export const getCandidatures = async () => {
+  requireSupabaseInProduction();
+
   if (hasSupabaseConfig) {
     const { data, error } = await supabase
       .from('candidatures')
@@ -230,6 +256,7 @@ export const getCandidatures = async () => {
 };
 
 export const getCvSignedUrl = async (cvPath) => {
+  requireSupabaseInProduction();
   if (!hasSupabaseConfig || !cvPath) return null;
 
   const { data, error } = await supabase.storage

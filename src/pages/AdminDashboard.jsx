@@ -14,6 +14,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { useLanguage } from '../utils/LanguageContext';
 import {
   isPushSupported,
+  isPushConfigured,
   isSubscribed,
   subscribeToPush,
   unsubscribeFromPush,
@@ -176,13 +177,18 @@ const AdminDashboard = () => {
   };
 
   const checkPushSubscription = async () => {
-    setPushSupported(isPushSupported());
+    const supported = isPushSupported();
+    setPushSupported(supported);
     if ('Notification' in window) {
       setPushPermission(Notification.permission);
     }
-    if (pushSupported) {
-      const subscribed = await isSubscribed();
-      setPushSubscribed(subscribed);
+    if (!supported) return;
+
+    try {
+      setPushSubscribed(await isSubscribed());
+    } catch (error) {
+      console.error('Unable to check push subscription:', error);
+      setError(t('Impossible de verifier les notifications de cet appareil.', 'Unable to check this device’s push notifications.'));
     }
   };
 
@@ -202,10 +208,16 @@ const AdminDashboard = () => {
       }
 
       if (!pushSubscribed) {
+        if (!isPushConfigured()) {
+          throw new Error('Configurez Supabase et VITE_PUBLIC_VAPID_KEY avant d’activer les notifications.');
+        }
         await requestNotificationPermission();
         await subscribeToPush();
         setPushSubscribed(true);
-        setNotice(t('Notifications push activees. Vous recevrez les alertes sur votre appareil.', 'Push notifications enabled. You will receive alerts on your device.'));
+        setNotice(t(
+          "Cet appareil est abonne aux notifications. L'envoi automatique doit aussi etre configure cote serveur Supabase.",
+          'This device is subscribed to notifications. Automatic delivery must also be configured on the Supabase server.'
+        ));
       } else {
         await unsubscribeFromPush();
         setPushSubscribed(false);
@@ -216,6 +228,9 @@ const AdminDashboard = () => {
       setError(`${t('Impossible de configurer les notifications :', 'Unable to configure notifications:')} ${reason}`);
     } finally {
       setPushLoading(false);
+      if ('Notification' in window) {
+        setPushPermission(Notification.permission);
+      }
     }
   };
 
@@ -460,7 +475,7 @@ const AdminDashboard = () => {
               {pushLoading ? (
                 <span className="text-[10px] animate-spin">…</span>
               ) : pushSubscribed ? (
-                t('Notifications activees', 'Push enabled')
+                t('Abonnement push actif', 'Push subscription active')
               ) : pushPermission === 'denied' ? (
                 <>
                   <span>Notifications bloquées</span>
