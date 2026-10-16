@@ -106,6 +106,16 @@ export const requestNotificationPermission = async () => {
     throw new Error('Notifications non supportées');
   }
 
+  // Si déjà accordé, pas besoin de redemander
+  if (Notification.permission === 'granted') {
+    return 'granted';
+  }
+
+  // Si déjà refusé, on ne peut pas redemander via l'API
+  if (Notification.permission === 'denied') {
+    throw new Error('Permission de notification refusée');
+  }
+
   const permission = await Notification.requestPermission();
   if (permission !== 'granted') {
     throw new Error('Permission de notification refusée');

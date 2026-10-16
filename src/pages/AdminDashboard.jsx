@@ -41,6 +41,7 @@ const AdminDashboard = () => {
   const [pushSubscribed, setPushSubscribed] = useState(false);
   const [pushLoading, setPushLoading] = useState(false);
   const [pushSupported, setPushSupported] = useState(false);
+  const [pushPermission, setPushPermission] = useState('default');
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [newMessagesCount, setNewMessagesCount] = useState(0);
@@ -176,6 +177,9 @@ const AdminDashboard = () => {
 
   const checkPushSubscription = async () => {
     setPushSupported(isPushSupported());
+    if ('Notification' in window) {
+      setPushPermission(Notification.permission);
+    }
     if (pushSupported) {
       const subscribed = await isSubscribed();
       setPushSubscribed(subscribed);
@@ -185,7 +189,18 @@ const AdminDashboard = () => {
   const handleTogglePush = async () => {
     setPushLoading(true);
     setError('');
+
     try {
+      // Vérifier l'état actuel de la permission avant de demander
+      if ('Notification' in window && Notification.permission === 'denied') {
+        setError(t(
+          'Notifications bloquées par le navigateur. Allez dans les paramètres du site (icône cadenas dans la barre d\'adresse) pour les réautoriser.',
+          'Notifications blocked by browser. Go to site settings (lock icon in address bar) to re-enable.'
+        ));
+        setPushLoading(false);
+        return;
+      }
+
       if (!pushSubscribed) {
         await requestNotificationPermission();
         await subscribeToPush();
@@ -437,15 +452,19 @@ const AdminDashboard = () => {
               type="button"
               onClick={handleTogglePush}
               disabled={pushLoading}
-              className={`inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-5 py-3 text-sm font-bold ${pushSubscribed ? 'text-primary' : 'text-on-surface-variant'} hover:bg-primary-fixed transition-colors disabled:opacity-60`}
+              className={`inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-5 py-3 text-sm font-bold ${pushSubscribed ? 'text-primary' : pushPermission === 'denied' ? 'text-red-600' : 'text-on-surface-variant'} hover:bg-primary-fixed transition-colors disabled:opacity-60`}
             >
               <span className="material-symbols-outlined text-base">
-                {pushSubscribed ? 'notifications_active' : 'notifications_off'}
+                {pushSubscribed ? 'notifications_active' : pushPermission === 'denied' ? 'notifications_off' : 'notifications_none'}
               </span>
               {pushLoading ? (
                 <span className="text-[10px] animate-spin">…</span>
               ) : pushSubscribed ? (
                 t('Notifications activees', 'Push enabled')
+              ) : pushPermission === 'denied' ? (
+                <>
+                  <span>Notifications bloquées</span>
+                </>
               ) : (
                 t('Activer notifications', 'Enable push')
               )}
