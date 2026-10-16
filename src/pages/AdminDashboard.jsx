@@ -6,6 +6,8 @@ import {
   getSiteSettingsFromSupabase,
   saveSiteSettingsToSupabase,
   getContactMessages,
+  getCandidatures,
+  getCvSignedUrl,
   formatPhoneHref,
 } from '../utils/siteContent';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -18,11 +20,15 @@ const AdminDashboard = () => {
   const { language, t } = useLanguage();
   const [settings, setSettings] = useState(() => getSiteSettings());
   const [messages, setMessages] = useState([]);
+  const [candidatures, setCandidatures] = useState([]);
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [messagesPage, setMessagesPage] = useState(1);
   const [messagesPageSize, setMessagesPageSize] = useState(10);
+  const [candidaturesPage, setCandidaturesPage] = useState(1);
+  const [candidaturesPageSize, setCandidaturesPageSize] = useState(10);
+  const [downloadingCvId, setDownloadingCvId] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(() => (
     typeof window !== 'undefined' && window.sessionStorage.getItem(adminSessionKey) === 'active'
   ));
@@ -95,15 +101,66 @@ const AdminDashboard = () => {
     }
   };
 
+  const refreshCandidatures = async () => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      setCandidatures(await getCandidatures());
+      setNotice(t('Candidatures actualisees.', 'Applications refreshed.'));
+    } catch {
+      setError(t('Impossible de charger les candidatures. Verifiez la policy select Supabase.', 'Unable to load applications. Check the Supabase select policy.'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const downloadCv = async (cvPath, fileName, cvId) => {
+    setDownloadingCvId(cvId);
+    try {
+      const url = await getCvSignedUrl(cvPath);
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      setError(t('Impossible de telecharger le CV.', 'Unable to download CV.'));
+    } finally {
+      setDownloadingCvId(null);
+    }
+  };
+
+  const viewCv = async (cvPath) => {
+    try {
+      const url = await getCvSignedUrl(cvPath);
+      window.open(url, '_blank');
+    } catch {
+      setError(t('Impossible d\'ouvrir le CV.', 'Unable to open CV.'));
+    }
+  };
+
   useEffect(() => {
     if (isAuthenticated && activeTab === 'messages') {
       refreshMessages();
+    }
+    if (isAuthenticated && activeTab === 'candidatures') {
+      refreshCandidatures();
     }
   }, [isAuthenticated, activeTab]);
 
   useEffect(() => {
     setMessagesPage(1);
   }, [messages.length, messagesPageSize]);
+
+  useEffect(() => {
+    setCandidaturesPage(1);
+  }, [candidatures.length, candidaturesPageSize]);
 
   useEffect(() => {
     if (isAuthenticated && activeTab === 'settings') {
@@ -231,7 +288,7 @@ const AdminDashboard = () => {
               Administration
             </h1>
             <p className="text-on-surface-variant text-sm max-w-2xl leading-relaxed">
-              {t('Consultez les messages recus et parametrez les informations de contact du site.', 'Review received messages and manage the website contact details.')}
+              {t('Consultez les messages recus, les candidatures et parametrez les informations de contact du site.', 'Review received messages, job applications and manage the website contact details.')}
             </p>
           </div>
           <button
@@ -256,7 +313,7 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
             type="button"
             onClick={() => setActiveTab('messages')}
@@ -290,6 +347,24 @@ const AdminDashboard = () => {
             </span>
             <span className={`block text-sm ${activeTab === 'settings' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
               {t('Mettre a jour les contacts affiches aux visiteurs.', 'Update the contact details shown to visitors.')}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('candidatures')}
+            className={`rounded-2xl p-5 text-left shadow-sm transition-colors ${
+              activeTab === 'candidatures'
+                ? 'bg-primary text-white shadow-[0_18px_40px_rgba(0,50,125,0.18)]'
+                : 'bg-white border border-outline-variant/20 hover:bg-primary-fixed'
+            }`}
+          >
+            <span className="material-symbols-outlined text-3xl mb-4">description</span>
+            <span className={`block font-headline text-lg font-bold mb-1 ${activeTab === 'candidatures' ? 'text-white' : 'text-primary'}`}>
+              {t('Candidatures', 'Job applications')}
+            </span>
+            <span className={`block text-sm ${activeTab === 'candidatures' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
+              {t('Consulter les candidatures recues.', 'Review received job applications.')}
             </span>
           </button>
         </div>
@@ -334,6 +409,19 @@ const AdminDashboard = () => {
                           <div>
                             <p className="font-headline text-lg font-bold text-primary">{message.fullName}</p>
                             <p className="text-sm font-bold text-on-surface mt-1">{message.projectType}</p>
+                            {message.appointmentDate && (
+                              <p className="text-sm text-on-surface-variant mt-1">
+                                <span className="material-symbols-outlined text-base align-[-3px] mr-1">schedule</span>
+                                {t('Rendez-vous', 'Appointment')}:{' '}
+                                {new Intl.DateTimeFormat(language === 'en' ? 'en-GB' : 'fr-FR', {
+                                  day: 'numeric',
+                                  month: 'long',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                }).format(new Date(message.appointmentDate))}
+                              </p>
+                            )}
                             {message.company && (
                               <p className="text-sm text-on-surface-variant mt-1">{message.company}</p>
                             )}
@@ -380,7 +468,6 @@ const AdminDashboard = () => {
                     const safePage = Math.min(messagesPage, totalPages);
                     const start = (safePage - 1) * messagesPageSize;
                     const end = start + messagesPageSize;
-                    const pageItems = messages.slice(start, end);
 
                     return (
                       <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -469,6 +556,190 @@ const AdminDashboard = () => {
               {t('Enregistrer les contacts', 'Save contacts')}
             </button>
           </form>
+        )}
+
+        {activeTab === 'candidatures' && (
+          <div className="space-y-6">
+            <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
+                <span className="material-symbols-outlined text-3xl text-primary mb-3">description</span>
+                <p className="font-headline text-2xl font-extrabold text-primary">{candidatures.length}</p>
+                <p className="text-sm text-on-surface-variant">{t('candidature(s) recu(s)', 'application(s) received')}</p>
+              </div>
+              <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
+                <span className="material-symbols-outlined text-3xl text-primary mb-3">person</span>
+                <p className="font-headline text-2xl font-extrabold text-primary">
+                  {candidatures.filter((c) => c.email).length}
+                </p>
+                <p className="text-sm text-on-surface-variant">{t('contact(s) par email', 'email contact(s)')}</p>
+              </div>
+              <div className="rounded-2xl bg-white border border-outline-variant/20 p-5 shadow-sm">
+                <span className="material-symbols-outlined text-3xl text-primary mb-3">attach_file</span>
+                <p className="font-headline text-2xl font-extrabold text-primary">
+                  {candidatures.filter((c) => c.cvFileName || c.cvUrl).length}
+                </p>
+                <p className="text-sm text-on-surface-variant">{t('cv joint(s)', 'CV(s) attached')}</p>
+              </div>
+            </div>
+
+            <div className="rounded-[2rem] bg-white border border-outline-variant/20 p-6 md:p-7 shadow-sm">
+              {isLoading ? (
+                <div className="rounded-2xl bg-surface-container-low p-8 text-center">
+                  <span className="material-symbols-outlined text-4xl text-primary mb-3">hourglass_top</span>
+                  <p className="font-headline font-bold text-primary mb-1">{t('Chargement des candidatures...', 'Loading applications...')}</p>
+                  <p className="text-sm text-on-surface-variant">{t('Les donnees sont recuperees depuis Supabase.', 'Data is being retrieved from Supabase.')}</p>
+                </div>
+              ) : candidatures.length > 0 ? (
+                <>
+                  <div className="space-y-4">
+                    {candidatures.map((c) => (
+                      <article key={c.id} className="rounded-2xl bg-surface-container-low p-5">
+                        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                          <div>
+                            <p className="font-headline text-lg font-bold text-primary">{c.fullName}</p>
+                            <p className="text-sm font-bold text-on-surface mt-1">{c.profile}</p>
+                            {c.email && (
+                              <p className="text-sm text-on-surface-variant mt-1">{c.email}</p>
+                            )}
+                            {c.phone && (
+                              <p className="text-sm text-on-surface-variant mt-1">{c.phone}</p>
+                            )}
+                          </div>
+                          <span className="rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-on-surface-variant">
+                            {new Intl.DateTimeFormat(language === 'en' ? 'en-GB' : 'fr-FR', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            }).format(new Date(c.createdAt))}
+                          </span>
+                        </div>
+
+                        {c.cvFileName && (
+                          <div className="mt-4 rounded-xl bg-white px-4 py-3 flex items-center gap-2 text-sm text-on-surface-variant border border-outline-variant/20">
+                            <span className="material-symbols-outlined text-base">attach_file</span>
+                            <span className="font-medium truncate max-w-[160px]">{c.cvFileName}</span>
+                            {c.cvUrl && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => downloadCv(c.cvUrl, c.cvFileName, c.id)}
+                                  disabled={downloadingCvId === c.id}
+                                  className="ml-auto inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold hover:bg-primary-container transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  {downloadingCvId === c.id ? (
+                                    <>
+                                      <span className="material-symbols-outlined text-base align-[-1px] animate-spin">refresh</span>
+                                      {t('Chargement...', 'Loading...')}
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span className="material-symbols-outlined text-base align-[-1px]">download</span>
+                                      {t('Telecharger', 'Download')}
+                                    </>
+                                  )}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => viewCv(c.cvUrl)}
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white border border-outline-variant/20 text-[#0B1D33] font-bold hover:bg-primary-fixed hover:text-white transition-colors"
+                                >
+                                  <span className="material-symbols-outlined text-base align-[-1px]">visibility</span>
+                                  {t('Voir', 'View')}
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                          {c.email && (
+                            <a
+                              href={`mailto:${c.email}`}
+                              className="rounded-xl bg-white px-4 py-3 font-bold text-primary hover:bg-primary-fixed transition-colors"
+                            >
+                              <span className="material-symbols-outlined text-base align-[-3px] mr-2">mail</span>
+                              {c.email}
+                            </a>
+                          )}
+                          {c.phone && (
+                            <a
+                              href={formatPhoneHref(c.phone)}
+                              className="rounded-xl bg-white px-4 py-3 font-bold text-primary hover:bg-primary-fixed transition-colors"
+                            >
+                              <span className="material-symbols-outlined text-base align-[-3px] mr-2">call</span>
+                              {c.phone}
+                            </a>
+                          )}
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+
+                  {(() => {
+                    const totalPages = Math.max(1, Math.ceil(candidatures.length / candidaturesPageSize));
+                    const safePage = Math.min(candidaturesPage, totalPages);
+                    const start = (safePage - 1) * candidaturesPageSize;
+                    const end = start + candidaturesPageSize;
+
+                    return (
+                      <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-2 text-sm text-on-surface-variant">
+                          <span>{t('Candidatures par page', 'Applications per page')}</span>
+                          <select
+                            value={candidaturesPageSize}
+                            onChange={(event) => setCandidaturesPageSize(Number(event.target.value))}
+                            className="rounded-xl bg-surface-container-low px-3 py-2 text-sm outline-none focus:ring-4 focus:ring-primary/10"
+                          >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                          </select>
+                          <span>
+                            {start + 1}-{Math.min(end, candidatures.length)} / {candidatures.length}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            disabled={safePage <= 1}
+                            onClick={() => setCandidaturesPage((page) => Math.max(1, page - 1))}
+                            className="inline-flex items-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-4 py-2 text-sm font-bold text-primary hover:bg-primary-fixed transition-colors disabled:opacity-50"
+                          >
+                            <span className="material-symbols-outlined text-base">chevron_left</span>
+                            {t('Precedent', 'Previous')}
+                          </button>
+
+                          <span className="text-sm font-bold text-on-surface">
+                            {t('Page', 'Page')} {safePage} / {totalPages}
+                          </span>
+
+                          <button
+                            type="button"
+                            disabled={safePage >= totalPages}
+                            onClick={() => setCandidaturesPage((page) => Math.min(totalPages, page + 1))}
+                            className="inline-flex items-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-4 py-2 text-sm font-bold text-primary hover:bg-primary-fixed transition-colors disabled:opacity-50"
+                          >
+                            {t('Suivant', 'Next')}
+                            <span className="material-symbols-outlined text-base">chevron_right</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </>
+              ) : (
+                <div className="rounded-2xl bg-surface-container-low p-8 text-center">
+                  <span className="material-symbols-outlined text-4xl text-primary mb-3">description_off</span>
+                  <p className="font-headline font-bold text-primary mb-1">{t('Aucune candidature pour le moment.', 'No applications yet.')}</p>
+                  <p className="text-sm text-on-surface-variant">{t('Les candidatures apparaitront ici.', 'Job applications will appear here.')}</p>
+                </div>
+              )}
+            </div>
+          </div>
         )}
       </section>
     </main>

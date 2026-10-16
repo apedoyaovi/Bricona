@@ -74,6 +74,10 @@ const Contact = () => {
     };
   }, []);
 
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  const minDateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
   const handleContactSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -90,6 +94,17 @@ const Contact = () => {
       return;
     }
 
+    const appointmentDate = (formData.get('appointment-date') || '').trim();
+    if (appointmentDate) {
+      const selected = new Date(appointmentDate);
+      const now = new Date();
+      if (selected <= now) {
+        setErrorMessage(t('Veuillez choisir une date et heure de rendez-vous dans le futur.', 'Please choose a future date and time for the appointment.'));
+        setIsSending(false);
+        return;
+      }
+    }
+
     if (recaptchaSiteKey && !recaptchaToken) {
       setErrorMessage(t('Veuillez valider le reCAPTCHA avant d envoyer la demande.', 'Please complete the reCAPTCHA before submitting the request.'));
       setIsSending(false);
@@ -104,6 +119,7 @@ const Contact = () => {
         phone: (formData.get('phone') || '').trim(),
         projectType: (formData.get('project-type') || '').trim(),
         message: messageValue.trim(),
+        appointmentDate: (formData.get('appointment-date') || '').trim(),
       });
 
       setSuccessMessage(t('Votre demande a bien ete envoyee. Notre equipe vous contactera rapidement.', 'Your request has been sent. Our team will be in touch shortly.'));
@@ -187,6 +203,10 @@ const Contact = () => {
                 <div className="space-y-2">
                   <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="phone">{t('Téléphone', 'Phone')}</label>
                   <input id="phone" name="phone" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} placeholder="+33 6 00 00 00 00" type="tel" required />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: fonts.inter, color: T.yellow }} htmlFor="appointment-date">{t('Date et heure de rendez-vous souhaitée', 'Preferred appointment date & time')} <span style={{ color: T.navyMuted }}>({t('optionnel', 'optional')})</span></label>
+                  <input id="appointment-date" name="appointment-date" className="w-full rounded-xl px-4 py-3 outline-none transition-all focus:ring-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: T.navyText, fontFamily: fonts.inter }} type="datetime-local" min={minDateTime} />
                 </div>
               </div>
               <div className="space-y-2">

@@ -11,6 +11,7 @@ export const defaultSiteSettings = {
 
 const settingsKey = 'bricona-site-settings';
 const contactMessagesKey = 'bricona-contact-messages';
+const candidaturesKey = 'bricona-candidatures';
 
 const canUseStorage = () => typeof window !== 'undefined' && window.localStorage;
 
@@ -39,6 +40,7 @@ const mapSupabaseContactMessage = (message) => ({
   phone: message.phone,
   projectType: message.project_type,
   message: message.message,
+  appointmentDate: message.appointment_date,
   createdAt: message.created_at,
 });
 
@@ -114,6 +116,7 @@ export const addContactMessage = async (message) => {
         phone: message.phone,
         project_type: message.projectType,
         message: message.message,
+        appointment_date: message.appointmentDate || null,
       });
 
     if (error) throw error;
@@ -151,4 +154,88 @@ export const formatWhatsappHref = (phone, message = '') => {
   const digits = phone.replace(/\D/g, '');
   const text = message ? `?text=${encodeURIComponent(message)}` : '';
   return `https://wa.me/${digits}${text}`;
+};
+
+const mapSupabaseCandidature = (c) => ({
+  id: c.id,
+  fullName: c.full_name,
+  email: c.email,
+  phone: c.phone,
+  profile: c.profile,
+  cvUrl: c.cv_url,
+  cvFileName: c.cv_file_name,
+  createdAt: c.created_at,
+});
+
+export const addCandidature = async (candidature) => {
+  const { fullName, email, phone, profile, cv } = candidature;
+  let cvUrl = null;
+
+  if (hasSupabaseConfig && cv) {
+    const ext = cv.name.split('.').pop();
+    const fileName = `cv-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const filePath = `cvs/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('cvs')
+      .upload(filePath, cv, { cacheControl: '3600', upsert: false });
+
+    if (uploadError) throw uploadError;
+    cvUrl = filePath;
+  }
+
+  if (hasSupabaseConfig) {
+    const { error } = await supabase
+      .from('candidatures')
+      .insert({
+        full_name: fullName,
+        email,
+        phone,
+        profile,
+        cv_url: cvUrl,
+        cv_file_name: cv?.name || null,
+      });
+
+    if (error) throw error;
+    return;
+  }
+
+  const candidatures = readJson(candidaturesKey, []);
+  writeJson(candidaturesKey, [
+    {
+      id: `candidature-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      fullName,
+      email,
+      phone,
+      profile,
+      cvFileName: cv?.name || null,
+    },
+    ...candidatures,
+  ]);
+};
+
+export const getCandidatures = async () => {
+  if (hasSupabaseConfig) {
+    const { data, error } = await supabase
+      .from('candidatures')
+      .select('id,full_name,email,phone,profile,cv_url,cv_file_name,created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data.map(mapSupabaseCandidature);
+  }
+
+  return readJson(candidaturesKey, []);
+};
+
+export const getCvSignedUrl = async (cvPath) => {
+  if (!hasSupabaseConfig || !cvPath) return null;
+
+  const { data, error } = await supabase.storage
+    .from('cvs')
+    .createSignedUrl(cvPath, 3600);
+
+  if (error) throw error;
+  return data.signedUrl;
 };

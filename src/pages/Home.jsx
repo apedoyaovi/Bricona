@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../utils/LanguageContext';
+import CandidatureFAB from '../components/CandidatureFAB';
 
 /* ─── Design Tokens (matching stitch_en_sense redesign) ─── */
 const T = {
@@ -1239,6 +1240,7 @@ export default function Home() {
         {/* <TeamSection /> */}
         <FinalContactSection />
       </main>
+      <CandidatureFAB />
     </div>
   );
 }
