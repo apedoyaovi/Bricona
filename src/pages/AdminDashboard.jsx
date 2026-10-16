@@ -12,9 +12,18 @@ import {
 } from '../utils/siteContent';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useLanguage } from '../utils/LanguageContext';
+import {
+  isPushSupported,
+  isSubscribed,
+  subscribeToPush,
+  unsubscribeFromPush,
+  requestNotificationPermission,
+} from '../utils/pushNotifications';
 
 const adminPassword = 'bricona-admin-2026';
 const adminSessionKey = 'bricona-admin-session';
+const viewedMessagesKey = 'bricona-admin-viewed-messages';
+const viewedCandidaturesKey = 'bricona-admin-viewed-candidatures';
 
 const AdminDashboard = () => {
   const { language, t } = useLanguage();
@@ -29,6 +38,13 @@ const AdminDashboard = () => {
   const [candidaturesPage, setCandidaturesPage] = useState(1);
   const [candidaturesPageSize, setCandidaturesPageSize] = useState(10);
   const [downloadingCvId, setDownloadingCvId] = useState(null);
+  const [pushSubscribed, setPushSubscribed] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
+  const [pushSupported, setPushSupported] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [newMessagesCount, setNewMessagesCount] = useState(0);
+  const [newCandidaturesCount, setNewCandidaturesCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(() => (
     typeof window !== 'undefined' && window.sessionStorage.getItem(adminSessionKey) === 'active'
   ));
@@ -92,7 +108,12 @@ const AdminDashboard = () => {
     setError('');
 
     try {
-      setMessages(await getContactMessages());
+      const fetched = await getContactMessages();
+      setMessages(fetched);
+
+      const viewed = JSON.parse(localStorage.getItem(viewedMessagesKey) || '[]');
+      const newCount = fetched.filter((m) => !viewed.includes(m.id)).length;
+      setNewMessagesCount(newCount);
       setNotice(t('Messages actualises.', 'Messages refreshed.'));
     } catch {
       setError(t('Impossible de charger les messages. Verifiez la policy select Supabase.', 'Unable to load messages. Check the Supabase select policy.'));
@@ -101,18 +122,35 @@ const AdminDashboard = () => {
     }
   };
 
+  const markMessagesAsViewed = () => {
+    const ids = messages.map((m) => m.id);
+    localStorage.setItem(viewedMessagesKey, JSON.stringify([...new Set([...JSON.parse(localStorage.getItem(viewedMessagesKey) || '[]'), ...ids])]));
+    setNewMessagesCount(0);
+  };
+
   const refreshCandidatures = async () => {
     setIsLoading(true);
     setError('');
 
     try {
-      setCandidatures(await getCandidatures());
+      const fetched = await getCandidatures();
+      setCandidatures(fetched);
+
+      const viewed = JSON.parse(localStorage.getItem(viewedCandidaturesKey) || '[]');
+      const newCount = fetched.filter((c) => !viewed.includes(c.id)).length;
+      setNewCandidaturesCount(newCount);
       setNotice(t('Candidatures actualisees.', 'Applications refreshed.'));
     } catch {
       setError(t('Impossible de charger les candidatures. Verifiez la policy select Supabase.', 'Unable to load applications. Check the Supabase select policy.'));
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const markCandidaturesAsViewed = () => {
+    const ids = candidatures.map((c) => c.id);
+    localStorage.setItem(viewedCandidaturesKey, JSON.stringify([...new Set([...JSON.parse(localStorage.getItem(viewedCandidaturesKey) || '[]'), ...ids])]));
+    setNewCandidaturesCount(0);
   };
 
   const downloadCv = async (cvPath, fileName, cvId) => {
@@ -133,6 +171,47 @@ const AdminDashboard = () => {
       setError(t('Impossible de telecharger le CV.', 'Unable to download CV.'));
     } finally {
       setDownloadingCvId(null);
+    }
+  };
+
+  const checkPushSubscription = async () => {
+    setPushSupported(isPushSupported());
+    if (pushSupported) {
+      const subscribed = await isSubscribed();
+      setPushSubscribed(subscribed);
+    }
+  };
+
+  const handleTogglePush = async () => {
+    setPushLoading(true);
+    setError('');
+    try {
+      if (!pushSubscribed) {
+        await requestNotificationPermission();
+        await subscribeToPush();
+        setPushSubscribed(true);
+        setNotice(t('Notifications push activees. Vous recevrez les alertes sur votre appareil.', 'Push notifications enabled. You will receive alerts on your device.'));
+      } else {
+        await unsubscribeFromPush();
+        setPushSubscribed(false);
+        setNotice(t('Notifications push desactivees.', 'Push notifications disabled.'));
+      }
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : t('Erreur inconnue', 'Unknown error');
+      setError(`${t('Impossible de configurer les notifications :', 'Unable to configure notifications:')} ${reason}`);
+    } finally {
+      setPushLoading(false);
+    }
+  };
+
+  const handleInstallPWA = async () => {
+    if (!deferredPrompt) return;
+    setDeferredPrompt(null);
+    setShowInstallBanner(false);
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setNotice(t('PWA installee avec succes.', 'PWA installed successfully.'));
     }
   };
 
@@ -163,6 +242,12 @@ const AdminDashboard = () => {
   }, [candidatures.length, candidaturesPageSize]);
 
   useEffect(() => {
+    if (isAuthenticated) {
+      checkPushSubscription();
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
     if (isAuthenticated && activeTab === 'settings') {
       (async () => {
         setIsLoading(true);
@@ -179,6 +264,17 @@ const AdminDashboard = () => {
       })();
     }
   }, [isAuthenticated, activeTab]);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallBanner(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
 
   const handleSettingsSubmit = async (event) => {
     event.preventDefault();
@@ -280,6 +376,27 @@ const AdminDashboard = () => {
         onCancel={closeConfirmDialog}
         onConfirm={confirmDialog.onConfirm}
       />
+      {showInstallBanner && deferredPrompt && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-4 py-2.5 rounded-full bg-white shadow-[0_12px_40px_rgba(0,50,125,0.25)] border border-outline-variant/20 animate-slide-down max-w-xs w-full mx-4">
+          <span className="material-symbols-outlined text-primary text-lg">phone_android</span>
+          <span className="text-sm font-bold text-on-surface">{t('Installer Enésense Admin', 'Install Enésense Admin')}</span>
+          <button
+            type="button"
+            onClick={handleInstallPWA}
+            className="px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors"
+          >
+            {t('Installer', 'Install')}
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowInstallBanner(false)}
+            className="text-on-surface-variant hover:text-primary transition-colors"
+            aria-label={t('Fermer', 'Close')}
+          >
+            <span className="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+      )}
       <section className="max-w-7xl mx-auto px-6 md:px-8">
         <div className="mb-8 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div>
@@ -299,6 +416,41 @@ const AdminDashboard = () => {
             {t('Deconnexion', 'Log out')}
             <span className="material-symbols-outlined text-base">logout</span>
           </button>
+          <button
+            type="button"
+            onClick={() => {
+              markMessagesAsViewed();
+              markCandidaturesAsViewed();
+            }}
+            className={`relative inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-5 py-3 text-primary hover:bg-primary-fixed transition-colors`}
+            aria-label={t('Notifications', 'Notifications')}
+          >
+            <span className="material-symbols-outlined text-base">notifications</span>
+            {(newMessagesCount + newCandidaturesCount) > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[5px] h-[5px] rounded-full bg-red-600 border-2 border-white">
+                {(newMessagesCount + newCandidaturesCount) > 9 ? '9+' : newMessagesCount + newCandidaturesCount}
+              </span>
+            )}
+          </button>
+          {pushSupported && (
+            <button
+              type="button"
+              onClick={handleTogglePush}
+              disabled={pushLoading}
+              className={`inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-outline-variant/20 px-5 py-3 text-sm font-bold ${pushSubscribed ? 'text-primary' : 'text-on-surface-variant'} hover:bg-primary-fixed transition-colors disabled:opacity-60`}
+            >
+              <span className="material-symbols-outlined text-base">
+                {pushSubscribed ? 'notifications_active' : 'notifications_off'}
+              </span>
+              {pushLoading ? (
+                <span className="text-[10px] animate-spin">…</span>
+              ) : pushSubscribed ? (
+                t('Notifications activees', 'Push enabled')
+              ) : (
+                t('Activer notifications', 'Enable push')
+              )}
+            </button>
+          )}
         </div>
 
         {notice && (
@@ -313,10 +465,35 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {(newMessagesCount > 0 || newCandidaturesCount > 0) && (
+          <div className="mb-6 rounded-2xl bg-amber-50 border border-amber-200 px-5 py-4 text-sm font-bold text-amber-700 flex items-center gap-3">
+            <span className="material-symbols-outlined text-amber-500">notifications</span>
+            {newMessagesCount > 0 && newCandidaturesCount > 0 && (
+              <span>
+                {t('Nouveaux messages :', 'New messages:')} {newMessagesCount} {t('Nouveaux candidaures :', 'New applications:')} {newCandidaturesCount}
+              </span>
+            )}
+            {newMessagesCount > 0 && newCandidaturesCount === 0 && (
+              <span>
+                {t('Nouveaux messages :', 'New messages:')} {newMessagesCount}
+              </span>
+            )}
+            {newMessagesCount === 0 && newCandidaturesCount > 0 && (
+              <span>
+                {t('Nouveaux candidaures :', 'New applications:')} {newCandidaturesCount}
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
             type="button"
-            onClick={() => setActiveTab('messages')}
+            onClick={() => {
+              markMessagesAsViewed();
+              setActiveTab('messages');
+              refreshMessages();
+            }}
             className={`rounded-2xl p-5 text-left shadow-sm transition-colors ${
               activeTab === 'messages'
                 ? 'bg-primary text-white shadow-[0_18px_40px_rgba(0,50,125,0.18)]'
@@ -326,6 +503,11 @@ const AdminDashboard = () => {
             <span className="material-symbols-outlined text-3xl mb-4">mark_email_unread</span>
             <span className={`block font-headline text-lg font-bold mb-1 ${activeTab === 'messages' ? 'text-white' : 'text-primary'}`}>
               {t('Messages recus', 'Received messages')}
+              {newMessagesCount > 0 && (
+                <span className="ml-2 inline-flex items-center justify-center min-w-5 h-5 rounded-full bg-red-600 text-[10px] font-bold text-white">
+                  {newMessagesCount}
+                </span>
+              )}
             </span>
             <span className={`block text-sm ${activeTab === 'messages' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
               {t('Consulter les demandes envoyees depuis la page contact.', 'Review requests sent through the contact page.')}
@@ -352,7 +534,11 @@ const AdminDashboard = () => {
 
           <button
             type="button"
-            onClick={() => setActiveTab('candidatures')}
+            onClick={() => {
+              markCandidaturesAsViewed();
+              setActiveTab('candidatures');
+              refreshCandidatures();
+            }}
             className={`rounded-2xl p-5 text-left shadow-sm transition-colors ${
               activeTab === 'candidatures'
                 ? 'bg-primary text-white shadow-[0_18px_40px_rgba(0,50,125,0.18)]'
@@ -362,6 +548,11 @@ const AdminDashboard = () => {
             <span className="material-symbols-outlined text-3xl mb-4">description</span>
             <span className={`block font-headline text-lg font-bold mb-1 ${activeTab === 'candidatures' ? 'text-white' : 'text-primary'}`}>
               {t('Candidatures', 'Job applications')}
+              {newCandidaturesCount > 0 && (
+                <span className="ml-2 inline-flex items-center justify-center min-w-5 h-5 rounded-full bg-red-600 text-[10px] font-bold text-white">
+                  {newCandidaturesCount}
+                </span>
+              )}
             </span>
             <span className={`block text-sm ${activeTab === 'candidatures' ? 'text-primary-fixed/80' : 'text-on-surface-variant'}`}>
               {t('Consulter les candidatures recues.', 'Review received job applications.')}

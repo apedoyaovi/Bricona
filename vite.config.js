@@ -1,31 +1,80 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/.*\.supabase\.co\/.*$/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'supabase-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24
+              }
+            }
+          }
+        ]
+      },
+      includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      manifest: {
+        name: 'Enésense Admin',
+        short_name: 'Enésense Admin',
+        description: 'Espace administrateur Enésense - Gestion des messages et candidatures',
+        theme_color: '#0B1D33',
+        background_color: '#ffffff',
+        display: 'standalone',
+        scope: '/',
+        start_url: '/admin',
+        orientation: 'portrait',
+        icons: [
+          {
+            src: '/enessence_logo.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/enessence_logo.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/enessence_logo.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'maskable'
+          }
+        ]
+      }
+    })
+  ],
   base: '/',
-  
-  // Optimisation du dev server
   server: {
     port: 5173,
-    // Compression des réponses
     middlewareMode: false,
-    // Prefetch des modules importants
     preTransformRequests: ['src/main.jsx', 'src/App.jsx']
   },
-
   build: {
-    // 🎯 Optimisation agressive de la taille du bundle
     minify: 'terser',
     terserOptions: {
       compress: {
         drop_console: true,
         drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug'], // Enlever tous les console.*
-        passes: 3, // Plus de passes = meilleure compression
-        unsafe: true, // Optimisations plus agressives
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
+        passes: 3,
+        unsafe: true,
         unsafe_comps: true,
         unsafe_Function: true,
         unsafe_math: true,
@@ -36,18 +85,15 @@ export default defineConfig({
         unsafe_undefined: true
       },
       format: {
-        comments: false, // Supprimer les commentaires
-        ecma: 2020 // Target moderne pour meilleure compression
+        comments: false,
+        ecma: 2020
       },
       mangle: {
-        safari10: true // Support Safari 10+
+        safari10: true
       }
     },
-
-    // 🔄 Code Splitting avancé
     rollupOptions: {
       output: {
-        // Grosse dépendances externes dans leurs propres chunks
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
           'router-vendor': ['react-router-dom'],
@@ -55,7 +101,6 @@ export default defineConfig({
           'recaptcha-vendor': ['react-google-recaptcha'],
           'analytics-vendor': ['@vercel/analytics'],
         },
-        // Format du nom des chunks pour meilleure gestion du cache
         chunkFileNames: 'js/[name].[hash].js',
         entryFileNames: 'js/[name].[hash].js',
         assetFileNames: (assetInfo) => {
@@ -70,37 +115,19 @@ export default defineConfig({
           return `assets/[name].[hash][extname]`;
         }
       },
-      external: [] // si vous aviez des dépendances externes
+      external: []
     },
-
-    // Seuil d'avertissement plus élevé (ces chunks sont déjà optimisés)
     chunkSizeWarningLimit: 1500,
-
-    // Metrics pour analyser la taille du bundle
     reportCompressedSize: true,
-
-    // Source maps uniquement en dev
     sourcemap: false,
-
-    // Optimisation des propriétés CSS
     cssCodeSplit: true,
-
-    // Améliorer la cache busting
     outDir: 'dist',
-
-    // Compiler avec un target spécifique pour moderne navs
     target: 'es2020',
-
-    // Optimisations supplémentaires
     modulePreload: {
-      polyfill: false // Désactiver le polyfill pour les anciens navigateurs
+      polyfill: false
     }
   },
-
-  // Optimiser les ressources statiques
   assetsInclude: ['**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.eot', '**/*.svg'],
-
-  // Preview server
   preview: {
     port: 4173,
     strictPort: true
