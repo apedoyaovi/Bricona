@@ -3,11 +3,11 @@ const CACHE_NAME = 'enésense-admin-cache-v1';
 const OFFLINE_URL = '/admin';
 
 self.addEventListener('install', (event) => {
-  self.skipWaiting();
+  // Pas de skipWaiting pour éviter le rechargement forcé
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+  // Pas de clients.claim() pour éviter le rechargement forcé
 });
 
 // Gestion des notifications push reçues
