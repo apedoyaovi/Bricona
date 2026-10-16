@@ -1,65 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss(),
-    VitePWA({
-      registerType: 'notify',
-      workbox: {
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/.*\.supabase\.co\/.*$/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'supabase-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24
-              }
-            }
-          }
-        ]
-      },
-      includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
-      manifest: {
-        name: 'Enésense Admin',
-        short_name: 'Enésense Admin',
-        description: 'Espace administrateur Enésense - Gestion des messages et candidatures',
-        theme_color: '#0B1D33',
-        background_color: '#ffffff',
-        display: 'standalone',
-        scope: '/',
-        start_url: '/admin',
-        orientation: 'portrait',
-        icons: [
-          {
-            src: '/enessence_logo.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: '/enessence_logo.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: '/enessence_logo.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'maskable'
-          }
-        ]
-      }
-    })
+    tailwindcss()
   ],
   base: '/',
   server: {
