@@ -1,41 +1,54 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../utils/LanguageContext';
-import CandidatureModal from './CandidatureModal';
 
-const CandidatureFAB = () => {
-  const [open, setOpen] = useState(false);
+const CandidatureFAB = ({ onApply }) => {
   const { t } = useLanguage();
+  const actionClassName = 'flex min-h-[62px] w-[58px] flex-col items-center justify-center gap-1.5 rounded-xl px-1.5 text-center transition hover:-translate-x-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 sm:min-h-[68px] sm:w-[68px]';
+  const tooltipClassName = 'pointer-events-none absolute right-full top-1/2 mr-3 w-56 -translate-y-1/2 translate-x-1 rounded-xl bg-[#0B1D33] px-3.5 py-3 text-left text-xs font-medium leading-5 text-white opacity-0 shadow-xl transition duration-150 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100';
 
   return (
-    <>
-      <div className="fixed top-1/2 right-6 z-50 -translate-y-1/2 flex flex-col gap-2">
+    <nav
+      aria-label={t('Navigation rapide', 'Quick navigation')}
+      className="fixed right-0 top-1/2 z-50 flex -translate-y-1/2 flex-col gap-1.5 rounded-l-2xl border border-r-0 border-slate-200 bg-white/95 p-1.5 shadow-[0_12px_40px_rgba(0,25,70,0.2)] backdrop-blur sm:gap-2 sm:p-2"
+    >
+      {onApply ? (
         <button
           type="button"
-          onClick={() => setOpen(true)}
-          className="group relative inline-flex items-center gap-3 px-4 py-2.5 rounded-full shadow-[0_12px_40px_rgba(0,50,125,0.35)] hover:shadow-[0_16px_50px_rgba(0,50,125,0.55)] hover:scale-105 transition-all duration-300 active:scale-95 min-w-[48px]"
-          style={{ background: '#0B1D33', color: '#F2B705', border: '1px solid rgba(242,183,5,0.35)' }}
-          aria-label={t('Postuler', 'Apply')}
+          onClick={onApply}
+          className={`group relative ${actionClassName} bg-[#0B1D33] text-[#F2B705] hover:bg-[#132d4c]`}
+          aria-label={t('Postuler : ouvrir le formulaire de candidature', 'Apply: open the application form')}
         >
-          <span className="material-symbols-outlined text-lg group-hover:opacity-100 transition-opacity">description</span>
-          <span className="absolute right-full mr-3 whitespace-nowrap text-xs font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            {t('Postuler', 'Apply')}
+          <span className="material-symbols-outlined text-xl" aria-hidden="true">description</span>
+          <span className="text-[9px] font-bold leading-tight sm:text-[10px]">{t('Postuler', 'Apply')}</span>
+          <span role="tooltip" className={tooltipClassName}>
+            {t('Ouvrir le formulaire pour envoyer votre candidature.', 'Open the form to submit your application.')}
           </span>
         </button>
+      ) : (
         <Link
-          to="/contact"
-          className="group relative inline-flex items-center gap-3 px-4 py-2.5 rounded-full shadow-[0_12px_40px_rgba(0,50,125,0.3)] hover:shadow-[0_16px_50px_rgba(0,50,125,0.45)] hover:scale-105 transition-all duration-300 active:scale-95 min-w-[48px]"
-          style={{ background: '#ffffff', color: '#0B1D33', border: '1px solid rgba(11,29,51,0.2)' }}
-          aria-label={t('Contacter', 'Contact')}
+          to="/carrieres"
+          className={`group relative ${actionClassName} bg-[#0B1D33] text-[#F2B705] hover:bg-[#132d4c]`}
+          aria-label={t('Postuler : accéder à la page Carrières', 'Apply: go to the Careers page')}
         >
-          <span className="material-symbols-outlined text-lg group-hover:opacity-100 transition-opacity">mail</span>
-          <span className="absolute right-full mr-3 whitespace-nowrap text-xs font-bold text-[#0B1D33] opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            {t('Contacter', 'Contact')}
+          <span className="material-symbols-outlined text-xl" aria-hidden="true">description</span>
+          <span className="text-[9px] font-bold leading-tight sm:text-[10px]">{t('Postuler', 'Apply')}</span>
+          <span role="tooltip" className={tooltipClassName}>
+            {t('Accéder à la page Carrières pour découvrir les opportunités et postuler.', 'Go to Careers to explore opportunities and apply.')}
           </span>
         </Link>
-      </div>
-      <CandidatureModal open={open} onClose={() => setOpen(false)} />
-    </>
+      )}
+      <Link
+        to="/contact"
+        className={`group relative ${actionClassName} bg-slate-50 text-[#0B1D33] hover:bg-slate-100`}
+        aria-label={t('Contacter : accéder à la page Contact', 'Contact: go to the Contact page')}
+      >
+        <span className="material-symbols-outlined text-xl" aria-hidden="true">mail</span>
+        <span className="text-[9px] font-bold leading-tight sm:text-[10px]">{t('Contacter', 'Contact')}</span>
+        <span role="tooltip" className={tooltipClassName}>
+          {t('Accéder à la page Contact pour nous écrire.', 'Go to the Contact page to get in touch.')}
+        </span>
+      </Link>
+    </nav>
   );
 };
 

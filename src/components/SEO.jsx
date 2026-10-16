@@ -22,6 +22,11 @@ const pageMetadata = {
       description: 'Découvrez la mission d\'Enésense : faire grandir les entreprises grâce à des outils digitaux simples, utiles et accessibles. Digitalisation, automatisation et développement sur mesure.', 
       keywords: `${BRAND_VARIANTS}, à propos, entreprise digitale France, digitalisation entreprise, équipe digitalisation, mission Enésense` 
     },
+    '/carrieres': {
+      title: 'Carrières | Rejoignez Enésense',
+      description: 'Découvrez les domaines d’expertise d’Enésense et envoyez une candidature spontanée pour contribuer à des projets numériques concrets.',
+      keywords: `${BRAND_VARIANTS}, carrières Enésense, recrutement numérique, candidature spontanée, emploi développement logiciel`,
+    },
     '/solutions': { 
       title: 'Solutions | Enésense - Nos produits numériques BRICONA', 
       description: 'Enésense conçoit ses propres plateformes numériques, à commencer par BRICONA, dédiée au secteur du BTP. Des produits développés pour résoudre des problèmes réels.', 
@@ -56,6 +61,10 @@ const englishPageMetadata = {
     '/about': {
       title: 'About | Enésense - Technology built for business growth',
       description: 'Discover Enésense: helping businesses grow with useful, accessible digital tools, automation and custom software.',
+    },
+    '/carrieres': {
+      title: 'Careers | Join Enésense',
+      description: 'Explore Enésense areas of expertise and submit an open application to contribute to meaningful digital projects.',
     },
     '/solutions': {
       title: 'Solutions | Enésense - BRICONA digital products',

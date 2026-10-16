@@ -36,6 +36,7 @@ const Footer = () => {
             <li><Link className="hidden" to="/about">{t('À Propos', 'About')}</Link></li>
             <li><Link className="hidden" to="/about">{t('Équipe', 'Team')}</Link></li>
             <li><Link className="hover:text-blue-600 transition-colors" to="/contact">{t('Contact', 'Contact')}</Link></li>
+            <li><Link className="hover:text-blue-600 transition-colors" to="/carrieres">{t('Carrières', 'Careers')}</Link></li>
             <li><Link className="hover:text-blue-600 transition-colors" to="/about">{t('Partenaires', 'Partners')}</Link></li>
           </ul>
         </div>

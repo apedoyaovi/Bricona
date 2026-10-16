@@ -48,6 +48,7 @@ const PolitiqueConfidentialite = lazy(() => import('./pages/PolitiqueConfidentia
 const PolitiqueCookies = lazy(() => import('./pages/PolitiqueCookies'));
 const ConditionsUtilisation = lazy(() => import('./pages/ConditionsUtilisation'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const Careers = lazy(() => import('./pages/Careers'));
 const PageNonTrouvee = lazy(() => import('./pages/PageNonTrouvee.jsx'));
 
 function AppLayout() {
@@ -72,6 +73,7 @@ function AppLayout() {
               <Route path="/solutions/selvy" element={<SelvyDetail />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About />} />
+              <Route path="/carrieres" element={<Careers />} />
               <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
               <Route path="/politique-cookies" element={<PolitiqueCookies />} />
               <Route path="/conditions-utilisation" element={<ConditionsUtilisation />} />

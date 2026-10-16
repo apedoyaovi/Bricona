@@ -13,6 +13,7 @@ const navLinks = [
 
 
 const discoverLinks = [
+  { label: 'Carrières', to: '/carrieres' },
   { label: 'Expertises', to: '/expertises' },
   { label: 'Extension d\'équipes', to: '/expertises/extension-equipes' },
   { label: 'Studio Produit', to: '/expertises/studio-produit' },
@@ -32,7 +33,7 @@ const discoverLinks = [
 const translations = {
   fr: {
     nav: ['Accueil', 'Expertises', 'À Propos', 'Solutions'],
-    discover: ['Expertises', "Extension d'équipes", 'Studio Produit', 'Modernisation applicative', 'IA & Automatisation', 'Solutions', 'BRICONA', 'SELVY', 'Le Groupe', 'Contact', 'Mentions légales', 'Confidentialité', 'Cookies', "Conditions d'utilisation"],
+    discover: ['Carrières', 'Expertises', "Extension d'équipes", 'Studio Produit', 'Modernisation applicative', 'IA & Automatisation', 'Solutions', 'BRICONA', 'SELVY', 'Le Groupe', 'Contact', 'Mentions légales', 'Confidentialité', 'Cookies', "Conditions d'utilisation"],
     discoverLabel: 'Découvrir',
     contact: "Contactez l'équipe",
     closeMenu: 'Fermer le menu',
@@ -45,7 +46,7 @@ const translations = {
   },
   en: {
     nav: ['Home', 'Expertise', 'About', 'Solutions'],
-    discover: ['Expertise', 'Team extension', 'Product studio', 'Application modernization', 'AI & Automation', 'Solutions', 'BRICONA', 'SELVY', 'The Group', 'Contact', 'Legal notices', 'Privacy', 'Cookies', 'Terms of use'],
+    discover: ['Careers', 'Expertise', 'Team extension', 'Product studio', 'Application modernization', 'AI & Automation', 'Solutions', 'BRICONA', 'SELVY', 'The Group', 'Contact', 'Legal notices', 'Privacy', 'Cookies', 'Terms of use'],
     discoverLabel: 'Discover',
     contact: 'Contact our team',
     closeMenu: 'Close menu',
@@ -300,7 +301,7 @@ const Navbar = () => {
             className="overflow-hidden transition-all duration-200"
             style={{ maxHeight: discoverOpen ? '400px' : '0' }}
           >
-            <div className="flex flex-col gap-1">
+            <div className="flex max-h-[400px] flex-col gap-1 overflow-y-auto">
               {localizedDiscoverLinks.map((item) => (
                 <Link
                   key={item.to}

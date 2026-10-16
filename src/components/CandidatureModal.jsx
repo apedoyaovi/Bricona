@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../utils/LanguageContext';
 import { addCandidature } from '../utils/siteContent';
 
-const CandidatureModal = ({ open, onClose }) => {
+const CandidatureModal = ({ open, onClose, initialProfile = '' }) => {
   const { t } = useLanguage();
   const fileInputRef = useRef(null);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [profile, setProfile] = useState('');
+  const [profile, setProfile] = useState(initialProfile);
   const [customProfile, setCustomProfile] = useState('');
   const [cvFile, setCvFile] = useState(null);
   const [isSending, setIsSending] = useState(false);
@@ -18,18 +18,21 @@ const CandidatureModal = ({ open, onClose }) => {
   const [dragActive, setDragActive] = useState(false);
 
   useEffect(() => {
-    if (!open) {
-      setFullName('');
-      setEmail('');
-      setPhone('');
-      setProfile('');
-      setCustomProfile('');
-      setCvFile(null);
-      setSuccess(false);
-      setNotificationWarning('');
-      setErrorMessage('');
+    if (open) {
+      setProfile(initialProfile);
+      return;
     }
-  }, [open]);
+
+    setFullName('');
+    setEmail('');
+    setPhone('');
+    setProfile(initialProfile);
+    setCustomProfile('');
+    setCvFile(null);
+    setSuccess(false);
+    setNotificationWarning('');
+    setErrorMessage('');
+  }, [initialProfile, open]);
 
   useEffect(() => {
     if (!open) return;
