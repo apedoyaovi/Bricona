@@ -4,9 +4,16 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
 import { initializePerformanceOptimizations } from './utils/performanceOptimization.js'
+import { registerServiceWorker } from './utils/pushNotifications'
 
 // Initialiser les optimisations de performance dès le démarrage
 initializePerformanceOptimizations();
+
+// Enregistrer le service worker en production pour le support PWA et notifications push
+// (sans skipWaiting ni clients.claim pour éviter tout rechargement forcé)
+if (import.meta.env.PROD) {
+  registerServiceWorker().catch(() => {});
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
